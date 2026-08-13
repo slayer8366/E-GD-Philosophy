@@ -306,3 +306,27 @@ Final real run: `dispatch-recording entries found: 1`; `files under prompts/: pr
 The em dash used in this repository's existing `Prediction (outcome — planner)` / `Prediction (mechanism — coder)` field labels was checked as a possible confound for the missing-field defect above and ruled out -- `Dispatch-file` uses no such character; the actual cause was purely the field being mid-paragraph rather than at line-start, confirmed by grep before writing this explanation, not assumed.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-08-13-11
+
+**Timestamp:** 2026-08-13T18:37:36Z
+
+**Title:** Record and grade the operator's withheld outcome prediction for 2026-08-13-09, received after its terminal entry had already closed it
+
+**Change:** The operator's outcome prediction for 2026-08-13-09 (authored before dispatch, withheld per that entry's own sentinel, per this repository's stated convention for the `withheld` value) arrived after 2026-08-13-10 had already closed 2026-08-13-09 and been committed and pushed. `check_record.py`'s own sentinel-resolution logic (`validate_entries`, the block handling `SUPPLIED_FIELD`/`Closes`) requires the `Prediction-outcome-supplied` field to live in *the* terminal entry that `Closes` the intent whose prediction is being resolved. That terminal entry (2026-08-13-10) is already committed and RECORD.md is append-only, so the field cannot be added to it. A second terminal entry with `Closes: 2026-08-13-09` is not an option either -- `check_duplicate_terminals` treats more than one terminal entry closing the same intent as an error, not a normal state. This entry records the prediction verbatim, grades it against what 2026-08-13-09/-10 actually show, and names this as a discovered gap in the store's own mechanism rather than working around it silently.
+
+**Scope boundary:** This entry pair only. No file outside `RECORD.md` is touched. `2026-08-13-09`'s outcome-prediction sentinel remains `withheld` in the store, permanently unresolved by the built-in mechanism -- not edited, not worked around by inventing a field the validator does not recognize.
+
+**Baseline:** Repo clean at commit f1be0be on Test-1, matching `origin/Test-1`. `2026-08-13-09` (intent) carries `Prediction (outcome — planner): withheld`, still unresolved. `2026-08-13-10` (terminal) closes it, already committed, carries no `Prediction-outcome-supplied` field.
+
+**Prediction (outcome — planner):** not authored -- this entry records and grades a prediction already received; there is no forward outcome to predict, the same reasoning entry 2026-08-13-01 gives for its own retrospective case.
+
+**Prediction (mechanism — coder):** Quote the operator's prediction in full in the terminal entry's Observed field (not stored under `prompts/`, since it is not a work-dispatch bound by `Dispatch-file` -- it is a retrospective grading document, a different kind of artifact, and forcing it into that store would blur a distinction `check_prompts.py` does not exist to draw). Grade each "WILL BE TRUE AT CLOSE" item and each of the four "ACTUAL BETS" against the real, already-committed state of 2026-08-13-09/-10 and the working tree, citing the actual run output rather than re-describing from memory. Expect bet 4 to grade as wrong, as the operator predicted they might be wrong about -- but distinguish precisely between "the run failed" (true: the first real run of `check_prompts.py` returned FAIL) and "the script had a defect" (false: `check_prompts.py`'s code was never modified after being written; the failure was a correctly-caught defect in my own RECORD.md authorship, not in the check). Collapsing those two would misgrade the operator's own stated reasoning, which was specifically about verification-script bugs.
+
+**Finish line:** This entry pair committed and pushed, confirmed by an observed remote ref, matching the standard this task's own subject (2026-08-13-09/-10) was held to.
+
+**Abort conditions:** None anticipated; this is a recording task over already-known facts, not new construction.
+
+---
