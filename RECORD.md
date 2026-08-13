@@ -240,3 +240,35 @@ Diffed against this task's own pre-task commit (fa542d3): only `RECORD.md` and `
 `__pycache__/` deleted from the working tree after the final observation; confirmed absent before this entry's commit.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-08-13-09
+
+**Timestamp:** 2026-08-13T16:22:34Z
+
+**Title:** Create prompts/ as a preserved dispatch store, and check_prompts.py to verify its binding to RECORD.md
+
+**Change:** Create `prompts/`, a store of dispatched-prompt files, and preserve this task's own governing prompt into it verbatim -- including anything in it that turns out to be wrong, not corrected while storing. Create `check_prompts.py`, which verifies only existence and binding between `RECORD.md` entries and files in `prompts/`: every entry that records a dispatch has a corresponding file, every file maps to an entry that exists, no orphans in either direction. It does not and cannot verify that a stored file holds the text actually dispatched -- that is not checkable from inside the repository, and its own header says so plainly rather than implying otherwise.
+
+**Naming and binding scheme (mine to decide, recorded here per the governing prompt's instruction):** A new, non-required intent-entry field, `**Dispatch-file:**`, whose value is a path relative to `prompts/`. Adding it is safe because `check_record.py`'s `validate_entries` only enforces presence of its `INTENT_REQUIRED` list and does not reject or even inspect extra fields -- confirmed by reading the function before choosing this, not assumed. Only entries that carry this field are "entries that record a dispatch"; entries 2026-08-13-01 through -08 predate this store and carry no such field, so they are correctly excluded rather than retroactively required to have one. The store starts from this prompt forward, not reconstructed backward.
+
+**Recovered versus preserved:** Marked by subdirectory, not by a second field: `prompts/preserved/<name>` for a prompt captured verbatim at dispatch time (this task's own case), `prompts/recovered/<name>` for one reconstructed afterward from a transcript. The directory is the single source of truth for provenance -- a second field naming the same fact could drift out of sync with the file's real location and there is no need for two places to hold one answer. `check_prompts.py` reports the count of each separately by listing each subdirectory, not by trusting a claim inside the entry.
+
+This task's own prompt is preserved at `prompts/preserved/2026-08-13-09.md`, referenced from this entry as `**Dispatch-file:** preserved/2026-08-13-09.md`.
+
+**Scope boundary:** `prompts/`, `check_prompts.py`, and this entry pair in `RECORD.md` (append only). Nothing else. No changes to `PHILOSOPHY.md`, `ENFORCEMENT.md`, `BOOTSTRAP.md`, `GLOSSARY.md`, `README.md`, `check_record.py`, `check_register.py`, or anything under `~/imx`. No reconstruction of any prior prompt in this task.
+
+**Baseline:** `prompts/` and `check_prompts.py` confirmed absent before this entry was written. `check_record.py` and `check_glossary.py` both confirmed passing before any file was touched (8 entries valid, 7-commit history walk clean; 43/42/43 glossary contract intact) -- the abort condition on a dirty starting state did not trigger. Repo clean at commit 6125142 on Test-1, matching `origin/Test-1`. Running on the Pi (hostname `raspberrypi`), not a cloud sandbox -- confirmed by `hostname`, not assumed, since this task's own reasoning for running here is that the store must survive where the pushing happens.
+
+**Known defect carried forward, not fixed here:** `check_prompts.py` reuses `check_record.split_entries` and `check_record.parse_fields` unmodified via `import check_record as cr`, inheriting the raw-substring `## Entries` heading-search fragility documented in `check_record.py`'s own header and in this repository's `CLAUDE.md` -- prose naming that heading before the real one would produce a phantom entry. Not fixed in this task; the same logic is duplicated in OSCam's `ledger_validator_core.py` and fixing it is out of scope there too, per this task's own instruction.
+
+**Prediction (outcome — planner):** withheld
+
+**Prediction (mechanism — coder):** `check_prompts.py` will reuse `check_record.split_entries`/`parse_fields` to extract every entry's `Dispatch-file` field (if present), resolve each value against `prompts/`, and separately walk `prompts/preserved/` and `prompts/recovered/` to confirm every physical file is named by exactly one entry -- duplicate claims on one file treated as their own error class, not silently allowed. On this first run: 1 preserved, 0 recovered, reported as a fact, not a failure, matching this project's existing vacuous-reporting convention. Verification will be sabotage-and-revert against real files: delete the stored prompt file and confirm the check names it as missing/orphaned by path; separately point `Dispatch-file` at a wrong path and confirm the same failure shape; revert both, reconfirm clean. Main risk expected going in: keeping the orphan check symmetric in both directions without conflating "entry names a file that doesn't exist" with "file exists that no entry names" -- these are different failure shapes and the report should not collapse them.
+
+**Finish line:** `prompts/` exists and holds at least this prompt; `check_prompts.py` exists, runs, and passes against the current store; `RECORD.md` carries an opened and terminated entry for this work; everything committed and pushed, confirmed by the observed remote ref.
+
+**Abort conditions:** If `check_record.py` or `check_glossary.py` had failed before anything was touched, stop and report (checked above; did not trigger). If the naming scheme adopted here required renaming or editing any existing `RECORD.md` entry, stop and ask (it does not -- the scheme is purely additive, a new optional field on new entries only).
+
+---
