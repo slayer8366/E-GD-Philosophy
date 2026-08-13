@@ -164,3 +164,31 @@ REGISTER.md already carries genuine observations from this task's own verificati
 **Abort conditions:** If a file the dictated text names as existing does not exist, stop and report rather than adjusting the text. If `CLAUDE.md` already exists in this repository, stop and report rather than overwriting.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-08-13-06
+
+**Timestamp:** 2026-08-13T15:19:27Z
+
+**Closes:** 2026-08-13-05
+
+**Outcome:** completed
+
+**Observed:** `CLAUDE.md` created at the repo root (commit to follow this entry) as a single `Write` reproducing the dictated block-2 text exactly, no templating. Neither abort condition triggered: `CLAUDE.md` was confirmed absent before writing, and every file the text names as existing was confirmed present.
+
+Four required checks, all run through `check_register.py` and landing in REGISTER.md (18 entries total, `grep -c "^\*\*Check:\*\*" REGISTER.md`), sabotage-and-revert for the two checks that inspect this task's own new construction and a third for the scope guard, positive-case-only for the fourth (pre-existing tooling this task did not build):
+
+(1) *Every dictated section present*, expected failure named before running: sabotaging by deleting the `## Stop conditions` header line produced exactly the predicted failure (`FAIL: missing section header(s): ['## Stop conditions']`, exit 1); reverting reproduced the predicted pass (all six headers present, exit 0).
+
+(2) *Every named file exists or is marked not-yet-rebuilt*, expected failure named before running: sabotaging by deleting the "Not yet rebuilt after the store was lost" sentence produced exactly the predicted failure (both `PROTOCOL.md` and `OPERATOR_PROFILE.template.md` reported as named-but-absent, exit 1); reverting reproduced the predicted pass, including the cross-repo reference -- `/home/bwann83/imx/CLAUDE.md` confirmed present with its own "Write permissions" section, matching the dictated text's claim about it.
+
+(3) *`check_record.py` and `check_glossary.py` still pass*, positive case, no sabotage (pre-existing tooling, not built by this task): both ran clean through `check_register.py` -- `check_record.py` reported all 5 entries structurally valid, working-tree and 4-commit history-walk append-only clean; `check_glossary.py` reported 43/42/43 unchanged from the prior task's own terminal entry. Neither script references `CLAUDE.md` anywhere, confirmed by grep before this task's intent entry was written, and neither result changed because of its presence.
+
+(4) *Only `CLAUDE.md`, `RECORD.md`, and `REGISTER.md` changed, diffed against this task's own pre-task commit* (9a8e552, confirmed fresh from `git log` and equal to `origin/Test-1` before this task began): sabotaging by appending a blank line to `README.md` produced exactly the predicted failure (`README.md` named as unexpected, exit 1); `git checkout -- README.md` reverted it. A second, unpredicted failure mode surfaced on the revert-confirm run and is recorded under Deviations below, not folded into this pass/fail pair.
+
+**Deviations:** DISCOVERED: `check_register.py`'s own `import check_record as cr` regenerates an untracked `__pycache__/` directory as a side effect of every wrapped run, including a run of Check 4 through `check_register.py` itself -- the wrapping process pollutes the exact repo-scope state Check 4 inspects. This was not predicted in the intent entry's mechanism prediction. First observed as a genuine FAIL (`scope_diff` run, `__pycache__/` named alongside the still-present `README.md` sabotage), then isolated as its own FAIL after `README.md` was reverted and `__pycache__/` was the only remaining unexpected entry. Resolved by adding a narrow, named exclusion to the check-4 script for paths under `__pycache__/` -- reported separately from the real `ALLOWED` set in both the pass and fail branches, never silently dropped -- rather than by loosening what counts as in-scope. The substantive `ALLOWED`-diff logic that Check 4 exists to enforce was already sabotage-tested and caught `README.md` correctly before this fix; the fix touches only the noise-exclusion layer. `__pycache__/` was deleted from the working tree after each observation and does not appear in this task's commits (confirmed: it is a compiled bytecode cache, never staged, and this repo carries no `.gitignore` to have suppressed it from `git status` on its own).
+
+The scratch check scripts (`/tmp/check1.py`, `/tmp/check2.py`, `/tmp/check4.py`) live outside the repo tree, per this task's own scope boundary ("Nothing else" besides `CLAUDE.md` and this entry pair) and per the general convention that scratch tooling does not ride into the working directory the changelog/record does not account for. They are not committed and are not part of this repository's history.
+
+---

@@ -252,3 +252,232 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** claude_md_sections_present_sabotage
+
+**Timestamp:** 2026-08-13T15:15:34Z
+
+**Expected failure mode:** FAIL, naming '## Stop conditions' as a missing required section header, after that header line is deleted from CLAUDE.md
+
+**Command:** python3 /tmp/check1.py
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    FAIL: missing section header(s): ['## Stop conditions']
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** claude_md_sections_present
+
+**Timestamp:** 2026-08-13T15:15:42Z
+
+**Expected failure mode:** PASS, all six dictated section headers present, after the sabotaged header is restored
+
+**Command:** python3 /tmp/check1.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: all dictated section headers present: ['# CLAUDE.md', '## Read at session start', '## Your role', '## Non-negotiables', '## Verification', '## Stop conditions']
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** claude_md_named_files_sabotage
+
+**Timestamp:** 2026-08-13T15:15:54Z
+
+**Expected failure mode:** FAIL, naming PROTOCOL.md and OPERATOR_PROFILE.template.md as named-but-absent, after the 'not yet rebuilt' marker text is removed from CLAUDE.md
+
+**Command:** python3 /tmp/check2.py
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    FAIL:
+     - PROTOCOL.md: text no longer marks this as not-yet-rebuilt, but file is absent on disk
+     - OPERATOR_PROFILE.template.md: text no longer marks this as not-yet-rebuilt, but file is absent on disk
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** claude_md_named_files
+
+**Timestamp:** 2026-08-13T15:16:02Z
+
+**Expected failure mode:** PASS, every named file present or correctly marked not-yet-rebuilt, after the marker text is restored
+
+**Command:** python3 /tmp/check2.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: every named file exists, or is correctly marked not-yet-rebuilt:
+     - BOOTSTRAP.md
+     - ENFORCEMENT.md
+     - GLOSSARY.md
+     - PHILOSOPHY.md
+     - PROTOCOL.md
+     - OPERATOR_PROFILE.template.md
+     - RECORD.md
+     - REGISTER.md
+     - DURABILITY.md
+     - check_record.py
+     - check_register.py
+     - check_glossary.py
+     - ~/imx/CLAUDE.md (cross-repo reference, with Write permissions section)
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_still_passes
+
+**Timestamp:** 2026-08-13T15:16:10Z
+
+**Expected failure mode:** PASS/exit 0, RECORD.md structurally valid and append-only-clean, unaffected by CLAUDE.md's presence since check_record.py never reads CLAUDE.md
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 5
+    unterminated intent entries (reported, not a failure): 2026-08-13-05
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 4 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_still_passes
+
+**Timestamp:** 2026-08-13T15:16:17Z
+
+**Expected failure mode:** PASS/exit 0, PHILOSOPHY.md/ENFORCEMENT.md/GLOSSARY.md bidirectional contract intact, unaffected by CLAUDE.md's presence since check_glossary.py never reads CLAUDE.md
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 43
+    enforcement entries:  42
+    glossary rows:        43
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff_sabotage
+
+**Timestamp:** 2026-08-13T15:16:41Z
+
+**Expected failure mode:** FAIL, naming README.md as an unexpected out-of-scope change against baseline 9a8e552, after an extra blank line is appended to README.md
+
+**Command:** python3 /tmp/check4.py 9a8e552
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    FAIL: files outside ['CLAUDE.md', 'RECORD.md', 'REGISTER.md'] changed since 9a8e552: ['README.md', '__pycache__/']
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff
+
+**Timestamp:** 2026-08-13T15:17:38Z
+
+**Expected failure mode:** PASS, only CLAUDE.md, RECORD.md, and REGISTER.md changed since baseline 9a8e552, after README.md's sabotage is reverted
+
+**Command:** python3 /tmp/check4.py 9a8e552
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    FAIL: files outside ['CLAUDE.md', 'RECORD.md', 'REGISTER.md'] changed since 9a8e552: ['__pycache__/']
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff
+
+**Timestamp:** 2026-08-13T15:19:02Z
+
+**Expected failure mode:** PASS, only CLAUDE.md, RECORD.md, and REGISTER.md changed since baseline 9a8e552 (with __pycache__ noise from check_register.py's own import ignored by name, not silently)
+
+**Command:** python3 /tmp/check4.py 9a8e552
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: only ['CLAUDE.md', 'RECORD.md', 'REGISTER.md'] changed since 9a8e552, nothing else
+      (ignored as known tooling noise, not part of this check's scope: ['__pycache__/'])
+
+**Stderr:**
+
+    (nothing captured)
+
