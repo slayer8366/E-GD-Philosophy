@@ -140,3 +140,27 @@ A second collision risk, distinct from the heading-search hazard named in the in
 REGISTER.md already carries genuine observations from this task's own verification (named `dummy_*` where constructed, plain check names where wrapping this task's own real checks) rather than being seeded empty or with placeholders. Left in place.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-08-13-05
+
+**Timestamp:** 2026-08-13T15:11:14Z
+
+**Title:** Create CLAUDE.md at the repo root
+
+**Change:** Create `CLAUDE.md` at the root of E-GD-Philosophy, from the text dictated in this task's governing prompt verbatim. BOOTSTRAP.md says it is loaded every session at session start; nothing loads it, so every convention it carries has instead been repeated in each task prompt, which is why a fresh session starts with none of them. A `CLAUDE.md` at the repo root is read automatically. This points it at the documents that already exist rather than duplicating them.
+
+**Scope boundary:** `CLAUDE.md`, created once, from the dictated text, plus this entry pair. Nothing else. Out of scope, explicitly: `~/imx` and its own CLAUDE.md, BOOTSTRAP.md, PROTOCOL.md, any philosophy document, and anything in OSCam. The dictated text is not to be edited to imply PROTOCOL.md or OPERATOR_PROFILE.template.md exist when they do not.
+
+**Baseline:** `CLAUDE.md` confirmed absent from the working tree (no abort condition triggered). Confirmed present: BOOTSTRAP.md, ENFORCEMENT.md, GLOSSARY.md, PHILOSOPHY.md, RECORD.md, REGISTER.md, DURABILITY.md, check_record.py, check_register.py, check_glossary.py. Confirmed absent, matching what the dictated text itself accounts for: PROTOCOL.md, OPERATOR_PROFILE.template.md. `/home/bwann83/imx/CLAUDE.md` confirmed present and confirmed to contain a "Write permissions" section (`grep -c "Write permissions"` returned 1), matching the dictated text's reference to it. Repo clean at commit 9a8e552 on branch Test-1; local Test-1 HEAD confirmed equal to `origin/Test-1` HEAD (both 9a8e552) via `git ls-remote` and `git rev-parse origin/Test-1` -- nothing unpushed going in.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** `CLAUDE.md` will be written as a single `Write` call reproducing the dictated block-2 text exactly, not templated or regenerated from the other documents -- the closed decision is "point, do not duplicate," so the file's own content stays static regardless of what BOOTSTRAP.md/ENFORCEMENT.md/GLOSSARY.md/PHILOSOPHY.md say. Checks 1 and 2 (every dictated section present; every named file exists or is marked not-yet-rebuilt) will be written as structural checks against the actual file text -- grepping section headers and the named filenames -- rather than trusting the copy-paste, since RECORD.md's own header collision showed that raw substring search over prose is fragile and the check_glossary.py precedent in this repo already favors structural inspection over text scanning. Check 3 (check_record.py and check_glossary.py still pass) is expected to be unaffected by CLAUDE.md's existence, since neither script reads or references CLAUDE.md anywhere in its logic -- confirmed by grep before this entry was written, not assumed. Check 4 (only CLAUDE.md, RECORD.md, and REGISTER.md changed) will be a `git diff --stat` / `git status` comparison against 9a8e552, the commit confirmed above as this task's own pre-task HEAD; REGISTER.md is the only file check_register.py's wrapper ever appends to, so no other file should appear in that diff. The one real risk going in: the dictated text's OSCam/`~/imx` cross-reference is a claim about a second repository, and confirming it means reading that repository's actual CLAUDE.md rather than trusting the prompt's description of it -- already done in the baseline above, not deferred to the checks.
+
+**Finish line:** `CLAUDE.md` created, four checks verified and registered, intent and terminal entries in RECORD.md, committed and pushed, confirmed with `git ls-remote`.
+
+**Abort conditions:** If a file the dictated text names as existing does not exist, stop and report rather than adjusting the text. If `CLAUDE.md` already exists in this repository, stop and report rather than overwriting.
+
+---
