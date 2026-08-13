@@ -192,3 +192,27 @@ Four required checks, all run through `check_register.py` and landing in REGISTE
 The scratch check scripts (`/tmp/check1.py`, `/tmp/check2.py`, `/tmp/check4.py`) live outside the repo tree, per this task's own scope boundary ("Nothing else" besides `CLAUDE.md` and this entry pair) and per the general convention that scratch tooling does not ride into the working directory the changelog/record does not account for. They are not committed and are not part of this repository's history.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-08-13-07
+
+**Timestamp:** 2026-08-13T15:32:33Z
+
+**Title:** Add .gitignore to suppress the __pycache__ noise discovered in the prior task
+
+**Change:** Create a `.gitignore` at the repo root listing `__pycache__/`, so that `check_register.py`'s own `import check_record as cr` -- which regenerates `__pycache__/` as an untracked side effect of every wrapped run -- stops appearing in `git status`. The prior task (2026-08-13-05/06) discovered this and flagged it under "noticed but not acted on"; this closes that gap on the operator's direct instruction.
+
+**Scope boundary:** `.gitignore` only, plus this entry pair. Deleting the repo's own already-untracked `__pycache__/` directory, if present, is in scope as verification cleanup, not as a tracked change -- it was never tracked and this task does not change that. No other file touched.
+
+**Baseline:** `.gitignore` confirmed absent from repo root. Repo clean at commit fa542d3 on Test-1, matching origin/Test-1 (confirmed via `git ls-remote`). No `__pycache__/` present on disk (removed at the end of the prior task).
+
+**Prediction (outcome — planner):** A single untracked directory (`__pycache__/`) stops appearing in `git status --porcelain` after any script in this repo triggers the `check_record` import, without needing the per-check exclusion logic the prior task added ad hoc to a scratch script outside the repo. Closes a real, if minor, rough edge the prior task's terminal entry flagged and left open.
+
+**Prediction (mechanism — coder):** A `.gitignore` containing `__pycache__/` is sufficient -- git's own ignore matching suppresses the directory from `git status` regardless of which script triggers its creation, with no change needed to `check_record.py`, `check_register.py`, or the scratch check scripts. Verification: trigger the import for real (running `check_glossary.py` wrapped through `check_register.py`, as the prior task did) and confirm `git status --porcelain` reports nothing for `__pycache__/` afterward; sabotage by temporarily renaming `.gitignore` aside and confirming `__pycache__/` reappears in status, then restore.
+
+**Finish line:** `.gitignore` created, its suppression of `__pycache__/` confirmed against a real triggering run (not assumed), `check_record.py` and `check_glossary.py` still pass, intent and terminal entries in RECORD.md, committed and pushed, confirmed with `git ls-remote`.
+
+**Abort conditions:** If `.gitignore` would need to suppress anything beyond `__pycache__/` to solve this, stop and report rather than broadening scope unasked.
+
+---
