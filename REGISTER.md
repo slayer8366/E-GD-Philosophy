@@ -481,3 +481,135 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** gitignore_suppresses_pycache_sabotage
+
+**Timestamp:** 2026-08-13T15:34:40Z
+
+**Expected failure mode:** FAIL, __pycache__/ visible in git status --porcelain after triggering the check_record import, with .gitignore temporarily moved aside
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 43
+    enforcement entries:  42
+    glossary rows:        43
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** gitignore_suppresses_pycache_sabotage
+
+**Timestamp:** 2026-08-13T15:59:49Z
+
+**Expected failure mode:** FAIL, __pycache__/ visible in git status --porcelain, with .gitignore temporarily moved aside
+
+**Command:** python3 /tmp/check_gitignore.py
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    FAIL: __pycache__/ is visible in git status --porcelain:
+     M REGISTER.md
+    ?? __pycache__/
+    
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** gitignore_suppresses_pycache
+
+**Timestamp:** 2026-08-13T15:59:57Z
+
+**Expected failure mode:** PASS, __pycache__/ does not appear in git status --porcelain even though check_register.py's own import regenerates the directory, with .gitignore restored
+
+**Command:** python3 /tmp/check_gitignore.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: __pycache__/ does not appear in git status --porcelain
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_still_passes_gitignore
+
+**Timestamp:** 2026-08-13T16:00:02Z
+
+**Expected failure mode:** PASS/exit 0, unaffected by .gitignore's presence
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 7
+    unterminated intent entries (reported, not a failure): 2026-08-13-07
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 6 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_still_passes_gitignore
+
+**Timestamp:** 2026-08-13T16:00:02Z
+
+**Expected failure mode:** PASS/exit 0, unaffected by .gitignore's presence
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 43
+    enforcement entries:  42
+    glossary rows:        43
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+

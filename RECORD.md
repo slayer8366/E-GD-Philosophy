@@ -216,3 +216,27 @@ The scratch check scripts (`/tmp/check1.py`, `/tmp/check2.py`, `/tmp/check4.py`)
 **Abort conditions:** If `.gitignore` would need to suppress anything beyond `__pycache__/` to solve this, stop and report rather than broadening scope unasked.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-08-13-08
+
+**Timestamp:** 2026-08-13T16:00:07Z
+
+**Closes:** 2026-08-13-07
+
+**Outcome:** completed
+
+**Observed:** `.gitignore` created at the repo root containing exactly one line, `__pycache__/`. No broader suppression was needed; the abort condition did not trigger.
+
+Sabotage-and-revert, real trigger both times (not assumed): with `.gitignore` moved aside to `/tmp/gitignore.aside` and `__pycache__/` deleted first, wrapping `check_glossary.py` through `check_register.py` (which itself does `import check_record as cr`) regenerated `__pycache__/`, and a small assertion script (`/tmp/check_gitignore.py`, checking `git status --porcelain` for any line containing `__pycache__`) reported the predicted FAIL, `__pycache__/` visible as `??`. `.gitignore` restored; `__pycache__/` deleted again and the same trigger re-run; the assertion script reported the predicted PASS -- confirmed non-vacuous by `ls -d __pycache__` immediately after, showing the directory genuinely exists on disk at that moment and git simply no longer reports it.
+
+`check_record.py` and `check_glossary.py` both still pass, run for real through `check_register.py` (5 RECORD.md entries valid at the time, 43/42/43 glossary contract unchanged) -- unaffected by `.gitignore`'s presence, as expected since neither script reads it.
+
+Diffed against this task's own pre-task commit (fa542d3): only `RECORD.md` and `REGISTER.md` changed, plus `.gitignore` newly present -- exactly this task's scope, nothing else.
+
+**Deviations:** None. The mechanism prediction held without correction this time: a bare `__pycache__/` line was sufficient, no script changes were needed, and the ad hoc per-check exclusion added to the prior task's scratch `check4.py` (never part of this repository's tracked history) is now genuinely unnecessary for any future check run in this repo, though it was not itself touched since it lives outside the repo tree and this task's scope was `.gitignore` only.
+
+`__pycache__/` deleted from the working tree after the final observation; confirmed absent before this entry's commit.
+
+---
