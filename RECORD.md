@@ -272,3 +272,37 @@ This task's own prompt is preserved at `prompts/preserved/2026-08-13-09.md`, ref
 **Abort conditions:** If `check_record.py` or `check_glossary.py` had failed before anything was touched, stop and report (checked above; did not trigger). If the naming scheme adopted here required renaming or editing any existing `RECORD.md` entry, stop and ask (it does not -- the scheme is purely additive, a new optional field on new entries only).
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-08-13-10
+
+**Timestamp:** 2026-08-13T16:25:28Z
+
+**Closes:** 2026-08-13-09
+
+**Outcome:** completed
+
+**Dispatch-file:** preserved/2026-08-13-09.md
+
+**Observed:** `prompts/preserved/2026-08-13-09.md` exists and holds this task's own governing prompt, preserved verbatim, including its instruction to report CLAUDE.md's "write-permissions table" even though this repository's CLAUDE.md has no such table -- not corrected while storing, per the prompt's own instruction not to. `check_prompts.py` exists at the repo root, reuses `check_record.split_entries`/`parse_fields` unmodified (known heading-search defect inherited knowingly, not fixed here, matching the same logic's out-of-scope status in OSCam's `ledger_validator_core.py`), and answers existence-and-binding questions only -- its own header states plainly that it cannot and does not verify stored text against what was actually dispatched.
+
+A real defect was caught by running `check_prompts.py` against the actual store, not assumed: the intent entry (2026-08-13-09) described the `Dispatch-file` binding in prose but never wrote it as an actual `**Dispatch-file:**` field line -- it was embedded mid-paragraph inside two prose sentences, not at line-start, so `parse_fields` (which matches only `^\*\*Label:\*\*`) never recognized it. The first real run of `check_prompts.py` reported `dispatch-recording entries found: 0` and correctly flagged `prompts/preserved/2026-08-13-09.md` as an orphaned file. Since 2026-08-13-09 is already committed and this store is append-only, that entry cannot be edited to add the missing field; the real `**Dispatch-file:**` field is declared here instead, in the terminal entry that records what this task actually produced. This is not treated as a correction requiring `Outcome: superseded` -- the intent entry's plan, scope, and reasoning are all still accurate and stand unedited; only the mechanical field declaration it described was never actually written, and it is supplied here for the first time, not fixed retroactively.
+
+Sabotage-and-revert, four real runs against the real files, each in the working tree before this entry pair was committed:
+
+(1) *Missing file*: `prompts/preserved/2026-08-13-09.md` moved aside; `check_prompts.py` reported the predicted FAIL, naming the entry and the missing path exactly. Restored; rerun confirmed PASS.
+
+(2) *Wrong path in the field*: this entry's own `Dispatch-file` value temporarily changed (in the uncommitted working tree only) to a nonexistent filename; `check_prompts.py` reported two violations, correctly, not one -- the wrong value named as missing, and the real file now also named as orphaned since nothing claimed it anymore with the value changed. Reverted to `preserved/2026-08-13-09.md`; rerun confirmed PASS.
+
+(3) *Orphan file*: an extra, unclaimed file temporarily added under `prompts/preserved/`; `check_prompts.py` reported the predicted, distinct FAIL shape ("exists but no RECORD.md entry's 'Dispatch-file' field names it"), confirming the two orphan directions are not conflated. Removed; rerun confirmed PASS.
+
+(4) *Duplicate claim*: a second, temporary `**Dispatch-file:** preserved/2026-08-13-09.md` field added elsewhere in the working tree; `check_prompts.py` reported the predicted FAIL, naming both claiming entries. Removed; rerun confirmed PASS.
+
+Final real run: `dispatch-recording entries found: 1`; `files under prompts/: preserved=1, recovered=0`; PASS. `check_record.py` and `check_glossary.py` both re-run after this entry pair was appended: `check_record.py` reports 10 entries structurally valid, working-tree and history-walk append-only both clean; `check_glossary.py` reports 43/42/43 unchanged.
+
+**Deviations:** Checks were run directly (`python3 check_prompts.py`, `python3 check_record.py`, `python3 check_glossary.py`), not wrapped through `check_register.py`, despite CLAUDE.md's Verification section recommending that wrapping so observations survive the session. This task's own WRITE PERMISSIONS section lists exactly `prompts/`, `check_prompts.py`, and `RECORD.md` (append only), followed by "Nothing else" -- `REGISTER.md` is not in that list. Flagged as a real conflict between the governing document and this task's explicit scope rather than silently resolved either way: the narrower, explicitly-enumerated task scope was followed, on the reasoning that a specific, itemized permission list ending in "Nothing else" is a deliberate restriction and should not be read as silently permitting an unlisted file via a general standing recommendation.
+
+The em dash used in this repository's existing `Prediction (outcome — planner)` / `Prediction (mechanism — coder)` field labels was checked as a possible confound for the missing-field defect above and ruled out -- `Dispatch-file` uses no such character; the actual cause was purely the field being mid-paragraph rather than at line-start, confirmed by grep before writing this explanation, not assumed.
+
+---
