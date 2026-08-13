@@ -330,3 +330,85 @@ The em dash used in this repository's existing `Prediction (outcome — planner)
 **Abort conditions:** None anticipated; this is a recording task over already-known facts, not new construction.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-08-13-12
+
+**Timestamp:** 2026-08-13T18:38:26Z
+
+**Closes:** 2026-08-13-11
+
+**Outcome:** completed
+
+**Observed:** The operator's outcome prediction, quoted in full:
+
+    OUTCOME PREDICTION -- prompts/ store and check_prompts.py
+    Authored by: operator
+    Authored: before dispatch. Withheld until the coder's mechanism
+    prediction is committed.
+
+    WILL BE TRUE AT CLOSE
+    prompts/ exists on Test-1 and contains one file, this task's own
+    prompt, stored verbatim including its errors, and marked as preserved at
+    dispatch rather than recovered.
+
+    check_prompts.py exists, runs to completion, and passes. It reports
+    preserved and recovered counts separately, as 1 and 0.
+
+    Its header states that it does not verify a stored prompt matches what was
+    dispatched.
+
+    RECORD.md carries one new entry, opened and terminated, recording the
+    naming scheme and the preserved/recovered decision with reasoning.
+
+    check_record.py and check_glossary.py still pass after the append.
+
+    README.md, PHILOSOPHY.md, ENFORCEMENT.md, BOOTSTRAP.md, GLOSSARY.md,
+    check_record.py, check_register.py are unchanged. Nothing under ~/imx is
+    touched.
+
+    The push is confirmed by an observed remote ref, not by a report that the
+    command ran.
+
+    THE ACTUAL BETS
+    1. The naming scheme will embed the RECORD.md entry ID in the filename
+       rather than using a date, a sequence number, or a hash.
+    2. check_prompts.py will reuse or adapt split_entries() from
+       check_record.py, and the report will disclose it rather than carry it
+       silently.
+    3. No abort. CLAUDE.md in this repository will not forbid anything the
+       prompt instructs, and the coder will not need to stop and ask on the
+       naming decision.
+    4. check_prompts.py will pass on its first run, without a defect requiring
+       a second pass.
+
+    WHERE I EXPECT TO BE WRONG
+    Bet 4. Six consecutive tasks have shipped a bug in a verification script,
+    and this one is written last, as they all were. If it passes clean on the
+    first run I will treat that as the surprising result, not the expected
+    one.
+
+    NOT PREDICTED
+    How the work goes, which step is hard, what the coder reasons through.
+    That is the mechanism prediction and belongs to the coder.
+
+Grading, against the real, already-committed state of 2026-08-13-09/-10 and the current working tree, not from memory:
+
+WILL BE TRUE AT CLOSE -- all seven items TRUE, one with a nuance worth naming. `prompts/preserved/2026-08-13-09.md` is the only file under `prompts/`, verbatim including the CLAUDE.md-write-permissions-table error, marked preserved. `check_prompts.py` exists, passes, and its final real run reported `files under prompts/: preserved=1, recovered=0` exactly. Its header states plainly it does not verify stored text against what was dispatched. `check_record.py` and `check_glossary.py` both pass at the current commit. `README.md`, `PHILOSOPHY.md`, `ENFORCEMENT.md`, `BOOTSTRAP.md`, `GLOSSARY.md`, `check_record.py`, `check_register.py` are all untouched by 2026-08-13-09/-10's commits, and nothing under `~/imx` was touched. The push was confirmed by `git ls-remote` returning `f1be0be036fc8f29d9d9ff6aca815f49ae89463b`, not by reporting that `git push` was run. The nuance: "RECORD.md carries one new entry, opened and terminated, recording the naming scheme and the preserved/recovered decision with reasoning" is true as one governed unit of work (2026-08-13-09 intent, 2026-08-13-10 terminal), and the naming scheme and preserved/recovered reasoning are indeed both in the intent entry as predicted -- but the actual `**Dispatch-file:**` field that makes the binding real ended up living in the terminal entry instead, because the intent entry's own version of it was written as prose, not as parseable field syntax, and `check_prompts.py`'s first real run caught that. The prediction did not anticipate this, and could not have -- it is a fact about how the entry was drafted, not about the store's design.
+
+THE ACTUAL BETS -- three of four correct, one wrong as the operator anticipated.
+
+Bet 1 (entry ID embedded in the filename, not a hash/sequence/plain date): correct. The file is `prompts/preserved/2026-08-13-09.md`, named after the RECORD.md entry ID.
+
+Bet 2 (check_prompts.py reuses/adapts split_entries() and discloses it): correct. `check_prompts.py` imports `check_record` and calls `split_entries`/`parse_fields` directly, unmodified; its own header states this and names the inherited heading-search defect explicitly, and so did this task's own chat report.
+
+Bet 3 (no abort; CLAUDE.md forbids nothing; no stop-and-ask on the naming decision): correct on its own terms -- there was no abort and no stop-and-ask blocking the naming decision. Adjacent but distinct, not a failure of this bet: a real conflict was found and flagged (not blocked on) between CLAUDE.md's `check_register.py` recommendation and 2026-08-13-09's own explicit WRITE PERMISSIONS list, which excluded `REGISTER.md`. That conflict was about check tooling, not the naming decision the bet names, and was resolved and disclosed rather than asked about, consistent with that task's "send now, single block, nothing held" disposition.
+
+Bet 4 (check_prompts.py passes on its first run, no defect requiring a second pass): wrong, as the operator predicted they might be. The first real run of `check_prompts.py` returned `FAIL` (exit 1), reporting `dispatch-recording entries found: 0` and naming `prompts/preserved/2026-08-13-09.md` as orphaned. Multiple runs followed before a clean PASS. The literal claim is false. What should not be conflated with it, because the operator's own stated reasoning was specifically about *verification-script* bugs ("six consecutive tasks have shipped a bug in a verification script"): `check_prompts.py`'s code was never modified after being written -- zero lines changed between its first run and its last. The FAIL was a correct, accurate detection of a real defect in how 2026-08-13-09 was drafted (the `Dispatch-file` field written as prose, not as a `**Label:**` line), not a bug in the check itself. The pattern the operator cited did not recur here; a different, narrower failure did, one the check was specifically built to catch and did catch, correctly, on its very first exposure to real data.
+
+**Deviations:** The `Prediction-outcome-supplied`/`Closes` sentinel-resolution mechanism `check_record.py` provides could not be used for 2026-08-13-09's `withheld` outcome prediction, because it arrived after 2026-08-13-10 (the terminal entry that closes 2026-08-13-09) was already committed and pushed. That mechanism requires the supplied value to live in *the* terminal entry that closes the relevant intent; editing an already-committed terminal entry violates append-only, and a second terminal entry with `Closes: 2026-08-13-09` would trigger `check_duplicate_terminals`'s "closed by more than one terminal entry" error. DISCOVERED: the store has no built-in path to resolve a `withheld` outcome-prediction sentinel that arrives after its intent's terminal entry has already landed -- a timing gap the sentinel vocabulary's own documentation does not anticipate. Not fixed here (would mean changing `check_record.py`'s validation rules, out of scope for a recording task); worked around by grading the prediction in a separate, self-contained entry pair instead, with 2026-08-13-09's own sentinel left genuinely `withheld` and unresolved in the store, permanently, rather than forcing a resolution the validator was not built to accept. `check_record.py` at the current commit still reports it as `pending`, correctly -- that report is accurate to the store's actual state, not a defect.
+
+The operator's prediction was quoted in full above rather than in `prompts/`, on the reasoning given in this entry's own Prediction (mechanism -- coder) field: it is not a work dispatch bound by `Dispatch-file`, and `check_prompts.py`'s binding logic was not extended to cover it.
+
+---
