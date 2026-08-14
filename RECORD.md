@@ -470,3 +470,57 @@ Five required checks, six real invocations through `check_register.py` (REGISTER
 **Deviations:** None from this entry's own intent. The `.claude/settings.local.json` file (the harness's own local session settings, covered by a global gitignore at `~/.config/git/ignore`, unrelated to this repository's tracked state) was observed as a transient untracked entry during the orientation phase, before it existed on disk, and was gone by the time any check ran; noticed, required no action, and is named here rather than silently passed over. All five required checks, and the pre-write stop condition on the "Role Partition" headword, resolved exactly as predicted in this entry's own mechanism prediction — no surprise requiring a second pass.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-08-14-01
+
+**Timestamp:** 2026-08-14T15:52:25Z
+
+**Title:** Legalize the intent/terminal Dispatch-file pair convention; close the check-ordering gap that let it go unnoticed
+
+**Change:** Amend `check_prompts.py` so that a `Dispatch-file` value claimed by exactly two entries is legal when one is an intent entry and the other is the terminal entry that closes it (`Closes` field naming the intent's own `ID`), determined from the entries' own `Kind`/`Closes` fields, never from ID adjacency. Any other duplicate claim, and both orphan directions (claimed-but-missing, on-disk-but-unclaimed), remain errors exactly as today. Update the script's module docstring to name the accepted convention and cite this entry as where it was decided. Amend `CLAUDE.md`'s Verification section to state that checks run after the terminal entry is written and before the final commit, so a task's actual final state is what gets checked — closing the gap that let 2026-08-13-13/-14 land in a state `check_prompts.py` does not pass. Preserve this task's own governing prompt verbatim under `prompts/preserved/`.
+
+**Scope boundary:** `check_prompts.py`, `CLAUDE.md` (Verification section only), `RECORD.md` (append only), `REGISTER.md`, `prompts/preserved/`. Nothing else. No changes to `PHILOSOPHY.md`, `PROTOCOL.md`, `ENFORCEMENT.md`, `BOOTSTRAP.md`, `GLOSSARY.md`, `OVERVIEW.md`, `README.md`, `DURABILITY.md`, `check_record.py`, `check_glossary.py`, `check_register.py`. Nothing under `~/imx`. Out of scope: rule 9; editing any existing `RECORD.md` entry; retrofitting the new check-ordering onto past tasks; any glossary row or headword.
+
+**Baseline:** Working tree confirmed on branch `Test-1` at commit `4f9184d1d0d801f16ebf01c8eb391a8973714c66`, confirmed equal to `origin/Test-1` via `git ls-remote --heads origin` and to `origin/claude/rule-9-protocol-amendment-gkjdji` (this session's harness-assigned branch, also at the same commit) before this task began. Tree clean at that commit.
+
+`check_glossary.py` confirmed PASS: 43 philosophy headwords, 42 enforcement entries, 43 glossary rows.
+
+`check_record.py` confirmed PASS: 14 entries structurally valid, working-tree check clean, 12-commit history walk clean (each a byte-prefix extension), Superseded-by cross-reference vacuously PASS, duplicate-terminal check PASS; four pending outcome-prediction sentinels reported as expected output, not failures (2026-08-13-01, -05, -13: `not authored`; 2026-08-13-09: `withheld`).
+
+`check_prompts.py` confirmed FAILING, verbatim:
+```
+dispatch-recording entries found: 3
+files under prompts/: preserved=2, recovered=0
+
+FAIL: 1 binding violation(s)
+ - 'preserved/2026-08-13-13.md' is claimed by more than one entry's 'Dispatch-file' field: 2026-08-13-13, 2026-08-13-14
+```
+Confirmed this is not caused by an edit to `check_prompts.py` itself: `git log --oneline -- check_prompts.py` shows exactly one commit (`f1be0be`, closing 2026-08-13-09), untouched since.
+
+Real `Dispatch-file` claims present in `RECORD.md`, read via `check_prompts.dispatch_claims` (the line-anchored parser, not a substring search, so prose mentioning the field elsewhere — present in 2026-08-13-09's and -12's bodies — does not count): `2026-08-13-10` (terminal, Closes: 2026-08-13-09) -> `preserved/2026-08-13-09.md`; `2026-08-13-13` (intent) -> `preserved/2026-08-13-13.md`; `2026-08-13-14` (terminal, Closes: 2026-08-13-13) -> `preserved/2026-08-13-13.md`. Only the third pair is duplicated, and it is exactly an intent/its-own-closing-terminal pair.
+
+Highest `RECORD.md` entry ID in use before this entry: `2026-08-13-14`, all seven intent/terminal pairs (01/02, 03/04, 05/06, 07/08, 09/10, 11/12, 13/14) closed, no unterminated intent record found on scan.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** `check_prompts.py`: `dispatch_claims` is left unmodified. A new function `entry_kind_closes(text)` is added, built from the same `cr.split_entries`/`cr.parse_fields` primitives already reused in this file, returning a dict of every entry's `ID` -> `(Kind, Closes)`. In `check_binding`, a value claimed by more than one entry is flagged as a violation unless it matches exactly: two claimants, one with `Kind == "intent"` (its own `ID` called `X`), the other with `Kind == "terminal"` and `Closes == X` — read from the `Closes` field's literal text, never inferred from ID string adjacency. Orphan detection (claimed-but-missing, on-disk-but-unclaimed, stray files outside `preserved`/`recovered`) is untouched by this change. The module docstring gains a paragraph naming the accepted intent/terminal pair convention and citing this entry's ID as where it was decided.
+
+Check 1 (real repo, `-13`/`-14` pair) is expected to flip to `PASS`, reporting `dispatch-recording entries found: 3`, `preserved=2, recovered=0` — the same counts as today's `FAIL`, since no claim or file changes, only the legality judgment does.
+
+Check 2 (non-pair duplicate) and Check 3 (orphan, both directions) will be exercised against a synthetic temporary `RECORD.md` + `prompts/` tree built under the scratchpad directory, not the real repository files — this keeps `RECORD.md` untouched even transiently, honoring the closed decision that no existing entry is edited, and is a stricter test than editing the real store would have been. Check 2 expected: `FAIL`, `claimed by more than one entry's 'Dispatch-file' field`, for two synthetic entries claiming one file where neither is an intent/its-terminal pair. Check 3 expected: two separate `FAIL`s, one naming a claimed-but-absent file, one naming an on-disk file no entry names.
+
+Check 1's sabotage (new construction): stub the new pairing predicate to always return `False`, confirm the real repository regresses to exactly today's `FAIL` on `-13`/`-14`; revert the stub, confirm `PASS` returns.
+
+Check 4 (`check_glossary.py`) and Check 5 (`check_record.py`) are expected unaffected and unmodified in behavior — positive-case runs only, no sabotage, since this task does not touch either script or any file either reads; asserted against this entry's own Baseline counts, not against any number restated elsewhere.
+
+Check 6 (scope diff): `git diff --stat`/`git status --porcelain` against this entry's own baseline commit `4f9184d1d0d801f16ebf01c8eb391a8973714c66` is expected to show only `check_prompts.py` and `CLAUDE.md` modified, `RECORD.md` and `REGISTER.md` modified, and one new file under `prompts/preserved/` — sabotaged by touching `README.md` transiently, expected to be caught and named, then reverted.
+
+Main risk expected going in: mis-keying the `Kind`/`Closes` lookup so that ID adjacency does the work instead of the `Closes` field's actual text. Mitigated by Check 2/3's synthetic entries using deliberately non-adjacent IDs.
+
+**Finish line:** `check_prompts.py` passes against the repository as it now stands; a superseding entry (this pair) records the convention decision; `CLAUDE.md`'s Verification section records the check-ordering rule; this prompt is preserved under `prompts/preserved/` with its `Dispatch-file` field as real field syntax in this entry; the checks below verified and registered; committed in two commits (this intent entry, then the work plus terminal entry together) and pushed.
+
+**Abort conditions:** If `check_glossary.py` or `check_record.py` fails at orientation, stop (checked above; neither did). If making the pair convention legal requires loosening the orphan checks or the single-claim rule for entries that are not an intent/terminal pair, stop and report. If the intent/terminal relationship cannot be determined from the entries themselves, stop and report rather than inferring it from ID order.
+
+---
