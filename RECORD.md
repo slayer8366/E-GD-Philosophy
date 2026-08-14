@@ -610,3 +610,61 @@ Main risk expected going in: repeating the prior task's own defect by forgetting
 **Abort conditions:** If `check_glossary.py` or `check_record.py` fails at orientation, stop (checked above; neither did). If recording any finding would require editing an existing entry, stop. If the third finding's framing would resolve or appear to resolve `2026-08-14-01`'s `not authored` sentinel, stop rather than writing it.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-08-14-04
+
+**Timestamp:** 2026-08-14T18:56:13Z
+
+**Closes:** 2026-08-14-03
+
+**Outcome:** completed
+
+**Observed:** **Finding 1, absent versus invalid.** `check_prompts.py`'s `dispatch_claims()` only ever looks at entries that carry a `Dispatch-file` field -- it iterates `cr.split_entries(text)`, and for each block does `value = fields.get(DISPATCH_FIELD, "").strip(); if not value: continue`. An entry with no such field never enters `claims` at all, so it cannot be flagged missing, duplicate, or anything else -- it is simply absent from the check's universe of discourse. Entry `2026-08-14-01` was written without the field (confirmed by direct read, quoted in full in this task's own intent entry's Baseline and in the chat orientation report before this entry was opened), and `check_prompts.py` reported clean at every run across task `2026-08-14-01`/`-02`, including the post-terminal-entry run this task's own predecessor task's Finding 2 describes. The check did not catch a broken claim here; there was no claim to catch. This is a gap in `check_prompts.py`'s coverage, not a defect in the entry -- the entry's `Dispatch-file` omission was itself already disclosed as a deviation in `2026-08-14-02`. Not fixed here, per this task's own closed decision that no check is built or amended.
+
+The same absent-versus-invalid shape appears in `check_record.py`'s unterminated-intent handling: an intent entry with no closing terminal is reported (`unterminated intent entries`) but never treated as a failure -- absence is tracked and surfaced, never silently invisible, in that specific case. `check_prompts.py`'s `Dispatch-file` coverage has no equivalent -- absence there is not merely non-failing, it is unobserved. The states both checks are blindest to are the ones where a required-in-spirit field is missing rather than present-and-wrong.
+
+`2026-08-14-01` does carry a prediction slot field: `Prediction (outcome — planner): not authored`, plus a full `Prediction (mechanism — coder)` text (quoted in full in this task's own orientation report and in `2026-08-14-03`'s Baseline). It is not missing a prediction slot; only the `Dispatch-file` field is absent.
+
+**Finding 2, check ordering worked.** `2026-08-14-01`/`-02` was the first task in this repository's history to run its required checks after its terminal entry's real content was written into the working tree and before the final commit, rather than before the terminal entry existed (the sequencing gap `CLAUDE.md`'s Verification section, amended at that same task, now names explicitly, citing the `2026-08-13-13`/`-14` failure it was written to close). Its checks passed against that true final state, and that PASS held after the commit -- confirmed again by this task's own orientation `check_prompts.py`/`check_record.py` runs, which read the same committed state and still report PASS. This task itself continues the same ordering: all four checks below were run against this entry's real, non-placeholder content, before this commit.
+
+**Finding 3 (revised), an unverifiable prediction text, archived and not scored.** This task's own governing prompt, preserved verbatim at `prompts/preserved/2026-08-14-03.md`, originally asked for a fourth stranded-prediction entry following the `2026-08-13-11`/`-12` pattern, grading an operator prediction for `2026-08-14-01`/`-02` against what happened. That prompt's own abort condition -- "If the supplied prediction text or scoring is absent or ambiguous, stop and ask" -- triggered before any entry was opened: the prediction text arrived, in the same message, without scoring. Reported and asked, per that condition, before writing anything (see the chat transcript immediately preceding this entry pair's intent entry).
+
+A second, more structural problem was raised at the same time and is recorded here rather than resolved, since resolving it is not this task's to do: `2026-08-14-01`'s own `Prediction (outcome — planner)` field already reads `not authored`, written at that task's own dispatch because its governing prompt contained no operator outcome prediction -- the same convention used at `2026-08-13-01`, `-05`, and `-13`. `not authored` is `check_record.py`'s vocabulary for "no prediction exists, permanently" (`check_record.py:236-244`; SENTINELS/OUTCOME_FIELD handling), distinct from `withheld` ("a prediction exists and is being held back," used correctly at `2026-08-13-09`). `check_record.py` treats a terminal entry supplying a resolution value against a `not authored` intent as fabrication evidence by name: "a permanent sentinel is never resolved; that combination means the prediction was fabricated after the outcome." The text supplied with this task's prompt was received only after `2026-08-14-01`/`-02` was already reported complete, carries no commitment or digest filed before that task's dispatch, and is not authenticable as having existed before the outcome was known. Treating it as a legitimate stranded `withheld` prediction, as the original prompt's Finding 3 asked, would have meant writing exactly that contradiction into an append-only store.
+
+The operator, informed of both problems, revised the finish line: two findings required (Findings 1 and 2 above), with this third made optional and, if included, recorded as archived content only -- not a scored resolution, and not a claim that it predates or resolves `2026-08-14-01`'s sentinel. Included here at the coder's discretion, under that framing. The six lines are transcribed exactly as supplied, unedited:
+
+  Execution will ABORT at Step 1 or 4 without committing code changes.
+
+  Orphan testing will fail with a Python traceback on the first attempt.
+
+  check_prompts.py will FAIL on its initial run at Step 7.
+
+  Exactly 2 commits added to Test-1.
+
+  100% pass rate across check_prompts.py, check_glossary.py, and check_record.py logged in REGISTER.md.
+
+  Clean tree (git status clean) with HEAD matching origin/Test-1 post-push.
+
+This text is UNVERIFIABLE as a prediction of `2026-08-14-01`/`-02`'s outcome and is NOT SCORED against it. It does not resolve, and is not to be read as resolving, `2026-08-14-01`'s `Prediction (outcome — planner)` field, which remains `not authored` -- permanent and null, per this store's own vocabulary and per the retroactive reading described in the (still unadopted, as of this entry) draft ninth PROTOCOL.md rule discussed earlier in this task's own chat history. Recorded as text only, for whatever future value the record of its having been supplied may hold.
+
+Four required checks, wrapped through `check_register.py`, expected failure mode stated before each run, run after this entry's real content was written and before the commit, no sabotage (this task builds no new check logic):
+
+(1) *`check_record.py` passes, including its history walk*: expected PASS at 18 entries, 15-commit history walk clean, six pending sentinels. Observed exactly that.
+
+(2) *`check_prompts.py` passes, and this task's own intent entry carries a `Dispatch-file` field, verified by direct read*: expected PASS, `dispatch-recording entries found: 5`, `preserved=4`. Observed exactly that; separately confirmed by a direct regex read of the committed `2026-08-14-03` block, which found `**Dispatch-file:** preserved/2026-08-14-03.md` present -- not inferred from the check passing, per this task's own instruction that this is the gap Finding 1 records.
+
+(3) *`check_glossary.py` reports the same counts as orientation, PASS*: expected and observed 43/42/43, PASS, unchanged.
+
+(4) *No file other than `RECORD.md`, `REGISTER.md`, and `prompts/preserved/` modified, diffed against this task's pre-task commit `0f0c5785f118afe47e167bcf1bdefb83b06d538a`*: expected and observed PASS, `git status --porcelain` showing exactly `RECORD.md`, `REGISTER.md` modified and `prompts/preserved/2026-08-14-03.md` new -- nothing else.
+
+**Deviations:** One deviation from this entry pair's own intent, disclosed rather than worked around silently: the original governing prompt's Finding 3 asked for a scored, self-contained resolution entry; what was actually recorded is unscored archived content, per the operator's own revision after this task's stop-and-ask. That revision is itself the deviation's cause, not an unrequested departure -- recorded here because "report what happened" applies to task shape changes as much as to code.
+
+No entry was edited. `2026-08-14-01`'s `Dispatch-file` omission, discussed at length in Finding 1 and Finding 3 above, was not corrected -- correcting it would have meant editing an already-committed entry, forbidden by this task's own abort conditions and by RECORD.md's append-only rule.
+
+This entry pair's own intent entry (`2026-08-14-03`) carries its `Dispatch-file` field correctly, unlike `2026-08-14-01` -- confirmed by direct read in Check 2 above, not merely by the check passing.
+
+No other departure from this entry pair's own intent. All four required checks resolved exactly as predicted in this entry's own mechanism prediction -- no surprise requiring a second pass.
+
+---
