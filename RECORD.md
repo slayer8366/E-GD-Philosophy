@@ -524,3 +524,45 @@ Main risk expected going in: mis-keying the `Kind`/`Closes` lookup so that ID ad
 **Abort conditions:** If `check_glossary.py` or `check_record.py` fails at orientation, stop (checked above; neither did). If making the pair convention legal requires loosening the orphan checks or the single-claim rule for entries that are not an intent/terminal pair, stop and report. If the intent/terminal relationship cannot be determined from the entries themselves, stop and report rather than inferring it from ID order.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-08-14-02
+
+**Timestamp:** 2026-08-14T15:58:56Z
+
+**Closes:** 2026-08-14-01
+
+**Outcome:** completed
+
+**Dispatch-file:** preserved/2026-08-14-01.md
+
+**Observed:** `check_prompts.py` amended: `dispatch_claims` left unmodified. Added `entry_kind_closes(text)`, built from the same `cr.split_entries`/`cr.parse_fields` primitives, mapping every entry's `ID` -> `(Kind, Closes)`. Added `is_intent_terminal_pair(ids, kind_closes)`: for a value claimed by exactly two entries, returns True only if one has `Kind == "intent"` (call its own ID `X`) and the other has `Kind == "terminal"` with `Closes == X`, read from the literal field text. In `check_binding`, a duplicate-claim violation is now raised only when `len(ids) > 1 and not is_intent_terminal_pair(ids, kind_closes)`. Orphan detection (missing-on-disk, unclaimed-on-disk, stray files) is unchanged. The PASS message and module docstring were both updated to describe the accepted convention and cite this entry pair (2026-08-14-01/-02) as where it was decided.
+
+How the intent/terminal relationship was determined: from each entry's own `Kind` and `Closes` fields only, via `entry_kind_closes`, never from comparing ID strings. Demonstrated deliberately with non-adjacent synthetic IDs in Checks 2 and 3 below (`2000-01-01-01`/`-02`, `2000-01-01-03`, `2000-01-01-04`) so adjacency could not be doing the work even by coincidence.
+
+`CLAUDE.md`'s Verification section amended with one new paragraph: checks run after the terminal entry is written and before the final commit, not before it, with the reasoning (a terminal entry can still change fields a check depends on) and a citation to this entry and to what happened at 2026-08-13-13/-14.
+
+This task's own governing prompt (both the "Check out Test-1" preamble and the REQUIRED ENVIRONMENT prompt that followed it, exactly as received in one message) preserved verbatim at `prompts/preserved/2026-08-14-01.md`, uncorrected.
+
+Six required checks, wrapped through `check_register.py`, expected failure mode stated before each run, sabotage-and-revert performed over this task's own new construction (Check 1) and to confirm pre-existing detections were not loosened (Checks 2, 3, 6):
+
+(1) *`check_prompts.py` passes against the repository as it now stands, including the -13/-14 pair*, expected result stated before running: PASS, `dispatch-recording entries found: 4`, `preserved=3, recovered=0`. Real run matched exactly. Sabotage: stubbed `is_intent_terminal_pair` to unconditionally `return False`; the real repository regressed to precisely today's original orientation `FAIL` -- `'preserved/2026-08-13-13.md' is claimed by more than one entry's 'Dispatch-file' field: 2026-08-13-13, 2026-08-13-14` -- confirming the new predicate, not some other change, is what makes the real pair legal. Reverted; `diff` against the pre-sabotage copy confirmed byte-identical; real clean run re-registered as `PASS`.
+
+(2) *Still fails on a duplicate claim by two entries that are not an intent/terminal pair*, expected stated before running: against a synthetic sandbox (real `RECORD.md`/`prompts/` never touched, even transiently -- built and torn down entirely under the scratchpad) with two INTENT entries (`2000-01-01-01`, `2000-01-01-02`, neither a terminal) both claiming `preserved/foo.md`, `check_binding` should report exactly one violation. Observed exactly that: `FAIL: 1 binding violation(s) - 'preserved/foo.md' is claimed by more than one entry's 'Dispatch-file' field: 2000-01-01-01, 2000-01-01-02`. Sandbox deleted by the script itself before exit -- the "revert" here is that nothing outside the scratchpad was ever created.
+
+(3) *Still fails on an orphan in either direction*, expected stated before running, both directions in separate synthetic sandboxes: (a) entry `2000-01-01-03`'s `Dispatch-file` names `preserved/ghost.md`, never created on disk -> observed `FAIL: entry 2000-01-01-03: 'Dispatch-file' names 'preserved/ghost.md', which does not exist under prompts/`, exact match. (b) `preserved/nobody-claims-me.md` exists on disk, no entry names it -> observed `FAIL: prompts/preserved/nobody-claims-me.md exists but no RECORD.md entry's 'Dispatch-file' field names it`, exact match. Both sandboxes self-deleted before exit.
+
+(4) *`check_glossary.py` unchanged*, positive case, no sabotage (pre-existing tooling this task does not touch, and touches no file it reads): registered PASS, 43 philosophy headwords / 42 enforcement entries / 43 glossary rows -- identical to this entry's own intent's Baseline field.
+
+(5) *`check_record.py` passes, including its history walk*, positive case, no sabotage: registered PASS at 16 entries (up from 14; this entry pair included), working-tree check clean, 13-commit history walk clean (12 prior plus this task's own intent-entry commit), Superseded-by cross-reference vacuously PASS, duplicate-terminal check PASS, five pending outcome-prediction sentinels reported (the same four from orientation plus `2026-08-14-01: not authored`) -- expected output, not a failure.
+
+(6) *Only `check_prompts.py`, `CLAUDE.md`, `RECORD.md`, `REGISTER.md`, and `prompts/preserved/` changed, diffed against this task's own pre-task commit* (`4f9184d1d0d801f16ebf01c8eb391a8973714c66`, confirmed in this entry's intent's own Baseline as equal to `origin/Test-1` and to `origin/claude/rule-9-protocol-amendment-gkjdji` before this task began): sabotaged by appending a blank line to `README.md`, produced the predicted `FAIL: unexpected path(s) changed: ['README.md']`; `git checkout -- README.md` reverted it, `diff` against the pre-sabotage copy confirmed byte-identical; the real clean run registered `PASS`, `git status --porcelain` showing exactly `CLAUDE.md`, `RECORD.md`, `REGISTER.md`, `check_prompts.py` modified and `prompts/preserved/2026-08-14-01.md` new -- nothing else.
+
+**Deviations:** One deviation from this entry pair's own intent, disclosed rather than corrected in place: the intent entry (2026-08-14-01) does not carry a `Dispatch-file` field, contrary to this task's STEPS item 2 ("Open the intent entry, Dispatch-file as real field syntax"). This was an oversight in drafting, caught only after that entry was already committed (`49a2b939a7e6ccc7978c884ecb7b6971eb640f84`). RECORD.md's append-only rule and this task's own closed decision ("NO ENTRY IS EDITED") forbid correcting it in place. The `Dispatch-file` field for this task's own preserved prompt was placed on the terminal entry (2026-08-14-02) alone instead. That is a single, non-duplicate claim -- it does not exercise the new intent/terminal pair predicate at all, since only one entry claims `preserved/2026-08-14-01.md`. The pair predicate itself is exercised by two things: the pre-existing `2026-08-13-13`/`-14` pair now passing for real, and the two synthetic sandbox cases in Checks 2 and 3. Consequence: this task did not produce a second real-repository example of the pair convention alongside `-13`/`-14`; only one exists in `RECORD.md`.
+
+Second, smaller departure, recorded per this repository's own convention of disclosing rather than silently deciding: this entry pair's IDs use today's actual date, `2026-08-14`, rather than continuing the `2026-08-13` prefix every prior entry in the store uses. `check_record.py`'s `ID_RE` accepts any `YYYY-MM-DD-NN` shape and does not require date continuity; no closed decision in this task's prompt specified which to use, so the dispatch date was taken as the more literal reading of "a task-record store" over continuing a stale date.
+
+No other departure from this entry pair's own intent. All six required checks, and the pre-write structural checks (`check_glossary.py`, `check_record.py` clean before this task began), resolved exactly as predicted in this entry's own mechanism prediction -- no surprise requiring a second pass, and no check failed unexpectedly at the post-terminal-entry check run that this task's ordering fix was built to make possible.
+
+---

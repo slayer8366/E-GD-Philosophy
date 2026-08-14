@@ -24,6 +24,20 @@ dispatch time; recovered/ holds one reconstructed afterward from a
 transcript. The directory is the single source of truth for that
 distinction, not a second field that could drift out of sync with it.
 
+One convention is accepted for a file claimed by more than one entry:
+an intent entry and the terminal entry that closes it (its own
+**Closes:** field naming the intent's **ID**) may both carry a
+**Dispatch-file:** field pointing at the same file -- that is one
+dispatch referenced twice, not two claims on one prompt. The pairing
+is read from each entry's own Kind and Closes fields, never inferred
+from ID adjacency. Any other file claimed by more than one entry,
+including two entries that are both intents, both terminals, or a
+terminal whose Closes does not name the other claimant, is still
+reported as a violation. Decided at RECORD.md entry 2026-08-14-01,
+which found 2026-08-13-13 (intent) and 2026-08-13-14 (its terminal)
+both legitimately claiming prompts/preserved/2026-08-13-13.md and
+this script, unaware of the convention, reporting it as a defect.
+
 Reuses check_record.split_entries and check_record.parse_fields
 unmodified, via `import check_record as cr`. This carries forward,
 knowingly and not fixed here, the defect documented in check_record.py's
@@ -65,6 +79,47 @@ def dispatch_claims(text):
     return claims
 
 
+def entry_kind_closes(text):
+    """Map entry_id -> (kind, closes) for every RECORD.md entry that
+    carries an ID field. kind and closes are taken directly from that
+    entry's own fields -- closes is '' for intent entries and for any
+    terminal with no Closes field. This is the only place ID adjacency
+    could have been used to guess a pairing and deliberately is not:
+    the mapping is looked up by the literal Closes text, never by
+    comparing ID strings to each other."""
+    mapping = {}
+    for block in cr.split_entries(text):
+        fields = cr.parse_fields(block)
+        entry_id = fields.get("ID", "").strip()
+        if not entry_id:
+            continue
+        mapping[entry_id] = (
+            fields.get("Kind", "").strip(),
+            fields.get("Closes", "").strip(),
+        )
+    return mapping
+
+
+def is_intent_terminal_pair(ids, kind_closes):
+    """True if ids (the claimants of one Dispatch-file value) is
+    exactly one intent entry and the terminal entry that closes it.
+    ids containing a "(no ID)" placeholder, or any entry_id absent
+    from kind_closes, can never match -- both fall through to False,
+    so this only ever legalizes a claim between two well-formed,
+    genuinely paired entries, not a loosening of the general rule."""
+    if len(ids) != 2:
+        return False
+    a, b = ids
+    ka, kb = kind_closes.get(a), kind_closes.get(b)
+    if ka is None or kb is None:
+        return False
+    if ka[0] == "intent" and kb[0] == "terminal" and kb[1] == a:
+        return True
+    if kb[0] == "intent" and ka[0] == "terminal" and ka[1] == b:
+        return True
+    return False
+
+
 def files_on_disk(repo_dir):
     """Set of paths relative to prompts/, for every regular file found
     under prompts/preserved/ and prompts/recovered/. A file placed
@@ -100,6 +155,7 @@ def check_binding(repo_dir=None):
 
     text = record_path.read_text()
     claims = dispatch_claims(text)
+    kind_closes = entry_kind_closes(text)
     on_disk, stray = files_on_disk(repo_dir)
 
     claimed_paths = {}
@@ -107,7 +163,7 @@ def check_binding(repo_dir=None):
     for entry_id, value in claims:
         claimed_paths.setdefault(value, []).append(entry_id or "(no ID)")
     for value, ids in claimed_paths.items():
-        if len(ids) > 1:
+        if len(ids) > 1 and not is_intent_terminal_pair(ids, kind_closes):
             duplicate_errors.append(
                 f"{value!r} is claimed by more than one entry's "
                 f"{DISPATCH_FIELD!r} field: {', '.join(ids)}")
@@ -160,7 +216,8 @@ def main():
     if ok:
         print(f"PASS: every dispatch-recording entry's {DISPATCH_FIELD!r} "
               f"resolves to a real file, every file under {PROMPTS_DIR}/ "
-              f"is claimed by exactly one entry, no orphans in either "
+              f"is claimed by exactly one entry (or by an intent/terminal "
+              f"pair closing it), no orphans in either "
               f"direction. This checks existence and binding only -- it "
               f"does not and cannot verify stored text matches what was "
               f"actually dispatched.")

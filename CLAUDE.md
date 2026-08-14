@@ -44,6 +44,8 @@ Every task pushes. An unpushed commit is one disk deep and counts as unsaved. Th
 
 Wrap your checks with `check_register.py` so observations survive the session.
 
+Checks run after the terminal entry is written and before the final commit, not before it. A terminal entry can still add or change fields that bear on what a check verifies; checking the state before that entry exists validates a state the task is about to leave. Write the terminal entry, then run the checks against the working tree as it will actually be committed, then commit. Decided at RECORD.md entry 2026-08-14-01, after 2026-08-13-13/-14 passed its checks before its terminal entry existed and landed in a state `check_prompts.py` did not pass, unnoticed until the next task's orientation.
+
 Known limits, both in unmodified vendored logic: `split_entries()` finds its section heading by raw substring search, so prose naming that heading before the real one produces a phantom entry. And `git log -- <path>` prunes merges that do not touch the path, so the merge-commit guard cannot see them.
 
 ## Stop conditions

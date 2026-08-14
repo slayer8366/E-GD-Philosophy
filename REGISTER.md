@@ -765,3 +765,220 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** check_prompts_real_repo_pair_legal
+
+**Timestamp:** 2026-08-14T15:56:56Z
+
+**Expected failure mode:** PASS with dispatch-recording entries found: 4, files under prompts/: preserved=3, recovered=0 -- the 2026-08-13-13/-14 pair now legal, plus the new 2026-08-14-01/-02 pair's single Dispatch-file claim on -02
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 4
+    files under prompts/: preserved=3, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_pairing_predicate_sabotage
+
+**Timestamp:** 2026-08-14T15:57:11Z
+
+**Expected failure mode:** Stubbing is_intent_terminal_pair to always return False should reproduce today's original defect exactly: FAIL naming 'preserved/2026-08-13-13.md' claimed by 2026-08-13-13 and 2026-08-13-14. This run captures the POST-REVERT clean state (PASS); the sabotaged FAIL was observed directly in-session beforehand, byte-identical revert confirmed by diff before this run.
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 4
+    files under prompts/: preserved=3, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_nonpair_duplicate_still_fails
+
+**Timestamp:** 2026-08-14T15:57:43Z
+
+**Expected failure mode:** Against a synthetic sandbox (real RECORD.md/prompts/ untouched) with two INTENT entries (2000-01-01-01, 2000-01-01-02, neither a terminal) both claiming preserved/foo.md, check_binding should still report exactly 1 violation: 'preserved/foo.md' is claimed by more than one entry's Dispatch-file field. The pair predicate must not fire since neither claimant is a terminal. Wrapper script exits 0 to mean 'the expected FAIL occurred'; sandbox is deleted by the script itself before it exits, so nothing survives this run.
+
+**Command:** python3 /tmp/claude-0/-home-user-E-GD-Philosophy/45075312-44d7-5830-82ae-fbde74048fe2/scratchpad/sabotage_nonpair_duplicate.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 2
+    files under prompts/: preserved=1, recovered=0
+    
+    FAIL: 1 binding violation(s)
+     - 'preserved/foo.md' is claimed by more than one entry's 'Dispatch-file' field: 2000-01-01-01, 2000-01-01-02
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_orphan_missing_direction
+
+**Timestamp:** 2026-08-14T15:58:04Z
+
+**Expected failure mode:** Synthetic sandbox, entry 2000-01-01-03's Dispatch-file names preserved/ghost.md which is never created on disk: check_binding should report exactly 1 violation naming the entry and the missing path. Wrapper exits 0 to mean the expected FAIL occurred; sandbox deleted before exit.
+
+**Command:** python3 /tmp/claude-0/-home-user-E-GD-Philosophy/45075312-44d7-5830-82ae-fbde74048fe2/scratchpad/sabotage_orphan_missing.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 1
+    files under prompts/: preserved=0, recovered=0
+    
+    FAIL: 1 binding violation(s)
+     - entry 2000-01-01-03: 'Dispatch-file' names 'preserved/ghost.md', which does not exist under prompts/
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_orphan_unclaimed_direction
+
+**Timestamp:** 2026-08-14T15:58:04Z
+
+**Expected failure mode:** Synthetic sandbox, prompts/preserved/nobody-claims-me.md exists on disk but no entry's Dispatch-file names it: check_binding should report exactly 1 violation naming the orphaned file. Wrapper exits 0 to mean the expected FAIL occurred; sandbox deleted before exit.
+
+**Command:** python3 /tmp/claude-0/-home-user-E-GD-Philosophy/45075312-44d7-5830-82ae-fbde74048fe2/scratchpad/sabotage_orphan_unclaimed.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 0
+    files under prompts/: preserved=1, recovered=0
+    
+    FAIL: 1 binding violation(s)
+     - prompts/preserved/nobody-claims-me.md exists but no RECORD.md entry's 'Dispatch-file' field names it
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_unaffected
+
+**Timestamp:** 2026-08-14T15:58:07Z
+
+**Expected failure mode:** This task touches no philosophy/enforcement/glossary file; expect PASS at the same counts observed at orientation: 43 philosophy headwords, 42 enforcement entries, 43 glossary rows.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 43
+    enforcement entries:  42
+    glossary rows:        43
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_passes_with_new_entries
+
+**Timestamp:** 2026-08-14T15:58:11Z
+
+**Expected failure mode:** 16 entries (up from 14), working-tree check clean (current file starts with HEAD's content unchanged -- both new entries are pure appends), 12-commit history walk still clean (no new commit yet), Superseded-by cross-reference vacuous PASS, duplicate-terminal check PASS, five pending outcome-prediction sentinels reported as expected output (adding 2026-08-14-01: not authored to the existing four), overall PASS.
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 16
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 13 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff_only_allowed_files
+
+**Timestamp:** 2026-08-14T15:58:41Z
+
+**Expected failure mode:** Against baseline 4f9184d1d0d801f16ebf01c8eb391a8973714c66: would fail naming any path outside {check_prompts.py, CLAUDE.md, RECORD.md, REGISTER.md, prompts/preserved/*} changed. Sabotaged by appending a blank line to README.md (confirmed caught, then git checkout -- README.md reverted it byte-identical). Clean run here expected to pass with exactly CLAUDE.md, RECORD.md, REGISTER.md, check_prompts.py modified and prompts/preserved/2026-08-14-01.md new -- nothing else.
+
+**Command:** python3 /tmp/claude-0/-home-user-E-GD-Philosophy/45075312-44d7-5830-82ae-fbde74048fe2/scratchpad/check6_scope_diff.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+     CLAUDE.md        |   2 +
+     RECORD.md        |  72 +++++++++++++++++++++
+     REGISTER.md      | 189 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     check_prompts.py |  61 +++++++++++++++++-
+     4 files changed, 322 insertions(+), 2 deletions(-)
+    
+    PASS: only check_prompts.py, CLAUDE.md, RECORD.md, REGISTER.md, and/or files under prompts/preserved/ changed since baseline
+
+**Stderr:**
+
+    (nothing captured)
+
