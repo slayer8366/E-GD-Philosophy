@@ -613,3 +613,155 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** protocol_rules_1_8_present
+
+**Timestamp:** 2026-08-14T04:38:24Z
+
+**Expected failure mode:** would fail naming missing rule header(s) or an opening line/Standing section not naming eight rules; clean PROTOCOL.md expected to pass
+
+**Command:** python3 /tmp/check1_protocol_rules.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: rules 1-8 present; opening line and Standing section both name eight rules
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** protocol_rule8_caveats_empty
+
+**Timestamp:** 2026-08-14T04:38:28Z
+
+**Expected failure mode:** would fail naming leftover text if the caveats section under rule 8 held anything besides the 'none yet' marker; clean PROTOCOL.md expected to pass
+
+**Command:** python3 /tmp/check2_caveats_empty.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: rule 8's caveats section present, containing only the 'none yet' marker
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_unchanged
+
+**Timestamp:** 2026-08-14T04:38:41Z
+
+**Expected failure mode:** expected to still PASS with the exact baseline counts observed in this task's own RECORD.md entry (43 philosophy headwords, 42 enforcement entries, 43 glossary rows); PROTOCOL.md touches no philosophy/enforcement/glossary file and the script does not read it, so no change is expected. Pre-existing tooling, not built by this task -- positive case only, no sabotage
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 43
+    enforcement entries:  42
+    glossary rows:        43
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_passes
+
+**Timestamp:** 2026-08-14T04:38:43Z
+
+**Expected failure mode:** expected to PASS: 13 entries structurally valid (12 prior plus this task's new intent entry), working-tree and history-walk clean, the same three pending outcome-prediction sentinels (2026-08-13-01, -05, -09) reported as expected output, not failures. Pre-existing tooling -- positive case only
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 13
+    unterminated intent entries (reported, not a failure): 2026-08-13-13
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 11 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_passes
+
+**Timestamp:** 2026-08-14T04:38:45Z
+
+**Expected failure mode:** expected to PASS: 2 dispatch-recording entries now (2026-08-13-09 and this task's 2026-08-13-13), 2 files under prompts/preserved/, 0 under prompts/recovered/, no orphans -- this task's Dispatch-file field was written as real field syntax at line-start, not embedded in prose, avoiding the defect caught at 2026-08-13-09/-10. Pre-existing tooling -- positive case only
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 2
+    files under prompts/: preserved=2, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry, no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff_only_allowed_files
+
+**Timestamp:** 2026-08-14T04:39:17Z
+
+**Expected failure mode:** would fail naming any path outside {PROTOCOL.md, RECORD.md, REGISTER.md, prompts/preserved/*} changed since baseline commit 81de364; clean working tree here expected to pass with exactly PROTOCOL.md (new), prompts/preserved/2026-08-13-13.md (new), RECORD.md and REGISTER.md (modified) showing
+
+**Command:** python3 /tmp/check5_scope_diff.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: only PROTOCOL.md, RECORD.md, REGISTER.md, and/or files under prompts/preserved/ changed since baseline
+
+**Stderr:**
+
+    (nothing captured)
+
