@@ -1276,3 +1276,117 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** check_record_four_findings_task
+
+**Timestamp:** 2026-08-15T09:53:31Z
+
+**Expected failure mode:** 22 entries (up from 20), working-tree check clean, 18-commit history walk clean (17 prior plus this task's own intent-entry commit), Superseded-by cross-reference vacuous PASS, duplicate-terminal check PASS, seven pending outcome-prediction sentinels (six prior plus 2026-08-15-03: not authored), overall PASS.
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 22
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-03: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 19 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_new_entry_dispatch_file_four_findings
+
+**Timestamp:** 2026-08-15T09:53:39Z
+
+**Expected failure mode:** PASS, dispatch-recording entries found: 7 (up from 6), preserved=6, recovered=0. Field presence on 2026-08-15-03 confirmed additionally by direct read, not by trusting this check alone.
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 7
+    files under prompts/: preserved=6, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_unaffected_four_findings_task
+
+**Timestamp:** 2026-08-15T09:53:43Z
+
+**Expected failure mode:** This task touches no philosophy/enforcement/glossary file; expect PASS at the same counts observed at orientation: 43 philosophy headwords, 42 enforcement entries, 43 glossary rows.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 43
+    enforcement entries:  42
+    glossary rows:        43
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff_record_only_four_findings_task
+
+**Timestamp:** 2026-08-15T09:53:52Z
+
+**Expected failure mode:** Against baseline 02c32a92d2917138184535953e503e37c06aefe1: would fail naming any path outside {RECORD.md, REGISTER.md, prompts/preserved/*} changed. This task makes no code or document changes, so expect a clean PASS with exactly RECORD.md, REGISTER.md modified and prompts/preserved/2026-08-15-03.md new -- no sabotage this run, per this task's own instruction.
+
+**Command:** python3 /tmp/claude-0/-home-user-E-GD-Philosophy/45075312-44d7-5830-82ae-fbde74048fe2/scratchpad/check4_scope_diff_four_findings.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+     RECORD.md   | 60 +++++++++++++++++++++++++++++++++++++++++
+     REGISTER.md | 88 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     2 files changed, 148 insertions(+)
+    
+    PASS: only RECORD.md, REGISTER.md, and/or files under prompts/preserved/ changed since baseline
+
+**Stderr:**
+
+    (nothing captured)
+
