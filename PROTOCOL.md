@@ -1,6 +1,6 @@
 # Working Protocol
 
-Eight rules governing how the operator and planner work together. They are untested. Nothing here has been run even once at the time of writing.
+Nine rules governing how the operator and planner work together. They are untested. Nothing here has been run even once at the time of writing.
 
 These are not principles. PHILOSOPHY.md holds rules that have earned their place; this document holds rules that have not. They live apart on purpose: a rule installed in the philosophy can only be removed by archival, and these are likely enough to be wrong that installing them would be building ahead of the evidence.
 
@@ -92,6 +92,28 @@ Standing: this rule is deliberately over-strict. Its boundary has not been mappe
 
 Caveats discovered: none yet.
 
+**9. An entry's closing conditions are fixed at dispatch, not discovered at close.**
+
+Nothing an entry needs in order to close may arrive after its terminal entry. A field whose resolving value can only land in a terminal entry that is already committed leaves the entry permanently unresolvable, and an append-only store cannot repair it.
+
+The outcome prediction slot therefore takes one of exactly two values in the intent entry:
+
+`committed:<sha256>` — a prediction exists and is withheld. The digest proves it existed at dispatch and tells the executor nothing. Plaintext is released after the executor's mechanism prediction is committed and before the terminal entry is written. The terminal entry carries the plaintext and the result of hashing it against the digest.
+
+`not authored` — no prediction exists. The terminal entry closes the intent on its own. The prediction's uses are null, and every consumer reports them as null rather than as pending.
+
+Where a prediction was committed and plaintext never arrives, the terminal entry records `committed, unreleased`. The entry closes. The digest stands as evidence a prediction existed and was withheld. Unscoreable, not unclosable.
+
+Absence is not a third value. An intent entry with no prediction field is a defect, not an entry declining to predict.
+
+The digest is the mechanism, not a formality. Where a prediction exists but nothing records its existence at dispatch, the entry is written `not authored` in good faith by whoever can only see what was supplied, and the prediction becomes permanently unprovable as pre-dispatch. Releasing it afterward is indistinguishable from writing it afterward, which is why `check_record.py` treats a permanent sentinel resolved by a supplied value as fabrication.
+
+Retroactive reading: entries written before this rule are read under it. `not authored` means null and closed wherever it appears, including in entries 2026-08-13-01, 2026-08-13-05, and 2026-08-14-01. No entry is edited to make this true; only the vocabulary used to read them changes. Entry 2026-08-13-09 is unaffected, since its sentinel reads `withheld` rather than `not authored`, and this rule does not invent a value for it.
+
+Rationale: a check that reports a permanently unresolvable state as pending does not merely fail to help. It teaches its reader to skim past that section, and once that habit forms the check has stopped working while still printing. A check can rot by being ignored as readily as by going stale.
+
+Standing: n=2. One case in which an outcome prediction was authored before dispatch, released after the terminal entry was already committed, and stranded permanently. One in which a prediction existed and was held, no mechanism conveyed its existence, the intent entry recorded `not authored` correctly on the evidence available, and the prediction is now unverifiable as pre-dispatch. No check enforces this rule. Rules 1 through 8 are likewise unenforced, and building machinery for a rule at n=2 is what Evidence-Based Feature Addition exists to prevent.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
@@ -100,7 +122,7 @@ Where the operator's specification and the planner's model are wrong in the same
 
 ## Standing
 
-Untested. Rules 1 through 4 are at n=0 as of writing. Rules 5 through 7 were added later from a role-separation proposal, also at n=0. Rule 8 was added later still, from a single case in which the failure it prevents did not occur.
+Untested. Rules 1 through 4 are at n=0 as of writing. Rules 5 through 7 were added later from a role-separation proposal, also at n=0. Rule 8 was added later still, from a single case in which the failure it prevents did not occur. Rule 9 was added later still, at n=2, from two cases in which the failure it prevents did occur.
 
 To be exercised in phase 3 and reviewed afterward. Rules that earn their place are candidates for promotion to PHILOSOPHY.md, with the evidence recorded. Rules that cost more than they catch are deleted from this document, which is possible precisely because they were never installed as principles.
 
