@@ -889,3 +889,41 @@ Main risk expected going in: treating the absence of a `Dispatch-file` field on 
 **Abort conditions:** If any check fails at orientation, stop (checked above; none did). If recording this correction would require editing `2026-08-15-04` or any other existing entry, stop.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-08-15-06
+
+**Timestamp:** 2026-08-15T10:00:57Z
+
+**Closes:** 2026-08-15-05
+
+**Outcome:** completed
+
+**Observed:** Correction to `2026-08-15-04`, recorded here rather than in that entry, which is append-only and unedited.
+
+`2026-08-15-04`'s Observed field states Findings 1 and 3 are "operator-reported" and frames Finding 4 the same way, without naming a source at all for Finding 4's origin. That attribution is corrected as follows:
+
+- **Finding 1** (one investigation is one sample) is **planner-reported**. The planner is the one who dispatched the same Pulse twice and observed the two coder reports disagree; the operator relayed the planner's observation into this task's governing prompt.
+- **Finding 3** (a read that cannot distinguish stale from absent) is **planner-reported**, and more specifically describes **the planner's own action**: the planner is the one who fetched this repository's public GitHub page while logged out and reported pushed files as absent based on a stale cache. The operator did not perform that read; the operator relayed the planner's account of it.
+- **Finding 4** (chain of custody on the first digest) is likewise **planner-reported**, and also describes the planner's own action: the planner is the one who reproduced the plaintext in its own container and hashed it there, after having read it, before the digest reached the coder in `2026-08-15-01`'s dispatch. The operator pasted the shell command block without running it; the operator relayed what the planner had done, not an account of the operator's own action.
+
+In all three cases, the operator functioned as a relay, not a witness or an actor. The distinction is not cosmetic: `2026-08-15-04`'s own Deviations field already noted that Findings 1 and 3 were "not independently verifiable from this repository," on the reasoning that they describe events in other conversations. That reasoning holds regardless of which role reported them -- but knowing the reporting role was the planner, and that the planner had an incentive to describe its own errors (the leaked prediction in Finding 2, the stale-read mistake in Finding 3, the custody gap in Finding 4) rather than an operator relaying a third party's account, is itself relevant to how a later reader should weigh the reports. This entry exists so that weighing is possible.
+
+Four required checks, wrapped through `check_register.py`, expected failure mode stated before each run, run after this entry's real content was written and before the commit, no sabotage (no new check logic, no code touched):
+
+(1) *`check_record.py` passes, including its history walk*: expected and observed PASS, 24 entries, 21-commit history walk clean, eight pending sentinels -- this task's own registered expectation matched the observed result exactly on every figure, unlike the arithmetic slips in the two prior tasks.
+
+(2) *`check_prompts.py` unaffected, this entry carries no `Dispatch-file` field by design*: expected and observed PASS, unchanged at `dispatch-recording entries found: 7`, `preserved=6`. Confirmed by direct read that `2026-08-15-05` has no `Dispatch-file` field -- correctly invisible to the check, not incorrectly bound, since no governing dispatch document exists for this correction to preserve.
+
+(3) *`check_glossary.py` unchanged*: expected and observed PASS, 43/42/43.
+
+(4) *No file other than `RECORD.md` and `REGISTER.md` modified, diffed against this task's pre-task commit `e8a87dad2934b934e1c0ec91ac43c1397bc97909`*: expected and observed PASS -- and, unlike every prior task in this conversation, no new file under `prompts/preserved/` either, since none was created.
+
+**Deviations:** No deviation from this entry pair's own intent. All four checks resolved exactly as predicted in this entry's own mechanism prediction, including the figures, correcting the pattern of small arithmetic slips in the two immediately prior tasks' registered expectations.
+
+No entry was edited -- `2026-08-15-04` stands as originally committed; this entry pair corrects its attribution by citation only. No check was built or modified. No rule, document, or code file touched, confirmed by Check 4's scope diff.
+
+The archival follow-on named by the operator (the two Pulse reports and the screenshot, into prompts/recovered/) remains untouched, as explicitly instructed -- not for this task.
+
+---
