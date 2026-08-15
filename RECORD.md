@@ -769,3 +769,47 @@ Second: this entry pair's own intent entry's mechanism prediction stated `check_
 No entry was edited. No check was built or modified (checks 1, 2, 3, and 6 above are standalone scripts under the scratchpad directory, not additions to any tracked check file). No glossary row, headword, or enforcement entry touched -- `check_glossary.py`'s counts held unchanged throughout, confirmed at orientation and again at Check 4. Rule 9's own citation of specific `RECORD.md` entry IDs with no check binding `PROTOCOL.md` to the record (Closed Decision 4) was noted, per that decision's own invitation, in this entry's Observed field under the grading of prediction item 2, and not resolved -- consistent with that decision's explicit instruction not to resolve it.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-08-15-03
+
+**Timestamp:** 2026-08-15T09:52:15Z
+
+**Title:** Record four trial-phase findings that exist only in conversation
+
+**Change:** Record, as labeled subsections inside this entry pair's own terminal entry, four findings supplied by the operator: (1) one investigation is one sample -- two independent dispatches of the same OSCam Pulse against the same HEAD produced materially disagreeing coder reports. (2) the prediction leak -- the planner read the operator's outcome prediction before drafting 2026-08-15-01's dispatch and wrote its substance into Closed Decision 4, so the coder could not independently discover what it had already been told; rule 9's draft named this exact limit as out of reach, now observed once, n=1. (3) a read that cannot distinguish stale from absent -- the planner fetched this repository's public GitHub page while logged out, got a cached view, and reported pushed files as absent when they were present; a stated gap in rule 2's hash discipline, which covers state passed at task boundaries but not reads the planner makes from outside the repository. (4) chain of custody on the first digest -- the digest committed in 2026-08-15-01 was not computed by the operator running the supplied command; the planner reproduced the plaintext in its own container and hashed it there, after having read it, so the digest's verification at close (confirmed in 2026-08-15-02) establishes only that released bytes matched hashed bytes, not what rule 9 says a digest establishes: a prediction held by the operator, unseen by anyone able to shape the outcome.
+
+Findings 1 and 3 describe events in other conversations/dispatches not visible from this repository; recorded as operator-reported, not independently verified. Finding 2 is cross-checked against 2026-08-15-01's own Closed Decision 4 text, which is directly readable in this repository. Finding 4 is recorded fresh, not as a cross-reference: 2026-08-15-02, read in full during this task's orientation, verifies that the released plaintext matched the committed digest and says nothing about who computed the digest or when. Preserve this task's own governing prompt verbatim under `prompts/preserved/`.
+
+**Dispatch-file:** preserved/2026-08-15-03.md
+
+**Scope boundary:** `RECORD.md` (append only), `REGISTER.md`, `prompts/preserved/`. Nothing else. No code changes, no document changes. No changes to `PHILOSOPHY.md`, `PROTOCOL.md`, `ENFORCEMENT.md`, `BOOTSTRAP.md`, `GLOSSARY.md`, `OVERVIEW.md`, `README.md`, `CLAUDE.md`, `DURABILITY.md`, or any check script. Nothing under `~/imx`. Out of scope: writing or amending any rule; amending rule 2 or rule 9; building or modifying any check; editing any existing entry; any glossary row or headword; the README's outstanding honesty edits; phase 3.
+
+**Baseline:** Working tree on branch `Test-1` at commit `02c32a92d2917138184535953e503e37c06aefe1`, confirmed equal to `origin/Test-1` via `git ls-remote --heads origin`. Tree clean at that commit.
+
+`check_glossary.py` confirmed PASS: 43 philosophy headwords, 42 enforcement entries, 43 glossary rows.
+
+`check_record.py` confirmed PASS: 20 entries structurally valid, working-tree check clean, 18-commit history walk clean, Superseded-by cross-reference vacuously PASS, duplicate-terminal check PASS; six pending outcome-prediction sentinels reported as expected output (2026-08-13-01, -05, -13, 2026-08-14-01, 2026-08-14-03: `not authored`; 2026-08-13-09: `withheld`).
+
+`check_prompts.py` confirmed PASS: `dispatch-recording entries found: 6`, `preserved=5, recovered=0`.
+
+The terminal entry closing `2026-08-15-01` (`2026-08-15-02`) read in full: its `Observed` field verifies the released plaintext hashes to the committed digest exactly, and grades the three prediction items, but contains no chain-of-custody note about who computed the digest or when. Finding 4 below is therefore recorded fresh, not as a cross-reference, per this task's own instruction.
+
+Highest `RECORD.md` entry ID in use before this entry: `2026-08-15-02`, all ten intent/terminal pairs closed, no unterminated intent record found on scan.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** One terminal entry (`2026-08-15-04`) will hold all four findings as labeled subsections, matching the shape used for the prior two-findings task (`2026-08-14-03`/`-04`) rather than four separate self-contained entry pairs, since none of them resolves a sentinel or requires the `Prediction-outcome-supplied` mechanism. Findings 1 and 3 will be recorded as operator-reported and explicitly marked not independently verifiable from this repository, since they describe events in other conversations. Finding 2 will cite `2026-08-15-01`'s own Closed Decision 4 text directly, confirming its substance matches the prediction item it is said to have leaked. Finding 4 will state plainly what `2026-08-15-02`'s existing verification does and does not establish -- byte-match, not provenance -- rather than treating the earlier verification as having already covered this ground.
+
+Four checks, all positive-case, no sabotage per this task's own instruction (no new check logic built): (1) `check_record.py` expected PASS, entries risen to 22, history walk clean including this task's own intent-entry commit. (2) `check_prompts.py` expected PASS, `dispatch-recording entries found: 7` (this entry's own field added to the 6 already present), `preserved=6`; confirmed by direct read of the committed entry text, not by trusting the check alone, per Finding 1 of the prior task. (3) `check_glossary.py` expected PASS at the same 43/42/43 counts as this entry's Baseline. (4) Scope diff against baseline `02c32a92d2917138184535953e503e37c06aefe1` expected to show only `RECORD.md`, `REGISTER.md`, and one new file under `prompts/preserved/` changed.
+
+All four checks run after the terminal entry's real content is written, before the final commit.
+
+Main risk expected going in: treating operator-reported events from outside this repository as independently verified facts rather than as reported claims. Mitigated by explicit qualification in the terminal entry's Observed field for Findings 1 and 3, and by re-reading 2026-08-15-01/-02 directly for Findings 2 and 4 rather than relying on memory of them from earlier in this conversation.
+
+**Finish line:** Four findings recorded as record entries; this prompt preserved under `prompts/preserved/` with its `Dispatch-file` field as real field syntax; the checks below verified and registered; committed in two commits and pushed. No rule written. No document amended. Not phase 3.
+
+**Abort conditions:** If any check fails at orientation, stop (checked above; none did). If recording any finding would require editing an existing entry, stop. If a finding's premise contradicts what is observed in the repository, stop and report rather than recording it as stated (checked for Finding 2 and Finding 4 against `2026-08-15-01`/`-02`'s actual text; neither contradicted).
+
+---
