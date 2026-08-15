@@ -712,3 +712,60 @@ Main risk expected going in: the numbering check colliding with rule 9's own pro
 **Abort conditions:** If `PROTOCOL.md` does not currently contain rules 1 through 8, stop (checked above; it does). If its numbering does not run 1 through 8, stop rather than renumbering (checked above; it does). If any existing check fails at orientation, stop (checked above; none did). If glossary counts change at any point, stop. If the supplied rule 9 text or standing statement is ambiguous, stop (checked above at receipt; neither was -- both were transcribed as given, see Change field).
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-08-15-02
+
+**Timestamp:** 2026-08-15T09:07:40Z
+
+**Closes:** 2026-08-15-01
+
+**Outcome:** completed
+
+**Observed:** `PROTOCOL.md` amended: rule 9, supplied verbatim by the operator, inserted after rule 8's `Caveats discovered: none yet.` line and before `## What these do not fix`, reproducing its own internal `Standing: n=2...` paragraph unmodified as part of its body. Opening line's `Eight rules governing` changed to `Nine rules governing` (single-token substitution, no other change, verified by diff). Document-level `## Standing` section's first paragraph replaced with the operator-supplied text (the existing three sentences plus one new sentence naming rule 9's provenance); the section's other three paragraphs (phase-3 promotion, rule 7's special case, no-forgetting-mechanism note) confirmed unchanged by diff. This task's own governing prompt preserved verbatim at `prompts/preserved/2026-08-15-01.md`.
+
+**Outcome-prediction digest, verified.** The operator's plaintext, supplied across two messages (first without exact whitespace markers, which did not hash-match under any of ten formatting variants tried and was reported as a mismatch rather than accepted; second with explicit `cat -A`-style `$` end-of-line markers, which resolved the exact byte sequence), reconstructs to:
+
+  OUTCOME PREDICTION [trailing space]
+
+  1. Numbers in the prose, and the numbering checks will collide [trailing space]
+
+  2. The coder will flag that rule 9 cites specific RECORD.md entry IDs
+     (2026-08-13-01, -05, -09, 2026-08-14-01) inside PROTOCOL.md, which is a current-state document with no check binding it to the record.
+
+  3. The standing statement will be the harder edit. It will be amended in place rather than added to, and its opening line and its final paragraph both carry counts.
+
+  [trailing newline]
+
+`sha256sum` of this exact byte sequence: `4ae2419f9edf165a9b088b05d92f3d66934aac1382b985884165e5b8ca15d2e5`, matching the digest committed at dispatch in this entry pair's intent entry exactly. **VERIFIED**: the plaintext existed, byte-for-byte, before this task's outcome was known.
+
+Grading, stated plainly rather than left implicit, since the digest verifying only proves pre-dispatch existence, not accuracy:
+
+- Item 1 (numbering checks will collide with prose numbers): did not occur. Check 3 below was built scoped to `^\*\*(\d+)\.` at line start within `## The rules` only, and was sabotage-tested against exactly this scenario twice -- once with a mid-paragraph decoy `**9.` (correctly ignored, no collision) and once with a real line-start duplicate header (correctly caught as a genuine numbering defect, unrelated to prose). This item reads as WRONG on the check actually built, though it correctly names a real risk class that the check's own design had to account for.
+- Item 2 (the coder will flag the entry-ID-citation/no-check-binding gap): this was CLOSED DECISION 4 in the task's own governing prompt, stated by the operator before any entry was opened, not independently surfaced by the coder. Noted here, as invited by that closed decision's own text ("Note it in the entry if you like"), but the prediction's premise -- that this would be the coder's own finding -- does not match what happened: it was already given, not discovered.
+- Item 3 (standing statement is the harder edit; amended in place; opening line and final paragraph both carry counts): partially right, partially wrong. "Amended in place rather than added to" matches exactly -- the `## Standing` section's first paragraph was replaced, not appended to. "The harder edit" does not hold up under what actually happened: all three edits (opening line, rule 9 insertion, standing-section paragraph) were single, mechanically verified Python string substitutions of comparable difficulty; none was harder in execution. "Its final paragraph carries counts" is WRONG on inspection: the `## Standing` section's actual final paragraph ("A rule that goes unexercised through a full phase is reviewed rather than assumed still relevant...") carries no numeric count at all; only its first paragraph does. If "its" instead meant `PROTOCOL.md` as a whole rather than the standing statement specifically, the document's actual final paragraph is that same sentence, still uncounted.
+
+Six required checks, wrapped through `check_register.py`, expected failure mode stated before each run, sabotage-and-revert performed over this task's new construction (checks 1, 2, 3, 6):
+
+(1) *Rule 9 present including its own standing text*: expected PASS. Real run matched. Sabotage: replaced rule 9's own `Standing: n=2.` opening token with `SABOTAGED: n=2.`; produced predicted `FAIL: header_present=True standing_present=False`; reverted, diff confirmed byte-identical; real clean run re-registered PASS.
+
+(2) *Opening line and standing statement both name nine rules*: expected PASS. Real run matched. Sabotage: reverted opening line's `Nine` back to `Eight`; produced predicted `FAIL: opening_ok=False standing_ok=True`; reverted, byte-identical; PASS re-registered.
+
+(3) *Numbering 1-9, no gap or repeat, scoped to avoid prose-numeral/entry-ID collision (the operator's own predicted risk, item 1 above)*: expected PASS, `[1,2,3,4,5,6,7,8,9]`. Real run matched. Two sabotages: (a) inserted a decoy `**9.` mid-paragraph inside rule 9's own Rationale text -- check correctly still reported PASS, proving the line-start anchor does not double-count prose occurrences; (b) relabeled rule 5's real line-start header from `**5.` to `**4.` -- check correctly reported `FAIL: found [1, 2, 3, 4, 4, 6, 7, 8, 9], expected [1, 2, 3, 4, 5, 6, 7, 8, 9]`. Both reverted, byte-identical; PASS re-registered.
+
+(4) *`check_glossary.py` unchanged*, positive case, no sabotage (pre-existing tooling this task does not touch): registered PASS, 43/42/43, identical to this entry pair's intent's Baseline.
+
+(5) *`check_record.py` and `check_prompts.py` pass, `Dispatch-file` field confirmed by direct read*: `check_record.py` registered PASS at 20 entries, 17-commit history walk clean (including the interim checkpoint commit). `check_prompts.py` registered PASS at `dispatch-recording entries found: 6`, `preserved=5` -- corrects this entry pair's own intent's mechanism prediction, which stated "5" for this figure; that was an arithmetic slip (5 was the pre-task count, not the post-task one), noted here per "report what happened" rather than silently passed over. `2026-08-15-01`'s own `Dispatch-file` field confirmed present by direct regex read of the committed entry text (`preserved/2026-08-15-01.md`), not by trusting `check_prompts.py` alone, per Finding 1 from the prior task.
+
+(6) *Only `PROTOCOL.md`, `RECORD.md`, `REGISTER.md`, and `prompts/preserved/` changed, diffed against this entry pair's own pre-task baseline* (`ff405303f081f6d0b7bc7f00e49e8de45126b8ec`): sabotaged by appending a blank line to `README.md`, produced predicted `FAIL: unexpected path(s) changed: ['README.md']`; `git checkout -- README.md` reverted it, diff confirmed byte-identical; real clean run registered PASS, `git status --porcelain` showing exactly `PROTOCOL.md`, `RECORD.md`, `REGISTER.md` modified and `prompts/preserved/2026-08-15-01.md` new across all commits since baseline -- nothing else.
+
+**Deviations:** Two deviations from this entry pair's own intent, both disclosed rather than smoothed over.
+
+First: this task's own Finish line specified "committed in two commits and pushed." It was committed in three. Between opening the intent entry and writing this terminal entry, a stop hook (`~/.claude/stop-hook-git-check.sh`) reported uncommitted changes and instructed committing and pushing. Rather than leave `PROTOCOL.md`'s edits and the preserved prompt sitting uncommitted on a single disk while waiting on the operator's reply for the outcome-prediction plaintext -- precisely the failure shape `DURABILITY.md` records this repository losing roughly thirty entries to -- an interim checkpoint commit (`a174322bc2545e158f0e031871742a4368c0250a`) was made and pushed, carrying `PROTOCOL.md` and the preserved prompt file. This was not requested by the governing prompt and is recorded here as a deviation driven by an external durability check, not a unilateral loosening of the specified commit shape.
+
+Second: this entry pair's own intent entry's mechanism prediction stated `check_prompts.py` would report `dispatch-recording entries found: 5` after this task. The correct figure, and what was actually observed, is 6 (orientation's own Baseline already reported 5 before this task began; this task's own entry adds one more claim). An arithmetic slip in the prediction, not a defect in the check -- noted under Check 5 above and here.
+
+No entry was edited. No check was built or modified (checks 1, 2, 3, and 6 above are standalone scripts under the scratchpad directory, not additions to any tracked check file). No glossary row, headword, or enforcement entry touched -- `check_glossary.py`'s counts held unchanged throughout, confirmed at orientation and again at Check 4. Rule 9's own citation of specific `RECORD.md` entry IDs with no check binding `PROTOCOL.md` to the record (Closed Decision 4) was noted, per that decision's own invitation, in this entry's Observed field under the grading of prediction item 2, and not resolved -- consistent with that decision's explicit instruction not to resolve it.
+
+---

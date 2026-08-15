@@ -1095,3 +1095,184 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** protocol_rule9_present
+
+**Timestamp:** 2026-08-15T09:05:36Z
+
+**Expected failure mode:** PASS: rule 9's bold header and its own internal 'Standing: n=2.' line both present in PROTOCOL.md.
+
+**Command:** python3 /tmp/claude-0/-home-user-E-GD-Philosophy/45075312-44d7-5830-82ae-fbde74048fe2/scratchpad/check1_rule9_present.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: rule 9 header and its own Standing: n=2 line both present
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** protocol_counts_name_nine
+
+**Timestamp:** 2026-08-15T09:05:36Z
+
+**Expected failure mode:** PASS: opening line reads 'Nine rules governing...', and the document-level Standing section's addendum sentence naming rule 9's n=2 provenance is present.
+
+**Command:** python3 /tmp/claude-0/-home-user-E-GD-Philosophy/45075312-44d7-5830-82ae-fbde74048fe2/scratchpad/check2_counts_nine.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: opening line says 'Nine rules governing', standing statement's addendum sentence present
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** protocol_numbering_1_through_9
+
+**Timestamp:** 2026-08-15T09:05:57Z
+
+**Expected failure mode:** PASS: [1,2,3,4,5,6,7,8,9], scoped to bold headers at line-start within '## The rules' section only, so rule 9's own prose numerals and cited entry IDs cannot be double-counted.
+
+**Command:** python3 /tmp/claude-0/-home-user-E-GD-Philosophy/45075312-44d7-5830-82ae-fbde74048fe2/scratchpad/check3_numbering.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    PASS: rule numbering runs 1 through 9 with no gap or repeat: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_unaffected_rule9_task
+
+**Timestamp:** 2026-08-15T09:06:22Z
+
+**Expected failure mode:** This task touches no philosophy/enforcement/glossary file; expect PASS at the same counts observed at orientation: 43 philosophy headwords, 42 enforcement entries, 43 glossary rows.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 43
+    enforcement entries:  42
+    glossary rows:        43
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_and_prompts_rule9_task
+
+**Timestamp:** 2026-08-15T09:06:28Z
+
+**Expected failure mode:** check_record.py expected PASS, 20 entries, history walk clean including the checkpoint commit. check_prompts.py expected PASS, dispatch-recording entries found: 5, preserved=5 -- this task's own Dispatch-file field will additionally be confirmed by direct read of the committed 2026-08-15-01 entry text, not by trusting check_prompts.py alone, per Finding 1 from the prior task.
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 20
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 17 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_rule9_task
+
+**Timestamp:** 2026-08-15T09:06:28Z
+
+**Expected failure mode:** PASS, dispatch-recording entries found: 5, preserved=5, recovered=0.
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 6
+    files under prompts/: preserved=5, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff_rule9_task
+
+**Timestamp:** 2026-08-15T09:06:54Z
+
+**Expected failure mode:** Against baseline ff405303f081f6d0b7bc7f00e49e8de45126b8ec: would fail naming any path outside {PROTOCOL.md, RECORD.md, REGISTER.md, prompts/preserved/*} changed. Sabotaged by appending a blank line to README.md (confirmed caught, then git checkout -- README.md reverted it byte-identical). Clean run here expected to pass with exactly PROTOCOL.md, RECORD.md, REGISTER.md modified and prompts/preserved/2026-08-15-01.md new -- nothing else.
+
+**Command:** python3 /tmp/claude-0/-home-user-E-GD-Philosophy/45075312-44d7-5830-82ae-fbde74048fe2/scratchpad/check6_scope_diff_rule9_task.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+     PROTOCOL.md                        |  26 ++++++-
+     RECORD.md                          |  60 +++++++++++++++
+     REGISTER.md                        | 153 +++++++++++++++++++++++++++++++++++++
+     prompts/preserved/2026-08-15-01.md | 152 ++++++++++++++++++++++++++++++++++++
+     4 files changed, 389 insertions(+), 2 deletions(-)
+    
+    PASS: only PROTOCOL.md, RECORD.md, REGISTER.md, and/or files under prompts/preserved/ changed since baseline
+
+**Stderr:**
+
+    (nothing captured)
+
