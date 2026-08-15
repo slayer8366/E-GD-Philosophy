@@ -668,3 +668,47 @@ This entry pair's own intent entry (`2026-08-14-03`) carries its `Dispatch-file`
 No other departure from this entry pair's own intent. All four required checks resolved exactly as predicted in this entry's own mechanism prediction -- no surprise requiring a second pass.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-08-15-01
+
+**Timestamp:** 2026-08-15T08:37:40Z
+
+**Title:** Append rule 9 to PROTOCOL.md; amend opening line and standing statement to nine rules
+
+**Change:** Append rule 9, supplied verbatim by the operator, to `PROTOCOL.md`'s `## The rules` section immediately after rule 8's block (after its `Caveats discovered: none yet.` line), before the `## What these do not fix` heading, matching rules 1-8's formatting exactly. Change the opening line's `Eight rules governing...` to `Nine rules governing...` (single-word substitution, no other change, required by this entry's own Finish line). Replace only the first paragraph of the `## Standing` section with the operator-supplied amended text, which extends the existing paragraph with one new sentence naming rule 9's provenance; the section's other three paragraphs (phase-3 promotion, rule 7's special case, no-forgetting-mechanism note) are untouched. No other change to `PROTOCOL.md`. No glossary row, headword, or enforcement entry. No check built or amended. Preserve this task's own governing prompt verbatim under `prompts/preserved/`.
+
+**Dispatch-file:** preserved/2026-08-15-01.md
+
+**Scope boundary:** `PROTOCOL.md`, `RECORD.md` (append only), `REGISTER.md`, `prompts/preserved/`. Nothing else. No changes to `PHILOSOPHY.md`, `ENFORCEMENT.md`, `BOOTSTRAP.md`, `GLOSSARY.md`, `OVERVIEW.md`, `README.md`, `CLAUDE.md`, `DURABILITY.md`, or any check script. Nothing under `~/imx`. Out of scope: applying, testing, or promoting rule 9; any tenth rule; editing any existing `RECORD.md` entry, including 2026-08-13-01, -05, -09, and 2026-08-14-01; building or modifying any check; any glossary row or headword; the README's outstanding honesty edits; phase 3.
+
+**Baseline:** Working tree on branch `Test-1` at commit `ff405303f081f6d0b7bc7f00e49e8de45126b8ec`, confirmed equal to `origin/Test-1` via `git ls-remote --heads origin`. Tree clean at that commit.
+
+`check_glossary.py` confirmed PASS: 43 philosophy headwords, 42 enforcement entries, 43 glossary rows.
+
+`check_record.py` confirmed PASS: 18 entries structurally valid, working-tree check clean, 16-commit history walk clean, Superseded-by cross-reference vacuously PASS, duplicate-terminal check PASS; six pending outcome-prediction sentinels reported as expected output (2026-08-13-01, -05, -13, 2026-08-14-01, 2026-08-14-03: `not authored`; 2026-08-13-09: `withheld`).
+
+`check_prompts.py` confirmed PASS: `dispatch-recording entries found: 5`, `preserved=4, recovered=0`.
+
+`PROTOCOL.md` confirmed to contain rules 1 through 8, numbered contiguously with no gap or repeat. Opening line quoted verbatim: "Eight rules governing how the operator and planner work together. They are untested. Nothing here has been run even once at the time of writing." Standing statement (the document-level `## Standing` section, distinct from rule 8's own per-rule `Standing:` paragraph) quoted verbatim: "Untested. Rules 1 through 4 are at n=0 as of writing. Rules 5 through 7 were added later from a role-separation proposal, also at n=0. Rule 8 was added later still, from a single case in which the failure it prevents did not occur."
+
+Highest `RECORD.md` entry ID in use before this entry: `2026-08-14-04`, all nine intent/terminal pairs closed, no unterminated intent record found on scan.
+
+This task's governing prompt was sent without rule 9's text or the amended standing statement, which its own TRANSCRIPTION section states are supplied with it. Both were in fact absent from that message. Stopped and asked, per that section's own instruction ("If either is absent or ambiguous, stop and ask. Reconstruct nothing from your own context") and per its ABORT CONDITIONS, before opening any entry -- reported in full in this task's chat history immediately before this entry. The operator supplied both in a follow-up message: rule 9's text (through its own `Standing: n=2...` paragraph) and, as the message's final paragraph, the amended document-level standing-statement text (the existing three-sentence paragraph plus one new sentence naming rule 9's provenance). This entry proceeds on that supplied text.
+
+**Prediction (outcome — planner):** committed:4ae2419f9edf165a9b088b05d92f3d66934aac1382b985884165e5b8ca15d2e5
+
+**Prediction (mechanism — coder):** Rule 9 will be inserted as a single text block immediately after rule 8's `Caveats discovered: none yet.` line and before the `## What these do not fix` heading, reproducing the supplied text exactly -- no reordering, renumbering, or wording change, including its own internal `Standing: n=2...` paragraph, which is part of rule 9's body and distinct from the document-level `## Standing` section. The opening line's `Eight` will become `Nine` via a single, isolated substitution verified by diff against the pre-edit text with that one token changed. The document-level `## Standing` section's first paragraph will be replaced with the operator-supplied text verbatim; the remaining three paragraphs of that section will be verified unchanged by diff.
+
+Check 1 (rule 9 present, including its own standing text) will grep for the rule 9 header and for its `Standing: n=2` line specifically, not a trust-the-copy assumption. Check 2 (opening line and document standing statement both name nine rules) will grep the opening line for "Nine rules governing" and the `## Standing` section for the new final sentence naming rule 9. Check 3 (numbering 1-9, no gap or repeat) will use a script matching only `^\*\*(\d+)\.` at line start within the `## The rules` section, avoiding collision with rule 9's own prose numerals ("rules 1 through 8") and cited entry IDs (`2026-08-13-01` etc.), neither of which is a bolded number-period at column 0. Check 4 (`check_glossary.py` unchanged) is expected unaffected, asserted against this entry's own Baseline counts. Check 5 (`check_record.py`/`check_prompts.py` still pass) is expected to pass with the same six pending sentinels plus this entry's own `committed:...` digest reported distinctly (a digest is not one of check_record.py's SENTINELS, so it is not expected to appear in the sentinel-report list at all); this entry's own `Dispatch-file` field will additionally be confirmed by direct read of the committed text, not by trusting `check_prompts.py` alone, per Finding 1 from the prior task. Check 6 (only `PROTOCOL.md`, `RECORD.md`, `REGISTER.md`, and `prompts/preserved/` changed) will diff against this entry's own baseline commit `ff405303f081f6d0b7bc7f00e49e8de45126b8ec`.
+
+Sabotage-and-revert covers checks 1, 2, 3, and 6 (this task's new construction: the rule 9 insertion, the two-line amendment, the numbering check itself, and the scope diff). Checks 4 and 5 are positive-case only, pre-existing tooling this task does not modify.
+
+Main risk expected going in: the numbering check colliding with rule 9's own prose digits if scoped too loosely. Mitigated by anchoring strictly to line-start bolded headers, verified by a sabotage that inserts a decoy `**9.` mid-paragraph and confirms it is not double-counted.
+
+**Finish line:** `PROTOCOL.md` contains rule 9 with its standing text; its opening line and standing statement both name nine rules; the checks below are verified and registered; this prompt is preserved under `prompts/preserved/` with its `Dispatch-file` field as real field syntax; the prediction digest above is resolved in the terminal entry (plaintext carried and hashed against the digest, or `committed, unreleased` if plaintext never arrives); everything is committed in two commits and pushed. Not check_predictions.py. Not any change to check_record.py. Not phase 3.
+
+**Abort conditions:** If `PROTOCOL.md` does not currently contain rules 1 through 8, stop (checked above; it does). If its numbering does not run 1 through 8, stop rather than renumbering (checked above; it does). If any existing check fails at orientation, stop (checked above; none did). If glossary counts change at any point, stop. If the supplied rule 9 text or standing statement is ambiguous, stop (checked above at receipt; neither was -- both were transcribed as given, see Change field).
+
+---
