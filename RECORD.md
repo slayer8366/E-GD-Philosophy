@@ -849,3 +849,43 @@ Four required checks, wrapped through `check_register.py`, expected failure mode
 No entry was edited. No check was built or modified -- all four checks above are pre-existing tooling, run positive-case only, per this task's own instruction. No rule was written and no document was amended -- confirmed by Check 4's scope diff, which shows only RECORD.md, REGISTER.md, and the new preserved-prompt file touched. Findings 1 and 3 are recorded as operator-reported and are explicitly not independently verifiable from this repository; this is stated in the Observed field rather than left implicit. No glossary row, headword, or enforcement entry touched.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-08-15-05
+
+**Timestamp:** 2026-08-15T09:59:37Z
+
+**Title:** Correct attribution in 2026-08-15-04: Findings 1, 3, and 4 are planner-reported, not operator-reported
+
+**Change:** `2026-08-15-04`'s Observed field attributes Findings 1 and 3 as "operator-reported" and, less explicitly, frames Finding 4 the same way. The operator relayed all three; the operator did not report them as their own observation. Findings 1 and 3 originated with the planner, and Finding 4 -- the planner having already read the plaintext behind the digest before hashing it -- describes the planner's own action. This entry records that correction as new text, citing `2026-08-15-04` by ID. `2026-08-15-04` itself is not edited, per RECORD.md's append-only rule.
+
+**Scope boundary:** `RECORD.md` (append only), `REGISTER.md`. No `Dispatch-file` field and nothing under `prompts/preserved/` this time: unlike prior tasks, no elaborate governing dispatch document exists to preserve -- this correction was authorized across two short conversational turns (the operator's correction, and "Go ahead and open the correcting entry now"), not a structured prompt with ROLE/ORIENT/STEPS sections. No changes to `PHILOSOPHY.md`, `PROTOCOL.md`, `ENFORCEMENT.md`, `BOOTSTRAP.md`, `GLOSSARY.md`, `OVERVIEW.md`, `README.md`, `CLAUDE.md`, `DURABILITY.md`, or any check script. Nothing under `~/imx`. Out of scope: editing `2026-08-15-04` or any other existing entry; any rule, glossary row, or headword; the archival follow-on (Pulse reports and screenshot into `prompts/recovered/`), which the operator explicitly named as not for this task.
+
+**Baseline:** Working tree on branch `Test-1` at commit `e8a87dad2934b934e1c0ec91ac43c1397bc97909`, confirmed clean, `git status --porcelain` empty before this entry was opened.
+
+`check_glossary.py` confirmed PASS: 43 philosophy headwords, 42 enforcement entries, 43 glossary rows.
+
+`check_record.py` confirmed PASS: 22 entries structurally valid, working-tree check clean, 20-commit history walk clean, Superseded-by cross-reference vacuously PASS, duplicate-terminal check PASS; seven pending outcome-prediction sentinels reported as expected output.
+
+`check_prompts.py` confirmed PASS: `dispatch-recording entries found: 7`, `preserved=6, recovered=0`.
+
+Highest `RECORD.md` entry ID in use before this entry: `2026-08-15-04`, all eleven intent/terminal pairs closed, no unterminated intent record found on scan.
+
+Checked whether `check_record.py`'s `Outcome: superseded` / `Superseded-by` mechanism (`check_record.py:256-275`) applies here: it does not. That mechanism requires the entry being superseded to itself carry `Outcome: superseded` and a `Superseded-by` field naming the correcting intent's ID -- which would mean writing into `2026-08-15-04`'s own already-committed terminal entry, forbidden by append-only. This entry instead corrects by plain citation, consistent with CLAUDE.md's "Corrections are new entries with supersedes pointers" read as a prose pointer, not a claim on that specific field mechanism.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** One terminal entry (`2026-08-15-06`) will state the correction directly: Findings 1 and 3 in `2026-08-15-04` are planner-reported (the planner observed the disagreement between two Pulse dispatches, and the planner is the one who fetched the stale GitHub page), and Finding 4 describes the planner's own action (reproducing and hashing the plaintext before it reached the coder). The operator's role was relaying these into the dispatch prompt, not authoring or observing them. No field in `2026-08-15-04` will be touched; the correction lives entirely in this new entry pair.
+
+Four checks, all positive-case, no sabotage (no new check logic, no code touched): (1) `check_record.py` expected PASS, entries risen to 24, history walk clean including this task's own intent-entry commit (21 commits). (2) `check_prompts.py` expected PASS, unchanged at `dispatch-recording entries found: 7`, `preserved=6` -- this entry carries no `Dispatch-file` field by design, so the check's own blind spot (Finding 1, prior task) is not being exercised, only correctly not triggered. (3) `check_glossary.py` expected PASS at 43/42/43, unchanged. (4) Scope diff against baseline `e8a87dad2934b934e1c0ec91ac43c1397bc97909` expected to show only `RECORD.md` and `REGISTER.md` modified -- no new file under `prompts/preserved/`, unlike every prior task in this conversation.
+
+All four checks run after the terminal entry's real content is written, before the final commit.
+
+Main risk expected going in: treating the absence of a `Dispatch-file` field on this entry as equivalent to `2026-08-14-01`'s omission (a defect). It is not -- that omission was undisclosed and unintended; this one is disclosed here and in the Scope boundary above, for a task with no dispatch document to bind.
+
+**Finish line:** A new entry pair recording the corrected attribution, citing `2026-08-15-04` by ID, with `2026-08-15-04` itself unedited; the four checks below verified and registered; committed in two commits and pushed. No existing entry touched. No rule, document, or check changed.
+
+**Abort conditions:** If any check fails at orientation, stop (checked above; none did). If recording this correction would require editing `2026-08-15-04` or any other existing entry, stop.
+
+---
