@@ -212,6 +212,20 @@ Evidence:
 
 Standing: the shape of one project's record, plus the operator's practice. Untested here.
 
+**15. A display may change a fact's form, never remove or soften it.**
+
+Presentation Is Not Acquisition lets display paths transform data freely for the person reading them. A display is still a claim, and a person acts on it.
+
+- A display may change a fact's form: a circle for an accuracy, a dimmed value for a stale one, words for a reliability flag.
+- It may not remove the fact or soften it, round it into false precision, or present a partial, stale or failed result as current and complete.
+- Where a simpler form would mislead in any state the system can actually be in, the harder truth is shown.
+
+Ease is the goal inside that constraint, not a reason to cross it. An automatic, sensible default beats a new setting or prompt, and the worst case is a state a person could misread as broken.
+
+Evidence: Forager's field-instrument skill states two governing rules in this order, "honesty is never traded for ease" and then "don't make me think" (`skills/examples/field-instrument-interface/SKILL.md`). The operator's design principle "Don't make me think" is recorded in Forager's `CLAUDE.md` (2026-09-30). The skill itself says three of its seven rules are inferred from the app's purpose and general practice, not from field data.
+
+Standing: moderate, in one project. If promoted, this amends Presentation Is Not Acquisition, whose "freely" is too strong.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
