@@ -142,6 +142,19 @@ One planner session handing to the next.
 
 - **Fields:** `Title`, `Handoff-file` (the handoff document, filed in the record's own store), the operator's words asking for it, and the next free ID.
 
+## Backups before merges
+
+Before a merge into a protected branch, the base branch is saved, so the merge can be undone from something other than memory.
+
+1. **Make the backup.** The base is written as a bundle to a backup directory outside the repository, and the bundle is verified (`git bundle verify`). It goes outside the repository because a backup can hold things that must never reach the remote. It never goes in a temporary directory, since that does not survive a reboot.
+2. **Describe it.** A manifest of hashes is written beside the bundle.
+3. **Index it.** One line is appended to the backups index, an append-only file in the same directory. The line says what the backup holds, which merge it guards, which dispatch it belongs to, and how to restore it. A backup nobody can find is not a way back.
+4. **Name it.** The merge entry's `Backup` field names the backup.
+
+Agents create backups and never delete, move or overwrite them; a backup an agent can erase does not protect against the agent. Pruning is the operator's, by hand. When the operator directs a removal, whether a backup of the removed material is kept, and where, is the operator's decision, and no agent makes one on its own.
+
+Sources: Forager's accountability design (`docs/process/accountability-design.md`, "Where backups live"), and the merge procedure of Claude-kit v0.2. 74% of Forager's merge entries name a backup.
+
 ## This repository's own record
 
 This repository's check_record.py accepts only intent and terminal entries. Updating it is a separate change, made on its own go, by the operator's ruling (prompts/preserved/2026-10-16-05.md). Until then, this repository's own record writes intent and terminal entries only, and records decisions, corrections and observations inside them. The other ten types are for adopters' records, and a checker that does not know them fails them.

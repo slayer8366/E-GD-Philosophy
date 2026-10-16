@@ -66,6 +66,7 @@ To change infrastructure later: record the change in the record store as a super
 - Never edit or delete an existing entry in a changelog, audit file, or record store.
 - To correct an entry, append a new entry with an explicit supersedes reference to the old one.
 - Before committing, verify by diff that no existing lines in append-only files were removed or modified.
+- A merge into a protected branch is preceded by a verified backup of the base, kept outside the repository and never deleted by an agent, and is recorded by a merge entry naming it (RECORDING.md, "Backups before merges"). Added 2026-10-16 under RECORD.md 2026-10-16-05.
 
 **Archival Without Loss**
 - Archival is a recorded operation with its own intent record. It is never performed as a side effect of other work, and never on agent initiative.
