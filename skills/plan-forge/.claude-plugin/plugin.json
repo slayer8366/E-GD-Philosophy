@@ -1,0 +1,6 @@
+{
+  "name": "plan-forge",
+  "version": "0.1.0",
+  "description": "Turn rough ideas into specs, ordered task breakdowns, and plan audits. Lean on tokens: short skill bodies, one shared reference, defers to existing dispatch and stop-and-ask skills.",
+  "keywords": ["planning", "spec", "handoff", "engineering"]
+}

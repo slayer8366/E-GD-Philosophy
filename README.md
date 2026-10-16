@@ -37,6 +37,7 @@ None of these require the agent to be smart. They require it to be observed. Tha
 | `REGISTER.md` | Machines | The append-only log of observed check failures, written by `check_register.py`. |
 | `BUILD_TASKS.md` | Both | Two early tooling task records, kept as written. |
 | `trials/` | Both | Readings of projects that have run the method: what fired, what was dropped, what decayed. |
+| `skills/` | Agents | The operator's skills, which the agent harness loads when their triggers fire, mapped to the principles they carry out. |
 
 `OPERATOR_PROFILE.md`, listed in this table until 2026-10-16, was lost with the first record store (see `DURABILITY.md`) and has not been rebuilt.
 
