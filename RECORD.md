@@ -1247,3 +1247,83 @@ Out of scope:
 **Abort conditions:** A new check that does not fail first for its stated reason (repair the check before writing the rule). An existing check 1 to 18 failing after the change. The repository's own record failing under the new rules. A sabotage run whose build errors (stop and report rather than read its results).
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-08
+
+**Timestamp:** 2026-10-16T23:25:08Z
+
+**Closes:** 2026-10-16-07
+
+**Outcome:** completed
+
+**Observed:** check_record.py now accepts RECORDING.md's twelve entry types with minimal required fields, on branch record-checker-2026-10-16, pushed, in these commits after the intent (f0e383a):
+
+- e4e3382: checks 19 to 36, committed failing. 17 of 36 failed, each an AssertionError naming its missing rule. Check 20, the guard that an unknown kind is still rejected, passed before and after by design.
+- 9ae699f: the rules. 36 of 36 pass, and this repository's record still passes.
+- 9aa5287: checks 37 and 38, for rules the first eighteen did not cover.
+- 41f871c: RECORDING.md's section on this repository's record, now listing what the checker requires.
+
+Revert run, through check_register.py: 20 sabotages, each disabling one rule in a copy of the committed file inside a temporary directory; this tree's file was never edited.
+
+- Every run printed its summary line, so none was a build or run error.
+- Every sabotage made its own check fail. Nineteen failed only their named checks. The kinds allow-list sabotage failed 16 checks, since every new type is then rejected.
+- The repository file equalled the committed copy at the start and at the end.
+- Positive control on the runner itself: a no-op edit was reported as not biting, and an edit that broke the file's syntax was reported as not run, with its results unread.
+
+check_record.py, check_prompts.py and check_glossary.py results are in REGISTER.md beside this commit.
+
+Forager's record header, as handed to the operator for the Forager planner to place (the operator's answer "The planner writes it"). This session wrote nothing in Forager. <ID> is for the planner to fill with the entry that quotes the header being replaced:
+
+    # RECORD.md
+    
+    Forager's record of dispatched work, decisions and what happened. Each piece
+    of work opens with an intent entry, written before anything is built, stating
+    what will change, where the change stops, what it is expected to do, and when
+    it counts as finished or abandoned. It closes with exactly one closing entry:
+    a terminal, or an outcome that carries Closes. Twelve entry types are in use:
+    intent, terminal, continuation, decision, outcome, observation, finding,
+    device-note, correction, merge, dispatch-note and handoff. Every entry carries
+    its Kind, its ID and a Timestamp read from the clock, and ends by saying who
+    wrote it and on which branch. A decision quotes the owner verbatim and is
+    recorded once, after any clarifying, not once for every re-ask.
+    
+    This file is append-only. Nothing already committed is edited or removed; a
+    correction is a new entry that points at the one it corrects. The one
+    exception is this header, rewritten on 2026-10-16 at the owner's word
+    ("Update both formats to match current standards"); entry <ID> quotes the
+    header it replaced.
+    
+    What makes an entry well formed is defined in E-GD's RECORDING.md
+    (github.com/slayer8366/E-GD-Philosophy, branch Test-1), which was written
+    from this record's own practice. The check_record.py and check_prompts.py
+    this header used to name were removed from this repository on 2026-09-27,
+    with the hooks (docs/audits/2026-09-27-kit-hooks-disabled.md). E-GD's
+    check_record.py implements RECORDING.md for E-GD's own record, but it expects
+    IDs of the form YYYY-MM-DD-NN, so it is not run here, and entries here are
+    checked by reading. The existing records in docs/audits/ stay where they are
+    and are not migrated into this store; docs/audits/README.md indexes them.
+    
+    Design: docs/process/accountability-design.md. Method: RECORDING.md in E-GD.
+
+Confirmed against inferred. Every rule and its check were observed failing and passing, by run. That this repository's record is unaffected was run, not inferred. The header text is written from RECORDING.md and from Forager's current header at origin/records-after-173 72fddfb9, read here.
+
+Could not determine. Whether the Forager planner will want the operator's go in its own window before placing the header. Its standing rule, as the operator's notes record it, is to act only on the operator's word given there.
+
+Premises that were wrong. The intent predicted 36 checks; there are 38, because checks 37 and 38 were added after the rules, when the gaps were seen before the revert run. Their evidence is the revert run, not a red before the change.
+
+Decided beyond scope:
+
+- The three kit types were given the same minimal rule the operator chose for the seven practice types (Kind, ID, Timestamp, Notes, link field). For a merge, the link fields are Merge-commit and Backup, the two RECORDING.md's text makes essential.
+- A Continues value is read by the ID it starts with, since Forager's practice sometimes follows the ID with a parenthesis.
+- A completed terminal carrying Deferred is an error, as RECORDING.md says it may not carry one.
+
+Observed, not asked:
+
+- check_prompts.py pairs a file claimed by an intent with its terminal, but not with an outcome that closes it. RECORDING.md now states this.
+- The checker's ID pattern rejects Forager's IDs.
+
+**Deviations:** Two checks more than predicted (37 and 38), as above. No existing RECORD.md or REGISTER.md entry was edited. check_prompts.py, check_glossary.py and check_register.py were not changed.
+
+---
