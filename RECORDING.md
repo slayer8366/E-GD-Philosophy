@@ -183,8 +183,32 @@ Source: Forager's planner operating guide of 2026-08-25, which asked of every re
 
 ## This repository's own record
 
-This repository's check_record.py accepts only intent and terminal entries. Updating it is a separate change, made on its own go, by the operator's ruling (prompts/preserved/2026-10-16-05.md). Until then, this repository's own record writes intent and terminal entries only, and records decisions, corrections and observations inside them. The other ten types are for adopters' records, and a checker that does not know them fails them.
+Since 2026-10-16 (RECORD.md 2026-10-16-07), this repository's check_record.py accepts all twelve types, with the minimal required fields the operator chose. Everything beyond these is checked by reading.
 
-The checker does already accept a terminal whose outcome is partial, since it validates only the superseded and abandoned outcomes.
+| Type | Required fields |
+|---|---|
+| intent | Kind, ID, Timestamp, Title, Change, Scope boundary, Baseline, both predictions, Finish line, Abort conditions |
+| terminal | Kind, ID, Timestamp, Closes, Outcome, Observed, Deviations; plus Deferred when partial, Superseded-by when superseded, Working-state when abandoned |
+| continuation | Kind, ID, Timestamp, Notes, Continues |
+| finding | Kind, ID, Timestamp, Notes, Continues |
+| correction | Kind, ID, Timestamp, Notes, Corrects |
+| outcome | Kind, ID, Timestamp, Notes, and Continues or Closes |
+| merge | Kind, ID, Timestamp, Notes, Merge-commit, Backup |
+| dispatch-note | Kind, ID, Timestamp, Notes, and Dispatch-file or Dispatch |
+| decision, observation, device-note, handoff | Kind, ID, Timestamp, Notes |
+
+It also checks the links between entries:
+
+- **Continuations.** A continuation's `Continues` names an intent that appears earlier and is still open at that point. A continuation carries no `Closes`, `Outcome`, `Superseded-by`, `Finish line` or prediction field.
+- **Other backward links.** A `Continues` on any other type names an earlier entry. Every ID in a `Corrects` names an earlier entry.
+- **Closing an intent.** `Closes` appears only on a terminal or an outcome. An outcome with `Closes` counts as its intent's closing entry, so an intent closed by both a terminal and an outcome fails the closed-once check.
+- **Terminal outcomes.** A terminal's `Outcome` is completed, partial, superseded or abandoned. A completed terminal may not carry `Deferred`.
+
+Two limits of the checker:
+
+- **IDs.** It still requires IDs of the form YYYY-MM-DD-NN. Forager's IDs carry three or four digits after the date, so it would reject them. It is not vendored into Forager.
+- **check_prompts.py** was not changed. It accepts one file claimed by an intent and its terminal, but not by an intent and an outcome that closes it.
+
+Each rule above has a self-check in `--render-check` (checks 19 to 38). A revert run disabling each rule in turn made its own check fail (REGISTER.md, 2026-10-16).
 
 Forager kept all twelve types without a checker after 2026-09-27. Run later from copies, its old checkers reported 1,646 entry errors (Forager record 2026-09-28-544). Much of that figure is types the old checkers did not know, so it measures the gap between practice and checker, not only mistakes.
