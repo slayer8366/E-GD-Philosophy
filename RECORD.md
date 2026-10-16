@@ -1030,3 +1030,39 @@ Process differences from the intent:
 No existing RECORD.md or REGISTER.md entry was edited. No check script was changed.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-03
+
+**Timestamp:** 2026-10-16T21:24:53Z
+
+**Title:** The operator's account of why Forager's hooks were removed, their stated approach since, and the two parts held back from 2026-10-16-01
+
+**Dispatch-file:** preserved/2026-10-16-03.md
+
+**Change:** Four changes on branch curation-2026-10-16, one commit each.
+
+(1) Correct how the branch states the reason Forager's hooks were removed. README.md, trials/forager-2026-10-16.md and PROTOCOL.md rule 12 say they went "because of usage limits", from Forager's 2026-09-27 note. The operator's account, 2026-10-16 (quoted in full in the dispatch file): "The hooks were removed because actions agents are expected to perform were being hindered. The operator had to hold the agent's hand every step of the way, which was the opposite of the kit's intentions." Each place is changed to give the operator's account, and the 2026-09-27 note's words stay quoted as what was recorded then. Rule 12 gains the sharper form of its lesson: a gate that blocks actions the agent is expected to take turns delegation into hand-holding.
+
+(2) Record the operator's stated approach, "So now I let philosophy, precise methodology, and evidence gating drive the agent". It goes in the trial record, and as a new PROTOCOL candidate, rule 21: gate on the evidence the work produces, not on the agent's actions. No principle text changes (the operator's answer, "Protocol + trial").
+
+(3) BUILD_TASKS.md gains the status line proposed in 2026-10-16-02's Deviations.
+
+(4) The trial record gains the sentence proposed there about the five data-pipeline principles.
+
+This entry corrects 2026-10-16-01's characterization by citation; 2026-10-16-01 and -02 are not edited.
+
+**Scope boundary:** RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-03.md, README.md, trials/forager-2026-10-16.md, PROTOCOL.md, BUILD_TASKS.md. Out of scope: PHILOSOPHY.md, ENFORCEMENT.md, GLOSSARY.md and BOOTSTRAP.md (no principle changes, by the operator's answer); any check script; Forager's own 2026-09-27 note, which is in another repository; merging into Test-1, which waits for the operator's go.
+
+**Baseline:** Branch curation-2026-10-16 at e098f94f6f335e4b9ce811e1f8b0ba92b7357b3f, equal to origin/curation-2026-10-16 after git fetch; tree clean; Test-1 still at 35e39d1. check_record.py PASS at 26 entries, none unterminated, a 24-commit walk; check_prompts.py PASS at 8 entries, preserved=7; check_glossary.py PASS at 45/44/45. The usage-limits wording appears in README.md ("removed them five days later because of usage limits"), in the trial record's 2026-09-27 table row and its README pointer, and in rule 12's evidence list.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** After the four commits and this entry's terminal, check_glossary.py is unchanged at 45/44/45, since no principle file is touched. check_record.py passes at 28 entries with none unterminated; its walk counts 25 commits before the terminal's commit (24 plus this intent's). check_prompts.py passes at 9 dispatch-recording entries and preserved=8. A scope diff against e098f94 lists only the paths in this entry's scope. A grep of README.md, the trial record and PROTOCOL.md finds no remaining statement that the hooks were removed because of usage limits; every remaining mention of the limits is attributed to the 2026-09-27 note. Rule 21 is the only new rule, and the protocol then holds 21 numbered rules.
+
+**Finish line:** The four commits and the terminal pushed and confirmed with git ls-remote; the checks above run after the terminal is written and before its commit, through check_register.py; PR #1's description updated to match. Not merged.
+
+**Abort conditions:** A check failing in a way not predicted. Any edit that would need 2026-10-16-01 or -02 changed. Wording for the operator's approach that goes beyond what the operator said: stop and ask rather than extend it.
+
+---
