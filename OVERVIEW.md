@@ -108,7 +108,7 @@ You decide when a decision is closed. If the planner keeps reopening a choice yo
 
 You decide what evidence is enough. An agent will happily report a test passing. Whether that test proves anything is your judgment. If it does not convince you, it is not enough, and no amount of confident phrasing from the agent changes that.
 
-You are allowed to say no to your own tooling. If a gate is slowing you down on a throwaway experiment, skip it and say so out loud in the record. EGD is not a compliance regime you answer to. It is a set of defaults you chose because they saved you time, and you can suspend one deliberately. The thing to avoid is drifting past a gate without noticing, which is different.
+You are allowed to say no to your own tooling. If a gate is slowing you down on a throwaway experiment, skip it. The agents will record what the skip stops enforcing, because a later reader needs to know the gate was not running; whether to give a reason is yours. An override is yours to use once. It does not change the rule, and no agent treats it as a precedent. EGD is not a compliance regime you answer to. It is a set of defaults you chose because they saved you time, and you can suspend one deliberately. The thing to avoid is drifting past a gate without noticing, which is different.
 
 You correct the agent, not the other way around. When an agent tells you your approach is wrong, that is input. Sometimes it is right and you should update. But it is arguing from text and you are arguing from the machine in front of you, so weigh it accordingly.
 

@@ -42,6 +42,7 @@ To change infrastructure later: record the change in the record store as a super
 - Before a change a person will see is dispatched, it is restated to the operator as a step path: what is touched, what shows, what each step back does. The operator confirms or corrects it. A path the operator writes outranks an earlier one-line rule it seems to contradict; both are recorded, and the record says which stands.
 - A stop-and-ask trigger written into a dispatch belongs to the operator. When an executor reports a difference that matches one, it goes to the operator with options, even when the planner judges that nothing visible changes.
 - An instruction to undo reaches only the step it interrupted. Anything wider is asked about, not assumed.
+- When the operator overrides a gate or a rule, the agent carries out the override exactly where it was asked and records what the override stops enforcing, as far as the repository shows it. It records a reason only if the operator gives one, and does not ask for one. It does not generalize the override, write it into a profile or process document, or cite it as precedent: the rule stands for every agent, the planner included. Operator's ruling, 2026-10-16 (prompts/preserved/2026-10-16-01.md).
 - Amended 2026-10-16 under RECORD.md 2026-10-16-01. Evidence: trials/forager-2026-10-16.md.
 
 **Operator Observation**
