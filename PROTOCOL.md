@@ -191,6 +191,27 @@ Evidence, from Forager (Forager `CLAUDE.md` at `402489ae` and trials/forager-202
 
 Standing: six instances across two projects. If promoted, this extends Concurrency Awareness's enforcement entry.
 
+**14. Record what was decided or what happened, once.**
+
+A record's value is what a later reader can find in it. An entry that only reconfirms, or that records a misreading and the rounds of explanation that fixed it, buries the entries that matter. So: clarify first, then record once. That means one entry per settled decision, carrying the deciding words, and none for a re-ask that changed nothing.
+
+Two entry kinds do not cover what a working record holds. Two more are needed:
+
+- A decision kind, labelled by who decided: the operator's ruling, quoted; a planner's call within a delegation; proposed; or provisional until review.
+- A continuation kind, for work that resumes under an intent already open.
+
+This repository's checkers accept only intent and terminal entries. Supporting more kinds is machinery for a candidate rule, and it waits on promotion.
+
+Evidence:
+
+- Forager's record holds 12 entry kinds, with 224 decisions and 330 continuations among 1,275 entries.
+- The operator had one entry deleted from it as clutter (Forager commit `0bda73e8`).
+- 63 of its intents have no terminal entry; 49 of those were continued instead (trials/forager-2026-10-16.md).
+- This repository's own first entry pair recorded two agents reaching for a kind that did not exist (RECORD.md 2026-08-13-02, Deviations).
+- forager-forecast's decision rows carry the provenance labels above (`docs/planning/DECISIONS.md` at `b9127e5`).
+
+Standing: the shape of one project's record, plus the operator's practice. Untested here.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
