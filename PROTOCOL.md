@@ -167,6 +167,30 @@ The operator ruled the loss of predictions to be drift, not a decision (prompts/
 
 Standing: four removals or bypasses, plus the decay above, in one project. If promoted, this amends Automated Boundary Enforcement, which says a boundary defended only by convention is undefended but says nothing about what a defence costs.
 
+**13. Parallel work collides on shared state that is not code.**
+
+Concurrency Awareness names shared mutable stores. In practice the collisions come in record stores, index files, ID counters, sequence numbers and planner sessions. Two branches, each correct on its own, can merge without a textual conflict and still claim the same globally unique value.
+
+So:
+
+- Unique numbers (record IDs, decision numbers, migration or schema versions) are assigned up front, or checked against the current base immediately before use.
+- A shared index is treated as a serialization point: the sessions that append to it are sequenced, or it is split so each appends to its own fragment.
+- On a merge conflict in a record or index file, every row from both sides is kept.
+- No record entry is written inside a merge commit. This repository's history check cannot walk past one.
+- A retired ID is not reused.
+- A planner session believed dead is confirmed stopped before another takes over its branch.
+
+Evidence, from Forager (Forager `CLAUDE.md` at `402489ae` and trials/forager-2026-10-16.md):
+
+- A planner session believed dead reconnected and kept writing to the same record branch, so two record IDs were each used twice (`docs/audits/2026-10-05-planner-handoff.md`).
+- An entry was deleted with its ID declared retired, and the ID was used again 26 minutes later (Forager commits `0bda73e8` and `4805cb90`).
+- A hook numbered each preserved prompt by counting only its own checkout, so parallel worktrees took the same numbers (Forager `RECORD.md` on `main`, 2026-09-23 finding on the dispatch guard).
+- Two branches each declared the same schema version with different migrations, which no file-level merge detects (Forager `CLAUDE.md`, the base-branch pitfall).
+- The audit index conflicted on every push after the first when two sessions ran in parallel (Forager `CLAUDE.md`, the serialization-point pitfall).
+- From forager-forecast: a decision filed on one branch had to be renumbered the same day, because the number had already been taken on another (`docs/planning/DECISIONS.md:17`, D123, at `b9127e5`).
+
+Standing: six instances across two projects. If promoted, this extends Concurrency Awareness's enforcement entry.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
