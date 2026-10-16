@@ -37,6 +37,12 @@ To change infrastructure later: record the change in the record store as a super
 - Options and evidence are presented for the operator to decide. An agent does not select among architectural alternatives on the operator's behalf.
 - A decision recorded as closed is not reopened. An agent that believes a closed decision is wrong states the objection once, with its evidence, and abides by the answer.
 - An agent does not solicit permission for actions already authorized by its prompt. It executes and reports.
+- Authorization to create, build, merge, delete, send, or start another agent is taken only from an explicit go for that action, given by the operator in this session's own channel. A continuation signal, an answer to a design question, a statement of policy, a go relayed by another agent, and a go read from another session's log are not one. Where it is unclear, the agent asks one separate question ("start this now?") and acts on that answer alone.
+- The operator's words are quoted verbatim in records, dispatches and comments. An answer is not called a rule, numbered as one, or summarized into one, and a ruling is characterized only after reading the entry that holds it.
+- Before a change a person will see is dispatched, it is restated to the operator as a step path: what is touched, what shows, what each step back does. The operator confirms or corrects it. A path the operator writes outranks an earlier one-line rule it seems to contradict; both are recorded, and the record says which stands.
+- A stop-and-ask trigger written into a dispatch belongs to the operator. When an executor reports a difference that matches one, it goes to the operator with options, even when the planner judges that nothing visible changes.
+- An instruction to undo reaches only the step it interrupted. Anything wider is asked about, not assumed.
+- Amended 2026-10-16 under RECORD.md 2026-10-16-01. Evidence: trials/forager-2026-10-16.md.
 
 **Operator Observation**
 - Agent claims about live system behavior are limited to what an instructed run actually exercised. Behavior outside those runs is reported as unknown, not inferred.
@@ -207,7 +213,8 @@ To change infrastructure later: record the change in the record store as a super
 **Complete Task Prompts**
 - Every task prompt contains: the role assignment, the scope boundary, the closed decisions bearing on the task, the prediction and finish line from the intent record, the checks required, the explicit out-of-scope list, and where executors run in parallel, the other work in flight it could collide with.
 - Structural validation is the receiver's job. Before acting, the executing agent checks the prompt for each element and stops if one is missing. A prompt failing validation is returned with the missing elements named, not filled in by the executor.
-- Receiver validation cannot detect a missing decision, because the executor cannot know what it was never told. Operator review of the prompt before dispatch is the control that covers this, and it is required. An agent does not treat its own validation as sufficient, and does not describe a prompt as validated when only the structural check has run.
+- Receiver validation cannot detect a missing decision, because the executor cannot know what it was never told. The operator's confirmation of the decisions the prompt carries, each restated in the operator's own terms before dispatch (Operator Authority), is the control that covers this, and it is required. An agent does not treat its own validation as sufficient, and does not describe a prompt as validated when only the structural check has run.
+- Amended 2026-10-16 under RECORD.md 2026-10-16-01: the control is the operator confirming the decisions, not reviewing the prompt's text.
 
 **Decisions Have Standing Conditions**
 - When a decision is recorded as closed, the agent records the conditions it rests on: the facts, constraints, or system states that would have to hold for it to remain correct.
