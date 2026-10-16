@@ -1,6 +1,6 @@
 # Working Protocol
 
-Nine rules governing how the operator and planner work together. They are untested. Nothing here has been run even once at the time of writing.
+Rules governing how the operator, planner and coder work together that have not yet earned a place in PHILOSOPHY.md. Rules 1 through 9 were untested when written; nothing in them had been run even once. Rules 10 onward were added on 2026-10-16 from a second project's record, and each states its own evidence and standing. A rule promoted into the philosophy keeps its text here, with a note saying where it went.
 
 These are not principles. PHILOSOPHY.md holds rules that have earned their place; this document holds rules that have not. They live apart on purpose: a rule installed in the philosophy can only be removed by archival, and these are likely enough to be wrong that installing them would be building ahead of the evidence.
 
@@ -133,5 +133,7 @@ Untested. Rules 1 through 4 are at n=0 as of writing. (Rules 1 and 2 were promot
 To be exercised in phase 3 and reviewed afterward. Rules that earn their place are candidates for promotion to PHILOSOPHY.md, with the evidence recorded. Rules that cost more than they catch are deleted from this document, which is possible precisely because they were never installed as principles.
 
 Rule 7 is a special case: it does not supplement PHILOSOPHY.md but replaces part of it, so promoting it means archiving Role Partition. That raises the bar for its promotion rather than lowering it.
+
+Rules 10 onward were added on 2026-10-16 (RECORD.md 2026-10-16-01) from the records of Forager and forager-forecast (trials/forager-2026-10-16.md). Their evidence comes from one further project family, read after the fact. It is not a test in this repository, and none of them is enforced by a check.
 
 A rule that goes unexercised through a full phase is reviewed rather than assumed still relevant. This document has no forgetting mechanism of its own, and an untested rule that persists indefinitely looks like anticipation while being accumulation.
