@@ -2220,3 +2220,135 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** render_check_tests_first_2026_10_16_07
+
+**Timestamp:** 2026-10-16T23:20:35Z
+
+**Expected failure mode:** Tests-first run, before any rule is written: exit 1, 17 of 36 checks fail (19 to 36 except 20), each an AssertionError naming the missing rule; checks 1 to 18 and the guard check 20 pass.
+
+**Command:** python3 check_record.py --render-check
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    check_record.py --render-check
+    
+    [check1_well_formed_record_passes] expected failure mode if broken: N/A -- positive case, validated by the negative checks below catching sabotages of the same fixture
+    [check1_well_formed_record_passes] PASS
+    
+    [check2_missing_field_names_fault] expected failure mode if broken: an entry missing a required field is accepted, or the error does not name both the entry and the missing field
+    [check2_missing_field_names_fault] PASS
+    
+    [check3_missing_restored_prediction_field_caught] expected failure mode if broken: an intent entry missing the restored 'Prediction (outcome — planner)' field is accepted, or the error does not name it
+    [check3_missing_restored_prediction_field_caught] PASS
+    
+    [check4_closes_resolution_catches_dangling_reference] expected failure mode if broken: a terminal entry's Closes field naming a nonexistent intent ID is accepted silently
+    [check4_closes_resolution_catches_dangling_reference] PASS
+    
+    [check5_duplicate_id_caught] expected failure mode if broken: two entries sharing the same ID are accepted, or the error does not name the colliding ID
+    [check5_duplicate_id_caught] PASS
+    
+    [check6_duplicate_terminal_names_both_closers] expected failure mode if broken: one intent closed by two terminal entries is accepted, or the error does not name both closing entries
+    [check6_duplicate_terminal_names_both_closers] PASS
+    
+    [check7_withheld_sentinel_reported_pending] expected failure mode if broken: a 'withheld' outcome-prediction sentinel is either treated as an error or not surfaced in sentinel_reports as pending
+    [check7_withheld_sentinel_reported_pending] PASS
+    
+    [check8_withheld_sentinel_resolved_by_terminal] expected failure mode if broken: a terminal entry supplying the outcome for an intent whose prediction was legitimately 'withheld' is not recognized as a resolution
+    [check8_withheld_sentinel_resolved_by_terminal] PASS
+    
+    [check9_not_authored_plus_supplied_is_fabrication] expected failure mode if broken: an intent whose outcome prediction is permanently 'not authored' is not flagged when a terminal entry later supplies a value anyway
+    [check9_not_authored_plus_supplied_is_fabrication] PASS
+    
+    [check10_sentinel_forbidden_in_terminal_entry] expected failure mode if broken: a terminal entry carrying a sentinel value in any field is accepted, or the error does not name the field and value
+    [check10_sentinel_forbidden_in_terminal_entry] PASS
+    
+    [check11_working_tree_append_only_catches_modified_line] expected failure mode if broken: modifying an existing, already-committed line in RECORD.md is not caught, or the failure does not name the changed line
+    [check11_working_tree_append_only_catches_modified_line] PASS
+    
+    [check12_working_tree_append_only_vacuous_before_first_commit] expected failure mode if broken: a RECORD.md that exists in the working tree but has never been committed is reported as a violation, or the vacuous case is not flagged as vacuous
+    [check12_working_tree_append_only_vacuous_before_first_commit] PASS
+    
+    [check13_history_walk_real_repo] expected failure mode if broken: a genuinely append-only two-commit history is reported as violating, or the wrong commit count is walked
+    [check13_history_walk_real_repo] PASS
+    
+    [check14_history_walk_vacuous_single_commit] expected failure mode if broken: a RECORD.md history with only one committed version performs a comparison anyway, or is not reported vacuous
+    [check14_history_walk_vacuous_single_commit] PASS
+    
+    [check15_history_walk_catches_removed_line] expected failure mode if broken: a commit that removed an existing line from RECORD.md's history is accepted by the walk
+    [check15_history_walk_catches_removed_line] PASS
+    
+    [check16_merge_commit_stops_the_walk] expected failure mode if broken: a merge commit touching RECORD.md is silently walked (wrong parent guessed) instead of raising MergeCommitEncountered
+    [check16_merge_commit_stops_the_walk] PASS
+    
+    [check17_superseded_by_vacuous_when_none_declared] expected failure mode if broken: a record with no terminal entry declaring Outcome: superseded is not reported vacuous, or is reported as a failure
+    [check17_superseded_by_vacuous_when_none_declared] PASS
+    
+    [check18_superseded_by_catches_dangling_reference] expected failure mode if broken: a terminal entry's Superseded-by field naming a nonexistent intent ID is accepted
+    [check18_superseded_by_catches_dangling_reference] PASS
+    
+    [check19_all_twelve_kinds_accepted] expected failure mode if broken: a record using every RECORDING.md entry type with minimal fields is rejected
+    [check19_all_twelve_kinds_accepted] FAIL: AssertionError('a record using all twelve types produced errors: ["2026-01-01-02: missing or invalid Kind (got \'continuation\')", "2026-01-01-03: missing or invalid Kind (got \'decision\')", "2026-01-01-04: missing or invalid Kind (got \'outcome\')", "2026-01-01-05: missing or invalid Kind (got \'observation\')", "2026-01-01-06: missing or invalid Kind (got \'finding\')", "2026-01-01-07: missing or invalid Kind (got \'device-note\')", "2026-01-01-08: missing or invalid Kind (got \'correction\')", "2026-01-01-09: missing or invalid Kind (got \'merge\')", "2026-01-01-10: missing or invalid Kind (got \'dispatch-note\')", "2026-01-01-11: missing or invalid Kind (got \'handoff\')"]')
+    
+    [check20_unknown_kind_still_rejected] expected failure mode if broken: a kind outside the twelve is accepted (guard: passes before and after the change by design, so it is not evidence for the change)
+    [check20_unknown_kind_still_rejected] PASS
+    
+    [check21_new_kind_missing_notes_named] expected failure mode if broken: an entry of a new type without its Notes line is accepted
+    [check21_new_kind_missing_notes_named] FAIL: AssertionError('decision without Notes not reported by ID and field: ["2026-01-01-01: missing or invalid Kind (got \'decision\')"]')
+    
+    [check22_continuation_missing_continues_named] expected failure mode if broken: a continuation with no Continues field is accepted
+    [check22_continuation_missing_continues_named] FAIL: AssertionError('continuation without Continues not reported: ["2026-01-01-01: missing or invalid Kind (got \'continuation\')"]')
+    
+    [check23_continuation_of_closed_intent_caught] expected failure mode if broken: a continuation naming an intent already closed earlier in the file is accepted
+    [check23_continuation_of_closed_intent_caught] FAIL: AssertionError('continuation of a closed intent not caught: ["2026-01-01-03: missing or invalid Kind (got \'continuation\')"]')
+    
+    [check24_continuation_of_non_intent_caught] expected failure mode if broken: a continuation naming an entry that is not an intent is accepted
+    [check24_continuation_of_non_intent_caught] FAIL: AssertionError('continuation of a non-intent not caught: ["2026-01-01-01: missing or invalid Kind (got \'decision\')", "2026-01-01-02: missing or invalid Kind (got \'continuation\')"]')
+    
+    [check25_continuation_forbidden_field_caught] expected failure mode if broken: a continuation carrying a closing field (Outcome) is accepted
+    [check25_continuation_forbidden_field_caught] FAIL: AssertionError('continuation carrying Outcome not caught: ["2026-01-01-02: missing or invalid Kind (got \'continuation\')"]')
+    
+    [check26_outcome_with_closes_closes_intent] expected failure mode if broken: an outcome carrying Closes is rejected, or leaves its intent unterminated
+    [check26_outcome_with_closes_closes_intent] FAIL: AssertionError('outcome closing its intent produced errors: ["2026-01-01-02: missing or invalid Kind (got \'outcome\')"]')
+    
+    [check27_terminal_and_outcome_double_close_caught] expected failure mode if broken: an intent closed by both a terminal and an outcome passes the closed-once check
+    [check27_terminal_and_outcome_double_close_caught] FAIL: AssertionError('terminal and outcome both closing one intent not caught: []')
+    
+    [check28_outcome_needs_continues_or_closes] expected failure mode if broken: an outcome with neither Continues nor Closes is accepted
+    [check28_outcome_needs_continues_or_closes] FAIL: AssertionError('outcome with neither link not caught: ["2026-01-01-01: missing or invalid Kind (got \'outcome\')"]')
+    
+    [check29_correction_dangling_reference_caught] expected failure mode if broken: a correction whose Corrects names no existing entry is accepted
+    [check29_correction_dangling_reference_caught] FAIL: AssertionError('correction naming a nonexistent entry not caught: ["2026-01-01-01: missing or invalid Kind (got \'correction\')"]')
+    
+    [check30_closes_on_other_kind_caught] expected failure mode if broken: a type other than terminal or outcome carrying Closes is accepted
+    [check30_closes_on_other_kind_caught] FAIL: AssertionError('Closes on a decision not caught: ["2026-01-01-02: missing or invalid Kind (got \'decision\')"]')
+    
+    [check31_unknown_terminal_outcome_caught] expected failure mode if broken: a terminal Outcome outside completed, partial, superseded, abandoned is accepted
+    [check31_unknown_terminal_outcome_caught] FAIL: AssertionError('terminal outcome outside the four not caught: []')
+    
+    [check32_partial_requires_deferred] expected failure mode if broken: a partial terminal without a Deferred field is accepted
+    [check32_partial_requires_deferred] FAIL: AssertionError('partial without Deferred not caught: []')
+    
+    [check33_completed_with_deferred_caught] expected failure mode if broken: a completed terminal carrying Deferred is accepted
+    [check33_completed_with_deferred_caught] FAIL: AssertionError('completed carrying Deferred not caught: []')
+    
+    [check34_merge_requires_backup] expected failure mode if broken: a merge entry that names no backup is accepted
+    [check34_merge_requires_backup] FAIL: AssertionError('merge without Backup not caught: ["2026-01-01-01: missing or invalid Kind (got \'merge\')"]')
+    
+    [check35_dispatch_note_requires_dispatch_reference] expected failure mode if broken: a dispatch-note naming neither Dispatch-file nor Dispatch is accepted
+    [check35_dispatch_note_requires_dispatch_reference] FAIL: AssertionError('dispatch-note with no dispatch reference not caught: ["2026-01-01-01: missing or invalid Kind (got \'dispatch-note\')"]')
+    
+    [check36_continues_dangling_on_other_kind_caught] expected failure mode if broken: a Continues on a decision naming no existing entry is accepted
+    [check36_continues_dangling_on_other_kind_caught] FAIL: AssertionError('Continues naming a nonexistent entry not caught: ["2026-01-01-01: missing or invalid Kind (got \'decision\')"]')
+    
+    FAIL: 17 of 36 checks failed: check19_all_twelve_kinds_accepted, check21_new_kind_missing_notes_named, check22_continuation_missing_continues_named, check23_continuation_of_closed_intent_caught, check24_continuation_of_non_intent_caught, check25_continuation_forbidden_field_caught, check26_outcome_with_closes_closes_intent, check27_terminal_and_outcome_double_close_caught, check28_outcome_needs_continues_or_closes, check29_correction_dangling_reference_caught, check30_closes_on_other_kind_caught, check31_unknown_terminal_outcome_caught, check32_partial_requires_deferred, check33_completed_with_deferred_caught, check34_merge_requires_backup, check35_dispatch_note_requires_dispatch_reference, check36_continues_dangling_on_other_kind_caught
+
+**Stderr:**
+
+    (nothing captured)
+

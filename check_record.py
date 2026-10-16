@@ -889,8 +889,211 @@ def render_check():
           "intent ID is accepted",
           check18)
 
+    # ---- Checks 19-36: RECORDING.md's twelve entry types (2026-10-16-07) --
+    # Minimal required fields by the operator's ruling: Kind, ID, Timestamp,
+    # Notes, and each type's link field. Written before the rules existed.
+
+    def ent(kind, id_, **fields):
+        base = {"Kind": kind, "ID": id_, "Timestamp": "2026-01-01T00:05:00Z",
+                "Notes": "Written by the test."}
+        base.update(fields)
+        return _render_entry(base)
+
+    def errs_of(*entries):
+        _, errors, unterminated, _ = validate_entries(_minimal_record(*entries))
+        return errors, unterminated
+
+    def check19():
+        errors, unterminated = errs_of(
+            _minimal_intent("2026-01-01-01"),
+            ent("continuation", "2026-01-01-02", Continues="2026-01-01-01"),
+            ent("decision", "2026-01-01-03", Continues="2026-01-01-02"),
+            ent("outcome", "2026-01-01-04", Continues="2026-01-01-01"),
+            ent("observation", "2026-01-01-05"),
+            ent("finding", "2026-01-01-06", Continues="2026-01-01-01"),
+            ent("device-note", "2026-01-01-07"),
+            ent("correction", "2026-01-01-08", Corrects="2026-01-01-03, its wording"),
+            ent("merge", "2026-01-01-09", **{"Merge-commit": "a" * 40, "Backup": "2026-01-01-01"}),
+            ent("dispatch-note", "2026-01-01-10", Dispatch="2026-01-01-01"),
+            ent("handoff", "2026-01-01-11"),
+            _minimal_terminal("2026-01-01-12", closes="2026-01-01-01"))
+        assert not errors, f"a record using all twelve types produced errors: {errors}"
+        assert not unterminated, f"unexpected unterminated: {unterminated}"
+
+    check("check19_all_twelve_kinds_accepted",
+          "a record using every RECORDING.md entry type with minimal fields is rejected",
+          check19)
+
+    def check20():
+        errors, _ = errs_of(ent("memo", "2026-01-01-01"))
+        assert any("invalid Kind" in e for e in errors), f"unknown kind accepted: {errors}"
+
+    check("check20_unknown_kind_still_rejected",
+          "a kind outside the twelve is accepted (guard: passes before and after the "
+          "change by design, so it is not evidence for the change)",
+          check20)
+
+    def check21():
+        errors, _ = errs_of(ent("decision", "2026-01-01-01", Notes=None))
+        assert any("2026-01-01-01" in e and "'Notes'" in e for e in errors), (
+            f"decision without Notes not reported by ID and field: {errors}")
+
+    check("check21_new_kind_missing_notes_named",
+          "an entry of a new type without its Notes line is accepted",
+          check21)
+
+    def check22():
+        errors, _ = errs_of(ent("continuation", "2026-01-01-01"))
+        assert any("2026-01-01-01" in e and "'Continues'" in e for e in errors), (
+            f"continuation without Continues not reported: {errors}")
+
+    check("check22_continuation_missing_continues_named",
+          "a continuation with no Continues field is accepted",
+          check22)
+
+    def check23():
+        errors, _ = errs_of(_minimal_intent("2026-01-01-01"),
+                            _minimal_terminal("2026-01-01-02", closes="2026-01-01-01"),
+                            ent("continuation", "2026-01-01-03", Continues="2026-01-01-01"))
+        assert any("2026-01-01-03" in e and "closed" in e for e in errors), (
+            f"continuation of a closed intent not caught: {errors}")
+
+    check("check23_continuation_of_closed_intent_caught",
+          "a continuation naming an intent already closed earlier in the file is accepted",
+          check23)
+
+    def check24():
+        errors, _ = errs_of(ent("decision", "2026-01-01-01"),
+                            ent("continuation", "2026-01-01-02", Continues="2026-01-01-01"))
+        assert any("2026-01-01-02" in e and "not an intent" in e for e in errors), (
+            f"continuation of a non-intent not caught: {errors}")
+
+    check("check24_continuation_of_non_intent_caught",
+          "a continuation naming an entry that is not an intent is accepted",
+          check24)
+
+    def check25():
+        errors, _ = errs_of(_minimal_intent("2026-01-01-01"),
+                            ent("continuation", "2026-01-01-02", Continues="2026-01-01-01",
+                                Outcome="completed"))
+        assert any("2026-01-01-02" in e and "'Outcome'" in e for e in errors), (
+            f"continuation carrying Outcome not caught: {errors}")
+
+    check("check25_continuation_forbidden_field_caught",
+          "a continuation carrying a closing field (Outcome) is accepted",
+          check25)
+
+    def check26():
+        errors, unterminated = errs_of(_minimal_intent("2026-01-01-01"),
+                                       ent("outcome", "2026-01-01-02", Closes="2026-01-01-01"))
+        assert not errors, f"outcome closing its intent produced errors: {errors}"
+        assert not unterminated, f"outcome with Closes did not close: {unterminated}"
+
+    check("check26_outcome_with_closes_closes_intent",
+          "an outcome carrying Closes is rejected, or leaves its intent unterminated",
+          check26)
+
+    def check27():
+        entries, _, _, _ = validate_entries(_minimal_record(
+            _minimal_intent("2026-01-01-01"),
+            _minimal_terminal("2026-01-01-02", closes="2026-01-01-01"),
+            ent("outcome", "2026-01-01-03", Closes="2026-01-01-01")))
+        ok, errs = check_duplicate_terminals(entries)
+        assert not ok and any("2026-01-01-02" in e and "2026-01-01-03" in e for e in errs), (
+            f"terminal and outcome both closing one intent not caught: {errs}")
+
+    check("check27_terminal_and_outcome_double_close_caught",
+          "an intent closed by both a terminal and an outcome passes the "
+          "closed-once check",
+          check27)
+
+    def check28():
+        errors, _ = errs_of(ent("outcome", "2026-01-01-01"))
+        assert any("2026-01-01-01" in e and "Continues" in e and "Closes" in e
+                   for e in errors), f"outcome with neither link not caught: {errors}"
+
+    check("check28_outcome_needs_continues_or_closes",
+          "an outcome with neither Continues nor Closes is accepted",
+          check28)
+
+    def check29():
+        errors, _ = errs_of(ent("correction", "2026-01-01-01", Corrects="2026-01-01-99"))
+        assert any("2026-01-01-01" in e and "2026-01-01-99" in e for e in errors), (
+            f"correction naming a nonexistent entry not caught: {errors}")
+
+    check("check29_correction_dangling_reference_caught",
+          "a correction whose Corrects names no existing entry is accepted",
+          check29)
+
+    def check30():
+        errors, _ = errs_of(_minimal_intent("2026-01-01-01"),
+                            ent("decision", "2026-01-01-02", Closes="2026-01-01-01"))
+        assert any("2026-01-01-02" in e and "'Closes'" in e for e in errors), (
+            f"Closes on a decision not caught: {errors}")
+
+    check("check30_closes_on_other_kind_caught",
+          "a type other than terminal or outcome carrying Closes is accepted",
+          check30)
+
+    def check31():
+        errors, _ = errs_of(_minimal_intent("2026-01-01-01"),
+                            _minimal_terminal("2026-01-01-02", outcome="parked"))
+        assert any("2026-01-01-02" in e and "parked" in e for e in errors), (
+            f"terminal outcome outside the four not caught: {errors}")
+
+    check("check31_unknown_terminal_outcome_caught",
+          "a terminal Outcome outside completed, partial, superseded, abandoned is accepted",
+          check31)
+
+    def check32():
+        errors, _ = errs_of(_minimal_intent("2026-01-01-01"),
+                            _minimal_terminal("2026-01-01-02", outcome="partial"))
+        assert any("2026-01-01-02" in e and "'Deferred'" in e for e in errors), (
+            f"partial without Deferred not caught: {errors}")
+
+    check("check32_partial_requires_deferred",
+          "a partial terminal without a Deferred field is accepted",
+          check32)
+
+    def check33():
+        errors, _ = errs_of(_minimal_intent("2026-01-01-01"),
+                            _minimal_terminal("2026-01-01-02", Deferred="step 3"))
+        assert any("2026-01-01-02" in e and "Deferred" in e for e in errors), (
+            f"completed carrying Deferred not caught: {errors}")
+
+    check("check33_completed_with_deferred_caught",
+          "a completed terminal carrying Deferred is accepted",
+          check33)
+
+    def check34():
+        errors, _ = errs_of(ent("merge", "2026-01-01-01", **{"Merge-commit": "a" * 40}))
+        assert any("2026-01-01-01" in e and "'Backup'" in e for e in errors), (
+            f"merge without Backup not caught: {errors}")
+
+    check("check34_merge_requires_backup",
+          "a merge entry that names no backup is accepted",
+          check34)
+
+    def check35():
+        errors, _ = errs_of(ent("dispatch-note", "2026-01-01-01"))
+        assert any("2026-01-01-01" in e and "Dispatch" in e for e in errors), (
+            f"dispatch-note with no dispatch reference not caught: {errors}")
+
+    check("check35_dispatch_note_requires_dispatch_reference",
+          "a dispatch-note naming neither Dispatch-file nor Dispatch is accepted",
+          check35)
+
+    def check36():
+        errors, _ = errs_of(ent("decision", "2026-01-01-01", Continues="2026-01-01-99"))
+        assert any("2026-01-01-01" in e and "2026-01-01-99" in e for e in errors), (
+            f"Continues naming a nonexistent entry not caught: {errors}")
+
+    check("check36_continues_dangling_on_other_kind_caught",
+          "a Continues on a decision naming no existing entry is accepted",
+          check36)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{18} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{36} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
