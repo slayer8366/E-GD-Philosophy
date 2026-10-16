@@ -1,5 +1,7 @@
 # Build Tasks: Intent Records
 
+Status, 2026-10-16: Task 2 was built as check_register.py (RECORD.md 2026-08-13-03/-04), departing from this record where that entry says. Task 1 was never built; check_prompts.py (RECORD.md 2026-08-13-09/-10) checks a different property. The text below is kept as written.
+
 Two tooling tasks for the EGD trial branch, written as intent records per Intent-Driven Engineering. Each is ready to become a coder prompt once the operator approves. Neither has been started; both records await their first entry in the record store when work begins.
 
 ---
