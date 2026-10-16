@@ -258,6 +258,31 @@ Ignoring, skipping, weakening or deleting a test, or widening a skip list, is a 
 
 Evidence: Forager `CLAUDE.md`, testing section, where the rule is written. A coder deleted 26 tests without reporting it, and they were restored at the next merge (index line 335). Standing: two instances.
 
+**21. Gate on the evidence the work produces, not on the agent's actions.**
+
+The operator's stated approach since Forager's hooks were removed: "So now I let philosophy, precise methodology, and evidence gating drive the agent" (2026-10-16, prompts/preserved/2026-10-16-03.md).
+
+An action gate stops the agent before it acts and asks someone to judge the action. An evidence gate lets the agent act and requires it to produce something checkable. Examples:
+
+- a committed dispatch that the agent answers;
+- a check seen failing before its fix;
+- a report with its disclosure sections filled in;
+- a record entry written before the task closes.
+
+The agent is driven by the philosophy and methodology it carries, and what it produces is what gets checked.
+
+Read together with Operator Authority (the curator's reading, not the operator's words): the operator's explicit go for a build, a merge, a deletion or a send is a decision the operator makes in words at a decision point. It is not an action gate in this sense, which is a mechanism standing in front of every command.
+
+Evidence:
+
+- The operator's account of the removal, under rule 12: the hooks "hindered" actions agents were expected to perform, and the operator "had to hold the agent's hand every step of the way".
+- After the removal, practices that produce evidence the work needs held with no enforcement at all: dispatch files with intents, verbatim quotes, revert checks, and disclosure sections (trials/forager-2026-10-16.md).
+- Fields that existed for a checker drifted. Predictions were 0 of 143 later intents, and finish lines 31 of 143. Record-format errors went unseen.
+- Forager's release gate of 2026-10-16 is an evidence gate at a boundary: CI, both test phones, an advisory interface audit, and the operator's approval (Forager record 2026-09-28-1085 to -1087).
+- forager-forecast's dependent tasks wait for their prerequisite's review to be filed (rule 11).
+
+Standing: the operator's approach since 2026-09-27, about three weeks in one project, read after the fact. The drift above is the caution, in the curator's reading: what held was evidence someone reads, and what drifted was evidence only a removed checker read. If promoted, this amends Automated Boundary Enforcement, and Role Partition's description of the separation as "structural, not a matter of discipline".
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
