@@ -155,6 +155,18 @@ Agents create backups and never delete, move or overwrite them; a backup an agen
 
 Sources: Forager's accountability design (`docs/process/accountability-design.md`, "Where backups live"), and the merge procedure of Claude-kit v0.2. 74% of Forager's merge entries name a backup.
 
+## The index
+
+One append-only table for the dated records that live outside the record store itself: dispatches, reports, audits, findings and decision write-ups. Each gets one row: the date, a one-line statement of what it found or decided, and the file. It is how a fresh session finds the reasoning without reading every document.
+
+- **A row that supersedes another names the row it replaces.** A stale row nobody marked is worse than no row.
+- **A finding outside a task's scope gets its own row,** not a sentence inside an unrelated report, where nobody searching for it would look (Durability Is Location).
+- **The index is a serialization point for parallel work.** Sessions that append to it are sequenced, or the index is split so each appends to its own fragment. On a merge conflict, every row from both sides is kept (PROTOCOL rule 13).
+
+Forager's index is `docs/audits/README.md`, with 356 dated rows at `402489ae`. forager-forecast files every dispatch byte-identical under `docs/dispatch/` and indexes it in that same single table, rather than keeping a second index that would drift out of step with the first.
+
+This repository has no separate index. At its present size, RECORD.md and `prompts/` do the job.
+
 ## This repository's own record
 
 This repository's check_record.py accepts only intent and terminal entries. Updating it is a separate change, made on its own go, by the operator's ruling (prompts/preserved/2026-10-16-05.md). Until then, this repository's own record writes intent and terminal entries only, and records decisions, corrections and observations inside them. The other ten types are for adopters' records, and a checker that does not know them fails them.
