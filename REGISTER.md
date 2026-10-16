@@ -1505,3 +1505,315 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** sabotage_glossary_missing_severity_entry
+
+**Timestamp:** 2026-10-16T21:17:06Z
+
+**Expected failure mode:** Scratch copy with the Severity of Checks enforcement entry removed: check_glossary.py exits 1, prints FAIL, and names 'philosophy headword has no enforcement entry: Severity of Checks'; counts 45/43/45.
+
+**Command:** python3 /tmp/egd-sabotage/a/check_glossary.py
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 45
+    enforcement entries:  43
+    glossary rows:        45
+    
+    FAIL
+      philosophy headword has no enforcement entry: Severity of Checks
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** sabotage_glossary_missing_durability_row
+
+**Timestamp:** 2026-10-16T21:17:06Z
+
+**Expected failure mode:** Scratch copy with the Durability Is Location glossary row removed: check_glossary.py exits 1, prints FAIL, and names 'philosophy headword missing from glossary: Durability Is Location'; counts 45/44/44.
+
+**Command:** python3 /tmp/egd-sabotage/b/check_glossary.py
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 45
+    enforcement entries:  44
+    glossary rows:        44
+    
+    FAIL
+      philosophy headword missing from glossary: Durability Is Location
+      enforcement entry missing from glossary: Durability Is Location
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** skills_copy_hashes
+
+**Timestamp:** 2026-10-16T21:17:25Z
+
+**Expected failure mode:** Would fail if any of the 18 copies differed from its source at the copy commit 1b33f20, or if anything other than revert-check, failing-test-first and evidence-discipline differs from its source now. Expected PASS: 18/18 at 1b33f20; exactly those 3 differ now.
+
+**Command:** python3 -I /tmp/egd-scripts/skills_hash_check.py /home/zynergy-labs/Zynergy/E-GD-Philosophy 1b33f20 /tmp/egd-scripts/pairs.txt
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    pairs: 18
+    equal to source at 1b33f20: 18/18
+    differ from source now: 3
+      skills/evidence-discipline/SKILL.md
+      skills/failing-test-first/SKILL.md
+      skills/revert-check/SKILL.md
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff_curation_2026_10_16
+
+**Timestamp:** 2026-10-16T21:17:26Z
+
+**Expected failure mode:** Against base 35e39d1: would fail naming any changed path outside RECORD.md 2026-10-16-01's scope. Expected PASS; BUILD_TASKS.md absent from the list, since it was held back.
+
+**Command:** python3 -I /tmp/egd-scripts/scope_check.py /home/zynergy-labs/Zynergy/E-GD-Philosophy 35e39d1
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    paths changed since 35e39d1: 32
+      BOOTSTRAP.md
+      CLAUDE.md
+      DURABILITY.md
+      ENFORCEMENT.md
+      GLOSSARY.md
+      OVERVIEW.md
+      PHILOSOPHY.md
+      PROTOCOL.md
+      README.md
+      RECORD.md
+      REGISTER.md
+      prompts/preserved/2026-10-16-01.md
+      skills/README.md
+      skills/completion-report/SKILL.md
+      skills/device-check-authoring/SKILL.md
+      skills/dispatch-as-file/SKILL.md
+      skills/dispatch-authoring/SKILL.md
+      skills/evidence-discipline/SKILL.md
+      skills/examples/field-instrument-interface/SKILL.md
+      skills/failing-test-first/SKILL.md
+      skills/plan-forge/.claude-plugin/plugin.json
+      skills/plan-forge/README.md
+      skills/plan-forge/skills/breakdown/SKILL.md
+      skills/plan-forge/skills/plan-review/SKILL.md
+      skills/plan-forge/skills/spec/SKILL.md
+      skills/plan-forge/skills/spec/references/spec-template.md
+      skills/prior-art-before-interface/SKILL.md
+      skills/pulse-before-plan/SKILL.md
+      skills/record-and-supersede/SKILL.md
+      skills/revert-check/SKILL.md
+      skills/stop-and-ask/SKILL.md
+      trials/forager-2026-10-16.md
+    PASS: all inside scope
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** control_scope_diff_catches_out_of_scope
+
+**Timestamp:** 2026-10-16T21:17:42Z
+
+**Expected failure mode:** Positive control: scratch worktree at HEAD with one line appended to check_record.py, which is outside scope. Expected exit 1, FAIL naming check_record.py.
+
+**Command:** python3 -I /tmp/egd-scripts/scope_check.py /tmp/egd-sc-control 35e39d1
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    paths changed since 35e39d1: 32
+      BOOTSTRAP.md
+      CLAUDE.md
+      DURABILITY.md
+      ENFORCEMENT.md
+      GLOSSARY.md
+      OVERVIEW.md
+      PHILOSOPHY.md
+      PROTOCOL.md
+      README.md
+      RECORD.md
+      check_record.py
+      prompts/preserved/2026-10-16-01.md
+      skills/README.md
+      skills/completion-report/SKILL.md
+      skills/device-check-authoring/SKILL.md
+      skills/dispatch-as-file/SKILL.md
+      skills/dispatch-authoring/SKILL.md
+      skills/evidence-discipline/SKILL.md
+      skills/examples/field-instrument-interface/SKILL.md
+      skills/failing-test-first/SKILL.md
+      skills/plan-forge/.claude-plugin/plugin.json
+      skills/plan-forge/README.md
+      skills/plan-forge/skills/breakdown/SKILL.md
+      skills/plan-forge/skills/plan-review/SKILL.md
+      skills/plan-forge/skills/spec/SKILL.md
+      skills/plan-forge/skills/spec/references/spec-template.md
+      skills/prior-art-before-interface/SKILL.md
+      skills/pulse-before-plan/SKILL.md
+      skills/record-and-supersede/SKILL.md
+      skills/revert-check/SKILL.md
+      skills/stop-and-ask/SKILL.md
+      trials/forager-2026-10-16.md
+    FAIL: outside scope: check_record.py
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** control_skills_hash_catches_wrong_source
+
+**Timestamp:** 2026-10-16T21:17:42Z
+
+**Expected failure mode:** Positive control: pairs file with completion-report's copy mapped to stop-and-ask's source. Expected exit 1, FAIL, 17/18 at the copy commit, and completion-report listed as differing now.
+
+**Command:** python3 -I /tmp/egd-scripts/skills_hash_check.py /home/zynergy-labs/Zynergy/E-GD-Philosophy 1b33f20 /tmp/egd-scripts/pairs_control.txt
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    pairs: 18
+    equal to source at 1b33f20: 17/18
+    differ from source now: 4
+      skills/completion-report/SKILL.md
+      skills/evidence-discipline/SKILL.md
+      skills/failing-test-first/SKILL.md
+      skills/revert-check/SKILL.md
+    FAIL
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_curation_terminal
+
+**Timestamp:** 2026-10-16T21:18:38Z
+
+**Expected failure mode:** Would fail on a malformed or duplicate entry, an edited earlier line, or a Closes naming no intent. Expected PASS: 26 entries, no unterminated intent, history walk 23 commits (the intent commit added to the 22 at baseline), working-tree check clean.
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 26
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-01: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 23 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_curation_terminal
+
+**Timestamp:** 2026-10-16T21:18:39Z
+
+**Expected failure mode:** Would fail on an unclaimed or doubly claimed prompt file. Expected PASS: 8 dispatch-recording entries, preserved=7, recovered=0.
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 8
+    files under prompts/: preserved=7, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_curation_terminal
+
+**Timestamp:** 2026-10-16T21:18:39Z
+
+**Expected failure mode:** Would fail on any unbound headword, entry or row, or a section mismatch. Expected PASS at 45/44/45.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 45
+    enforcement entries:  44
+    glossary rows:        45
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+

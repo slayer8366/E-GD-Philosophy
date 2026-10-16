@@ -957,3 +957,76 @@ Sources read for the proposal: Forager main at 402489ae; Forager's record on ori
 **Abort conditions:** A check failing in a way not predicted above (stop and report it rather than adjust the prediction or the text to pass). Any change that would need an existing RECORD.md or REGISTER.md entry edited. A premise in the proposal found false while writing it in (stop and report before writing that part). A third-party skill or plugin that could only be included by copying it.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-02
+
+**Timestamp:** 2026-10-16T21:18:10Z
+
+**Closes:** 2026-10-16-01
+
+**Outcome:** completed
+
+**Observed:** Completed except two parts held back under the intent's abort condition, both named under Deviations and both awaiting the operator. Everything else listed under the intent's Change is on branch curation-2026-10-16, pushed, in these commits after the intent (6273943):
+
+- 46a18fe: README count and file table; CLAUDE.md's PROTOCOL.md line.
+- d47e852: trial record. This commit also wiped README.md; see Deviations.
+- 8203cf2: README restored.
+- a909806: lesson 1, Severity of Checks.
+- 4adf4be: lesson 2, Sourced Claims; PROTOCOL rules 1 and 2 promoted.
+- d49ee55: lesson 3, Durability Is Location.
+- 4ca06d0: lesson 4, Operator Authority and Complete Task Prompts.
+- 2f818b3: operator overrides.
+- 391add7: PROTOCOL opening line.
+- 95b3652: lesson 5, rules 10 and 11, and a rule 9 note.
+- d8bfd1d: lesson 6, rule 12.
+- 0b422b2: lesson 7, rule 7 note.
+- 51c36bd: lesson 8, rule 13.
+- 1689ba7: lesson 9, rule 14.
+- 4ea3768: lesson 10, rule 15.
+- 2d619ab: rules 16 to 20.
+- eba20a6: identity function made conditional.
+- 2922323: OVERVIEW lineage section.
+- 1b33f20: skills/.
+- a1a6f5b, f2895eb, 8a548f2, 42ebc96: the skill edits, one of them a correction.
+
+Predictions against what was observed, each run through check_register.py and appended to REGISTER.md:
+
+- check_glossary.py read 44/43/44 after a909806 and 45/44/45 after d49ee55, PASS each time, as predicted. Amendments left the counts unchanged.
+- Sabotage on scratch copies, never on this tree, each restored by discarding the copy:
+  - With the Severity of Checks enforcement entry removed, it failed naming "philosophy headword has no enforcement entry: Severity of Checks", as predicted.
+  - With the Durability Is Location glossary row removed, it failed naming "philosophy headword missing from glossary: Durability Is Location", as predicted. It also named "enforcement entry missing from glossary: Durability Is Location", which the prediction did not mention. That line comes from check_glossary.py's enforcement-to-glossary loop, which a removed row also trips. The prediction was incomplete, not wrong; the failure is the right one.
+- skills/: 18 of 18 copies equal to their sources at 1b33f20. Now exactly three differ: revert-check, failing-test-first and evidence-discipline, as predicted. Positive control: with completion-report's copy mapped to the wrong source, the same script failed at 17 of 18.
+- Scope: 32 paths changed since 35e39d1, all inside scope, and BUILD_TASKS.md absent. Positive control: a scratch worktree with check_record.py touched failed, naming it.
+- check_record.py and check_prompts.py are run after this entry is written and before its commit; their results are in REGISTER.md beside this entry's commit.
+
+Observed but not asked, outside this task's scope, reported and not acted on:
+
+- Forager's CLAUDE.md still opens by saying the multi-agent record ceremony is not adopted there, while Forager has kept a 1,275-entry record since 2026-09-22. The header is stale.
+- Forager keeps untracked local copies of nine skills, three of them older than the operator's account versions.
+- Nothing in this repository checks PROTOCOL.md or skills/README.md's mapping table against PHILOSOPHY.md. check_glossary.py binds only the philosophy, enforcement and glossary files.
+- Forager's decision to give its planner read access was to be measured and never was, so what read access changed is unknown.
+
+**Deviations:** Two premises in the proposal proved false while being written in, and per the abort condition neither part was written.
+
+(1) BUILD_TASKS.md: the proposal said both tasks were built on 2026-08-13. Task 2 was, as check_register.py (2026-08-13-03/-04). Task 1, a structural validator for coder prompts, was never built. check_prompts.py (2026-08-13-09/-10) checks a different property: the binding between record entries and preserved prompts. Proposed status line for the operator: "Status, 2026-10-16: Task 2 was built as check_register.py (RECORD.md 2026-08-13-03/-04), departing from this record where that entry says. Task 1 was never built; check_prompts.py (RECORD.md 2026-08-13-09/-10) checks a different property. The text below is kept as written."
+
+(2) The trial record: the proposal said five data-pipeline principles were never exercised in Forager. None is cited by name in its CLAUDE.md, audits or record, and content-addressed hashing is declined by name. But atomic writes appear as a design concern in Forager's audits, in log rotation and in writing an entry together with its photos, so Atomic State Mutations was practised without being cited. Proposed sentence for the operator: "None of the five data-pipeline principles is cited by name in Forager's CLAUDE.md, audits or record. Content-addressed hashing is declined by name. Atomic writes appear as a design concern in at least two audit documents, so Atomic State Mutations was practised without being cited."
+
+Corrections made in the course of the work, all disclosed in their commits:
+
+- The authorization lesson's count is 9 (5 in Forager's record, 4 operator-reported), not the proposal's 10. The reader session's audit-index line numbers for three of its instances did not match the index, and were not cited.
+- Three other reader-supplied claims could not be verified and were left out: number ranges reserved per task in forager-forecast, a record entry about model-named co-author lines, and a fourth instance for rule 16.
+- d47e852 wiped README.md to one line. A sed command was run with -n and -i together, and the commit was pushed without its diff being read. It was fixed forward at 8203cf2, not rewritten, and that fix also corrected "four days later" to "five". Twice afterwards an edit to the trial record dropped the heading it was anchored on; both were caught by reading the diff before commit, and neither was committed.
+- f2895eb described the voided red inaccurately; 8a548f2 corrects it.
+
+Process differences from the intent:
+
+- The trial record was committed before the principle changes rather than after, so that each principle cites evidence already in the tree.
+- Commit authorship: this repository's earlier commits are authored "Claude <noreply@anthropic.com>". This clone had no git identity, so the first commit attempt failed; at that moment the push sent the bare branch at 35e39d1. Forager's local identity was copied into this clone's local config, and this branch's commits are authored slayer8366, each ending with the co-author line.
+- A merge commit into Test-1 touching RECORD.md would stop check_record.py's history walk (MergeCommitEncountered), so the pull request asks for a fast-forward.
+
+No existing RECORD.md or REGISTER.md entry was edited. No check script was changed.
+
+---
