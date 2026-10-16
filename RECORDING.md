@@ -179,7 +179,7 @@ Every report that answers a dispatch carries, beside what landed and the evidenc
 
 A section with nothing in it says "None". An empty section and a missing one both read as unchecked.
 
-Source: Forager's planner operating guide of 2026-08-25, which asked of every report "the disclosure norm: confirmed vs. inferred, could-not-determine, any premise that turned out wrong, anything decided the dispatch didn't cover" (`docs/qc/planner-operating-guide-2026-08-25.md`). The first four were in use in roughly 90 to 100 of Forager's 258 audit documents, with nothing enforcing them (pattern counts). Forager added the fifth on 2026-09-12, after four findings were found to exist only in transcripts.
+Source: Forager's planner operating guide of 2026-08-25, which asked of every report "the disclosure norm: confirmed vs. inferred, could-not-determine, any premise that turned out wrong, anything decided the dispatch didn't cover" (`docs/qc/planner-operating-guide-2026-08-25.md`). The first four were in use in roughly 90 to 100 of Forager's 258 audit documents, with nothing enforcing them (pattern counts). The fifth comes from Forager's finding of 2026-09-12: four findings existed only in transcripts, and only one of 80 reports had a slot for something noticed in passing (Forager's audit index, line 113 at `402489ae`). This method added it on 2026-10-16 (Durability Is Location).
 
 ## This repository's own record
 
