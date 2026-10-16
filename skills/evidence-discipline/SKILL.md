@@ -7,7 +7,7 @@ description: How to make claims about a codebase so they can be checked — ever
 
 A claim about code is worth exactly as much as the reader's ability to check it. "The temp file is deleted after capture" is unverifiable prose. "`deleteCapture` is called once, at `PhotoAcquisitionLaunchers.kt:86`, on the failure branch only" is a claim someone can open and confirm in ten seconds.
 
-The cost of getting this wrong compounds. A stale doc comment that nobody challenged becomes an assumption, the assumption becomes a design decision, and the decision outlives everyone who could have questioned it. Most of the expensive bugs in a mature codebase are documented behaviour that stopped being true.
+The cost of getting this wrong compounds. A stale doc comment that nobody challenged becomes an assumption, the assumption becomes a design decision, and the decision outlives everyone who could have questioned it. Most of the expensive bugs in a mature codebase are documented behaviour that stopped being true. (Unsourced: no count stands behind "most"; read it as an impression.)
 
 ## Every claim carries its evidence
 

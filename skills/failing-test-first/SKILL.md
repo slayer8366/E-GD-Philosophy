@@ -7,7 +7,7 @@ description: How to build the failing case before the fix and prove it fails for
 
 Write the test that fails. Watch it fail. Read the message. Then fix the thing.
 
-The order matters because a test written after the fix has never been observed doing its job. It passes, and you cannot tell whether that is because the behaviour is correct or because the test is inert. Half the tests that give false confidence would have been caught by seeing them red once.
+The order matters because a test written after the fix has never been observed doing its job. It passes, and you cannot tell whether that is because the behaviour is correct or because the test is inert. Half the tests that give false confidence would have been caught by seeing them red once. (Unsourced: no count stands behind "half"; read it as an estimate.)
 
 ## The failure must be the right failure
 
