@@ -120,6 +120,28 @@ Rationale: a check that reports a permanently unresolvable state as pending does
 
 Standing: n=2. One case in which an outcome prediction was authored before dispatch, released after the terminal entry was already committed, and stranded permanently. One in which a prediction existed and was held, no mechanism conveyed its existence, the intent entry recorded `not authored` correctly on the evidence available, and the prediction is now unverifiable as pre-dispatch. No check enforces this rule. Rules 1 through 8 are likewise unenforced, and building machinery for a rule at n=2 is what Evidence-Based Feature Addition exists to prevent.
 
+Forager evidence, added 2026-10-16 (RECORD.md 2026-10-16-01): the `committed:<sha256>` form appears 0 times in Forager's record of 1,275 entries. forager-forecast reached the same end, a choice provably fixed before the outcome, by public commits whose order a reviewer checks (rule 10). That route was used and this one was not; rule 10 is the working method, and this rule's withheld hash remains for a prediction that must stay hidden from the executor until it has run.
+
+**10. Choices that could be tuned to a result are committed before the result is read.**
+
+Thresholds, tolerances, samples, seeds, exclusions, tuning grids and the evaluation itself are written into the repository and committed before any count of the outcome is read. Changing one afterwards turns a test into a search. So a change after the data is a stop for the operator, and when one is made the old and new verdicts are both recorded. How each outcome will be read is stated before the run, and a null or negative result is a deliverable, not a failure to deliver.
+
+The evidence that the order held is the commit order, checked by someone other than the author. That needs no withheld plaintext and no release step, which is why it was used where rule 9's hash was not.
+
+This extends Intent-Driven Engineering's prediction from the outcome to the analysis that will judge the outcome.
+
+Evidence: forager-forecast fixes its production seed and a 20-configuration tuning grid before any model is fit, rejecting the alternative because it "invites tuning until it wins" (`docs/planning/DECISIONS.md:101`, D31 at `b9127e5`), and does the same for its evaluation, filters and licence tracks (D33, D26, D29). Reviewers confirmed that the commit came before the first count in four cases. The rule held when the result pulled the other way (D109, D90), and caught a committed tolerance that would have failed before any value was read. Forager's planner profile carries the same rule: "Fix choices before data" (`docs/process/planner-profile.md:38` at `402489ae`).
+
+Standing: four checked orderings and three holds or catches, in one project. Untested here.
+
+**11. A load-bearing result is re-derived by a separate session, from the repository, with its own code.**
+
+A finding that later work will stand on is reviewed by a session that did not produce it, working from the repository rather than from the producer's conversation. The reviewer recomputes headline figures with its own code, runs its own revert checks, and fixes its own samples and tolerances before reading the data. Finding nothing is an acceptable result; saying what was checked is mandatory. A builder's own check is kept and labelled as a self-check; it is not a review. A dependent task waits for its prerequisite's review to be filed.
+
+Evidence: forager-forecast decision D18 (`docs/planning/DECISIONS.md:114` at `b9127e5`) and its standing review protocol (`docs/dispatch/2026-09-18-review-protocol.md`; the quoted sentence is at `:17`). It has 21 review files on main, 14 of which led to a fix, a correction or a decision traceable in its record (a reader session's classification, 17 of the 21 from index rows). In its decision D35, an independent review found two things the builder's self-check had missed, while the self-check re-ran a count the reviewer could not reach; both documents were kept, because each saw something the other could not. In Forager, an independent review caught 37 guessed record timestamps (record 2026-09-28-608). This repository's own record named the need first: RECORD.md 2026-08-15-04, Finding 1, "a single investigation is one sample, not a determination".
+
+Standing: the strongest of the candidates, in one project family. Role Partition has no reviewer role, so promoting this would amend it.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
