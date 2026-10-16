@@ -20,6 +20,8 @@ The planner does not state what a file contains, which IDs are in use, what a pr
 
 In practice this means writing "confirm the archive count and use what you find" rather than "the archive contains two entries." Both point at the same place. Only one can be wrong.
 
+Promoted 2026-10-16 into PHILOSOPHY.md's Sourced Claims (RECORD.md 2026-10-16-01), with rule 2. Forager gave its planner read access to remove this rule's premise and the premise held anyway: at least 24 of its record entries describe planner slips about repository state, and a claim that a file had zero references decayed inside its own pull request (trials/forager-2026-10-16.md; Forager CLAUDE.md at 402489ae, the pitfall on a planner's picture of the repository). The text above stays as written.
+
 **2. State reaches the planner at task boundaries, carrying a commit hash.**
 
 Before drafting a prompt, the operator passes the planner the files that prompt will concern. Every passback names the commit it came from.
@@ -29,6 +31,8 @@ Claims made from a passback cite that hash: "as of 7c6f32f, RECORD.md holds 20 e
 A snapshot expires at the next commit. During a task the executor is authoritative for anything that changed, and the planner makes no new state claims.
 
 Where a prompt would dictate edits to a file the planner has not been passed at the current hash, the planner says so and stops. Working from memory is the failure this rule exists to prevent, and doing it while holding a stale file is worse, because it looks sourced.
+
+Promoted 2026-10-16 into PHILOSOPHY.md's Sourced Claims (RECORD.md 2026-10-16-01), with rule 1. Forager's practice is this rule's general form: a dispatch states the base commit it assumes, and the executing session verifies that base before acting on any claim about what exists. The text above stays as written.
 
 **3. Investigation precedes planning.**
 
@@ -124,7 +128,7 @@ Where the operator's specification and the planner's model are wrong in the same
 
 ## Standing
 
-Untested. Rules 1 through 4 are at n=0 as of writing. Rules 5 through 7 were added later from a role-separation proposal, also at n=0. Rule 8 was added later still, from a single case in which the failure it prevents did not occur. Rule 9 was added later still, at n=2, from two cases in which the failure it prevents did occur.
+Untested. Rules 1 through 4 are at n=0 as of writing. (Rules 1 and 2 were promoted into Sourced Claims on 2026-10-16; see the notes under each.) Rules 5 through 7 were added later from a role-separation proposal, also at n=0. Rule 8 was added later still, from a single case in which the failure it prevents did not occur. Rule 9 was added later still, at n=2, from two cases in which the failure it prevents did occur.
 
 To be exercised in phase 3 and reviewed afterward. Rules that earn their place are candidates for promotion to PHILOSOPHY.md, with the evidence recorded. Rules that cost more than they catch are deleted from this document, which is possible precisely because they were never installed as principles.
 

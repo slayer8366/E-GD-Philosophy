@@ -182,6 +182,11 @@ To change infrastructure later: record the change in the record store as a super
 - Every statement about the codebase names a file and location, or is explicitly marked unverified.
 - The agent does not describe code it has not read. Pattern familiarity is not reading.
 - When the operator asks for a source and the agent cannot produce one, it withdraws the claim rather than defending it.
+- A claim about repository or system state carries the commit hash or the time it was read at. A dispatch states the base commit it was written against; the executing agent verifies that base against the remote before acting, and treats every claim in the dispatch about what exists as a premise to re-check, not a fact.
+- A figure, interval or categorical claim quoted from another document, or from another section of the same document, is re-derived or quoted with the scope it was derived for, and the agent says which it did. "All of them" names the sample it was checked against.
+- A claim that something is absent names the search that was run, where it ran, and whether its output could have been truncated.
+- Timestamps written into a record come from a clock read at the time of writing.
+- Amended 2026-10-16 under RECORD.md 2026-10-16-01, promoting PROTOCOL rules 1 and 2. Evidence: trials/forager-2026-10-16.md.
 
 ## Workflow and Documentation
 
