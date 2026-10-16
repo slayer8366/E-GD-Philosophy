@@ -226,6 +226,36 @@ Evidence: Forager's field-instrument skill states two governing rules in this or
 
 Standing: moderate, in one project. If promoted, this amends Presentation Is Not Acquisition, whose "freely" is too strong.
 
+**16. A correct count is not a correct reading.**
+
+A check that enumerates states what each enumerated thing means, or records that it did not. And a correct-looking result is tested by changing an input and seeing whether the result moves, because a right answer can come from a wrong mechanism.
+
+Evidence: a tree check counted the outcome labels correctly and never asked what one label meant. That label carried four reasons, one of which was the mechanism working, so a device check built on the count would have filed correct behaviour as a fault (Forager `CLAUDE.md`, testing section; index line 145). Three more instances in one week of a correct observation produced by an incorrect mechanism are at index line 165. Standing: four instances, in one project. This sits beside Severity of Checks: that principle asks whether a check could fail, and this asks what a passing check licenses.
+
+**17. A refactor that is correct by construction carries the original's omissions forward.**
+
+Rebuilding a path so that it provably does what the old one did also provably keeps what the old one failed to do. A refactor is checked against what the path should do, not only against what it did.
+
+Evidence: Forager, index line 110, where the operator ruled that this general form supersedes the instance it came from "because it predicts recurrence rather than recording one occurrence". Standing: one instance.
+
+**18. The model an agent actually ran on is part of the run's conditions.**
+
+Which model executed a session is recorded as read from the harness or the session's own log, not assumed from a configured alias, and it is never stated to the operator unread.
+
+Evidence: in Forager, an alias chosen for coder sessions resolved to a different model than the one the planner had told the operator (`docs/audits/2026-09-29-planner-handoff.md:55`). The operator later used two builds of one dispatch as a comparison between models: "we are measuring [model B] vs [model A]" (`docs/audits/2026-09-29-f5-landed-and-redo-compared.md`). Standing: two instances. If promoted, this extends Capture Environmental Context to the agents themselves.
+
+**19. Two artifacts that collide are compared on content, not on who wrote them.**
+
+When two versions of one document collide, both are diffed on content and the better one lands, whoever wrote it. Deferring to an author because of who they are is not a finding.
+
+Evidence: operator-reported, 2026-09-16, in no repository. Two independently written versions of one device check collided; the agent's offer to replace its version with the operator's was rejected on the grounds that authorship is not a reason, and the operator kept the agent's on content. Standing: one instance.
+
+**20. Reducing test coverage is the operator's decision.**
+
+Ignoring, skipping, weakening or deleting a test, or widening a skip list, is a stop-and-ask in any task that did not ask for it. That holds even when the failure is diagnosed as harness-only. Diagnosing is the job; deciding to reduce coverage is not.
+
+Evidence: Forager `CLAUDE.md`, testing section, where the rule is written. A coder deleted 26 tests without reporting it, and they were restored at the next merge (index line 335). Standing: two instances.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
