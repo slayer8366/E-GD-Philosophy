@@ -1150,3 +1150,45 @@ Forager's record at 97f26098, counted by script: 1,275 entries; per type, intent
 **Abort conditions:** A check failing in a way not predicted. A type that cannot be defined from Forager's actual entries without inventing fields (stop and report it rather than fill it in). Any wording that would make this repository's checker fail its own record.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-06
+
+**Timestamp:** 2026-10-16T23:00:11Z
+
+**Closes:** 2026-10-16-05
+
+**Outcome:** completed
+
+**Observed:** RECORDING.md is E-GD's recording method, on branch recording-method-2026-10-16, pushed, in these commits after the intent (8fc3569):
+
+- ec9c167: what every entry carries, what goes in, the twelve entry types and this repository's own record; with the pointers from ENFORCEMENT.md, README.md and PROTOCOL rule 14.
+- dcbef0a: backups before merges, with a pointer from Immutable Append-Only History.
+- 7a6d89d: the index.
+- 9b398a6: the report disclosure sections, also in Complete Execution Reports and BOOTSTRAP.md's non-negotiable 5.
+- d749650: correction of a claim in 9b398a6.
+- 5c6b56f: the fourth terminal outcome, partial, in PHILOSOPHY.md, ENFORCEMENT.md and BOOTSTRAP.md.
+
+Checks, through check_register.py, each with a positive control:
+
+- RECORDING.md's twelve types and counts equal a count by script over Forager's record at 97f26098, summing to 1,275. Control: one count changed to 6 failed, naming handoff.
+- Scope against 57af78f: 9 paths, all in scope, and PHILOSOPHY.md changed on its Terminal Intent Entries line only. Control: a second principle line changed in a scratch worktree failed, naming it.
+- check_record.validate_entries accepts a terminal with Outcome partial and a Deferred field. Control: an abandoned terminal with no Working-state was rejected, naming the missing field.
+- check_glossary.py, check_record.py and check_prompts.py are run after this entry is written and before its commit; their results are in REGISTER.md beside this commit.
+
+The five disclosure sections, as RECORDING.md now asks of a report:
+
+Confirmed against inferred. The twelve types, their counts and the share of entries carrying each field are counted by script from Forager's record. Each type's purpose is read from its fields and from one recent example of each, and is inferred for the types with few entries (finding, 3; handoff, 5). The provenance labels are read from forager-forecast's decision log; the five report sections from Forager's operating guide.
+
+Could not determine. Whether Forager's later dispatch-note form, a change to a running dispatch, was ever ruled on as a change of meaning, or just drifted into use.
+
+Premises that were wrong. Two, both in the proposal preserved at prompts/preserved/2026-10-16-05.md. (a) "One ('outcome') closes an intent exactly like a terminal does", and the table's "Absorbs Forager's 'outcome' type, which did the same job": of the 40 outcome entries, 35 carry Continues, 4 Closes and 1 neither, so outcome mostly reports a result against open work. The operator's ruling kept it as its own type, and RECORDING.md states the real counts. (b) "Claude-kit v0.2's checker, where four of the types were first defined": intent and terminal are this repository's own; the kit added three (continuation, merge, dispatch-note), and also revert, which Forager never used and RECORDING.md does not adopt.
+
+Decided beyond scope. The kit's revert type was left out: it is not one of Forager's twelve, and Forager never used it. The overlaps between types (outcome with terminal, finding with observation, correction as a field) were stated in RECORDING.md rather than resolved, in keeping with the ruling to keep all twelve.
+
+Observed, not asked. Forager's own RECORD.md header still names check_record.py and check_prompts.py as the place its format is defined, and neither is in its tree. Forager's terminals carry two outcomes no list allows ("parked", "both") and eight written "completed;". RECORDING.md, like PROTOCOL.md, is checked by nothing.
+
+**Deviations:** The proposal's two wrong premises above, corrected in what was written. 9b398a6 claimed that Forager added the fifth report section on 2026-09-12; its index records the gap that day, not a section, and d749650 corrects the claim without amending 9b398a6. No existing RECORD.md or REGISTER.md entry was edited. No check script was changed. This repository's own record still writes only intent and terminal entries, as RECORDING.md says it will until the checker is updated on the operator's go.
+
+---

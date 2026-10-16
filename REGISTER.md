@@ -1989,3 +1989,234 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** partial_outcome_accepted_by_check_record
+
+**Timestamp:** 2026-10-16T22:59:16Z
+
+**Expected failure mode:** Would fail if check_record.validate_entries reported any error for a terminal with Outcome: partial and a Deferred field, or if the control (an abandoned terminal with no Working-state) were not rejected naming Working-state. Expected PASS.
+
+**Command:** python3 -I /tmp/egd-scripts/partial_check.py /home/zynergy-labs/Zynergy/E-GD-Philosophy
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    partial with Deferred: errors [] unterminated []
+    control, abandoned without Working-state: errors ["terminal 2026-01-01-02: outcome 'abandoned' requires field 'Working-state'"]
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** recording_types_match_forager
+
+**Timestamp:** 2026-10-16T22:59:33Z
+
+**Expected failure mode:** Would fail if RECORDING.md's twelve types or their counts differ from a count by script over Forager's record at 97f26098, or do not sum to 1,275. Expected PASS.
+
+**Command:** python3 -I /tmp/egd-scripts/types_check.py /home/zynergy-labs/Zynergy/E-GD-Philosophy/RECORDING.md /tmp/egd-curate/RECORD.md
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    defined: 12 sum 1275
+    actual: 12 sum 1275
+    mismatches: {}
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff_2026_10_16_05
+
+**Timestamp:** 2026-10-16T22:59:33Z
+
+**Expected failure mode:** Against 57af78f: would fail naming any path outside 2026-10-16-05's scope, or any PHILOSOPHY.md line changed other than Terminal Intent Entries. Expected PASS, with exactly two PHILOSOPHY.md diff lines (one removed, one added).
+
+**Command:** python3 -I /tmp/egd-scripts/scope_check3.py /home/zynergy-labs/Zynergy/E-GD-Philosophy 57af78f
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    paths changed since 57af78f: 9
+      BOOTSTRAP.md
+      ENFORCEMENT.md
+      PHILOSOPHY.md
+      PROTOCOL.md
+      README.md
+      RECORD.md
+      RECORDING.md
+      REGISTER.md
+      prompts/preserved/2026-10-16-05.md
+    PHILOSOPHY.md changed lines: 2, outside Terminal Intent Entries: 0
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** control_recording_types_catches_wrong_count
+
+**Timestamp:** 2026-10-16T22:59:45Z
+
+**Expected failure mode:** Positive control: a copy of RECORDING.md with handoff's count changed from 5 to 6. Expected exit 1, FAIL, mismatch handoff (6, 5), sum 1276.
+
+**Command:** python3 -I /tmp/egd-scripts/types_check.py /tmp/egd-ctl/RECORDING.md /tmp/egd-curate/RECORD.md
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    defined: 12 sum 1276
+    actual: 12 sum 1275
+    mismatches: {'handoff': (6, 5)}
+    FAIL
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** control_scope3_catches_other_philosophy_line
+
+**Timestamp:** 2026-10-16T22:59:45Z
+
+**Expected failure mode:** Positive control: scratch worktree at HEAD with a second PHILOSOPHY.md line (Checks Decay) changed. Expected exit 1, FAIL, 4 changed lines, 2 outside Terminal Intent Entries.
+
+**Command:** python3 -I /tmp/egd-scripts/scope_check3.py /tmp/egd-ctl-wt 57af78f
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    paths changed since 57af78f: 8
+      BOOTSTRAP.md
+      ENFORCEMENT.md
+      PHILOSOPHY.md
+      PROTOCOL.md
+      README.md
+      RECORD.md
+      RECORDING.md
+      prompts/preserved/2026-10-16-05.md
+    PHILOSOPHY.md changed lines: 4, outside Terminal Intent Entries: 2
+    FAIL: [] ['-**Checks Decay:** A check is verified once, at birth, by it', '+**Checks Decay:** A check is verified at most once, at birt']
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_terminal_2026_10_16_06
+
+**Timestamp:** 2026-10-16T23:00:12Z
+
+**Expected failure mode:** Expected PASS: 30 entries, none unterminated, walk 27 commits (26 plus intent 2026-10-16-05's commit).
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 30
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-05: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 27 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_terminal_2026_10_16_06
+
+**Timestamp:** 2026-10-16T23:00:12Z
+
+**Expected failure mode:** Expected PASS: 10 dispatch-recording entries, preserved=9.
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 10
+    files under prompts/: preserved=9, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_terminal_2026_10_16_06
+
+**Timestamp:** 2026-10-16T23:00:12Z
+
+**Expected failure mode:** Expected PASS, unchanged at 45/44/45.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 45
+    enforcement entries:  44
+    glossary rows:        45
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+
