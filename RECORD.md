@@ -1192,3 +1192,58 @@ Observed, not asked. Forager's own RECORD.md header still names check_record.py 
 **Deviations:** The proposal's two wrong premises above, corrected in what was written. 9b398a6 claimed that Forager added the fifth report section on 2026-09-12; its index records the gap that day, not a section, and d749650 corrects the claim without amending 9b398a6. No existing RECORD.md or REGISTER.md entry was edited. No check script was changed. This repository's own record still writes only intent and terminal entries, as RECORDING.md says it will until the checker is updated on the operator's go.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-07
+
+**Timestamp:** 2026-10-16T23:19:29Z
+
+**Title:** E-GD's record checker accepts the twelve entry types of RECORDING.md with minimal required fields; Forager's record header text prepared for its planner
+
+**Dispatch-file:** preserved/2026-10-16-07.md
+
+**Change:** check_record.py's validate_entries and check_duplicate_terminals are extended to RECORDING.md, with minimal required fields by the operator's answer:
+
+- All twelve types are accepted: intent, terminal, continuation, decision, outcome, observation, finding, device-note, correction, merge, dispatch-note, handoff.
+- Every type other than intent and terminal requires Kind, ID, Timestamp and Notes (the who-wrote-it line), plus its link field:
+  - continuation: Continues, naming an intent earlier in the file and still open there, and carrying no Closes, Outcome, Superseded-by, Finish line or prediction field (the kit's rule);
+  - finding: Continues;
+  - correction: Corrects, every ID in it naming an earlier entry;
+  - outcome: Continues or Closes;
+  - merge: Merge-commit and Backup, the two RECORDING.md makes essential;
+  - dispatch-note: Dispatch-file or Dispatch, its two forms.
+- A Continues on any other type names an earlier entry.
+- Closes is allowed only on terminal and outcome. An outcome with Closes counts as the intent's closing entry, both for the unterminated list and for the check that an intent is closed only once.
+- A terminal's Outcome must be completed, partial, superseded or abandoned. Partial requires Deferred, and completed may not carry it.
+- Intent and terminal requirements are otherwise unchanged.
+
+The self-test suite (--render-check) gains a check for each rule, written and committed first and observed failing. The file's docstring stops saying validate_entries and check_duplicate_terminals are unmodified from the vendored copy. RECORDING.md's section on this repository's own record states what the checker now requires.
+
+The text of a new header for Forager's RECORD.md, to the operator's answer "Forager's own record header", is written here and handed to the operator for the Forager planner to place (the operator's answer "The planner writes it"). This session writes nothing in Forager.
+
+**Scope boundary:** check_record.py, RECORDING.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-07.md, on branch record-checker-2026-10-16 cut from Test-1 at 5b9ffdd.
+
+Out of scope:
+
+- check_prompts.py, check_glossary.py, check_register.py.
+- The ID format: it stays YYYY-MM-DD-NN, although Forager's IDs carry three or four digits after the date.
+- Forager's repository in any form.
+- Merging into Test-1, which waits for the operator's go.
+
+**Baseline:** Branch record-checker-2026-10-16 at 5b9ffdd2d62d71bb7823a5e344d81b98faa92e97, equal to origin/Test-1 after git fetch; tree clean. check_record.py PASS at 30 entries, none unterminated, a 28-commit walk; its --render-check PASS at 18 of 18; check_prompts.py PASS at 10, preserved=9; check_glossary.py PASS at 45/44/45. Every existing entry in this repository's record is an intent or a terminal, and every terminal's Outcome is completed.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):**
+
+- Tests-first commit: --render-check runs 36 checks. Checks 1 to 18 pass. 17 of the 18 new checks fail, each with an assertion message naming the rule that is missing. The exception is the guard that an unknown kind is still rejected, which passes before and after by design and is reported as a guard, not as evidence.
+- After the change: 36 of 36 pass, and check_record.py on this repository's own record still passes at 31 entries and later 32, because nothing in it uses the new types.
+- Sabotage runs on copies in a temporary directory, never on this tree's file: each new rule disabled by a one-line edit makes its own check fail, and the run's summary line is present (no syntax error) before any result is read.
+- The forward change is confirmed present by sha256 after the runs. check_prompts.py goes to 11 entries and preserved=10.
+
+**Finish line:** Tests-first commit, implementation commit and RECORDING.md commit pushed; the sabotage runs and the checks recorded through check_register.py after the terminal is written and before its commit; a pull request into Test-1; the Forager header text given to the operator. Not merged.
+
+**Abort conditions:** A new check that does not fail first for its stated reason (repair the check before writing the rule). An existing check 1 to 18 failing after the change. The repository's own record failing under the new rules. A sabotage run whose build errors (stop and report rather than read its results).
+
+---
