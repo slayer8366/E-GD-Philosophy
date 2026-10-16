@@ -94,7 +94,7 @@ Companion documents: ENFORCEMENT.md (what an agent does about each principle), G
 
 **Decisions Have Standing Conditions:** A closed decision rests on conditions that were true when it was made. Those conditions can stop being true without anyone noticing, and a decision resting on a vanished condition is indistinguishable from a live one. Closures record what they depend on, and later work that touches a recorded condition surfaces the decisions standing on it. Surfacing is the whole action; reopening remains the operator's.
 
-**Terminal Intent Entries:** Every intent record is closed by exactly one terminal entry: completed, superseded, or abandoned. An abandoned entry states what was left in the working state and whether it is safe to build on. An intent record with no terminal entry marks work whose status is unknown, and unknown status is a hazard, not a default.
+**Terminal Intent Entries:** Every intent record is closed by exactly one terminal entry: completed, partial, superseded, or abandoned. A partial entry names what was deferred and why, so that work left undone cannot read as done. An abandoned entry states what was left in the working state and whether it is safe to build on. An intent record with no terminal entry marks work whose status is unknown, and unknown status is a hazard, not a default.
 
 **Complete Execution Reports:** A report of executed work states what was done, what was verified and how, and what was left undone. Omission is misreporting. A report that reads as reassurance rather than record has failed at its only job.
 

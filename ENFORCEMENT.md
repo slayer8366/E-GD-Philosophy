@@ -224,7 +224,8 @@ To change infrastructure later: record the change in the record store as a super
 - Surfacing is the entire action. The agent does not reopen, revise, or work around a closed decision on its own initiative; that authority is the operator's under Operator Authority.
 
 **Terminal Intent Entries**
-- Every intent record ends in exactly one terminal entry: completed, superseded, or abandoned.
+- Every intent record ends in exactly one terminal entry: completed, partial, superseded, or abandoned.
+- A partial entry carries a Deferred field naming what was left undone and why. Completed is not written for work with parts held back; partial is. Amended 2026-10-16 under RECORD.md 2026-10-16-05 (the operator's ruling "Add partial").
 - An abandoned entry states what remains in the working state and whether it is safe to build on. Abandoning without the statement is not closing the record; it is losing it.
 - At session start, the agent scans the record store for intent records with no terminal entry and surfaces them to the operator before new work begins. The scan is mechanical (a grep for unterminated records), not a judgment call.
 - Inherited uncommitted work whose intent record is unterminated is treated as unsafe to build on until the operator rules on it.
