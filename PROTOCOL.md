@@ -142,6 +142,29 @@ Evidence: forager-forecast decision D18 (`docs/planning/DECISIONS.md:114` at `b9
 
 Standing: the strongest of the candidates, in one project family. Role Partition has no reviewer role, so promoting this would amend it.
 
+**12. What a gate costs decides whether it survives.**
+
+Every gate has a running cost, paid in operator attention, compute, latency or usage limits. A gate whose cost is paid on every action is the first to be removed, and it is often removed wholesale, taking the cheap gates down with the expensive one. So a gate's running cost is priced before it is installed, and checks that run at commit or in CI are preferred over checks that run on every action.
+
+A guard enforced only in some checkouts, sessions or command routes protects only those. The routes it does not see are listed when it is installed.
+
+When a gate is removed or disabled, the removal records what stops being enforced. A required field with no checker behind it should be expected to disappear at the next change of session, so whoever removes a checker says which fields it was holding.
+
+Evidence, all from Forager (trials/forager-2026-10-16.md):
+
+- Per-dispatch operator approval was removed four days after it began. The operator: "Can't have me hitting buttons. Those hooks need to change" (`docs/audits/2026-09-26-approval-exempt-build-device.md`).
+- The whole hook kit was disabled and deleted on 2026-09-27 "to work around weekly limits" (`docs/audits/2026-09-27-kit-hooks-disabled.md`). That note is the model for recording a removal: its section 3 lists what stops being enforced.
+- The guards' own bypass table: a script, a subshell, a split variable or a build alias passed every guard except the planner's tool restriction. A merge went through the hosting service's API from a checkout that carried no hooks.
+- What decayed after the checkers went:
+  - Prediction fields fell from 99 of 100 intents to 0 of 143, and Finish line to 31 of 143.
+  - 1,646 entry errors and 307 binding violations accumulated unseen.
+  - The working trunk was bypassed for about two weeks.
+- What survived without enforcement: dispatches as files, verbatim quotes, revert checks, and the pre-build disclosure sections.
+
+The operator ruled the loss of predictions to be drift, not a decision (prompts/preserved/2026-10-16-01.md), so Intent-Driven Engineering's prediction requirement stands unchanged. Forager is recorded as a gate lost once its checker was removed.
+
+Standing: four removals or bypasses, plus the decay above, in one project. If promoted, this amends Automated Boundary Enforcement, which says a boundary defended only by convention is undefended but says nothing about what a defence costs.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
