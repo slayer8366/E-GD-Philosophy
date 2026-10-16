@@ -1100,3 +1100,53 @@ Observed but not asked: Forager's own 2026-09-27 note still gives only the weekl
 No existing RECORD.md or REGISTER.md entry was edited. No check script or principle file was changed.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-05
+
+**Timestamp:** 2026-10-16T22:56:18Z
+
+**Title:** Forager's recording method written into E-GD as RECORDING.md: twelve entry types as Forager used them, backups before merges, the index, the report disclosure sections, and a fourth terminal outcome, partial
+
+**Dispatch-file:** preserved/2026-10-16-05.md
+
+**Change:** A new RECORDING.md holds the method, in one commit per section:
+
+- what every entry carries and the admission rule (PROTOCOL rule 14, promoted);
+- the twelve entry types, defined from the fields Forager's record actually uses: intent, terminal, continuation, decision, outcome, observation, finding, device-note, correction, merge, dispatch-note, handoff. These are kept as twelve, synonyms included, by the operator's ruling "Keep all twelve";
+- backups before merges;
+- the index;
+- the report disclosure sections;
+- how this repository's own record stands until its checker is updated.
+
+Other edits:
+
+- ENFORCEMENT.md: the record-store infrastructure item, Immutable Append-Only History and Complete Execution Reports point to RECORDING.md, with pointers to this entry.
+- The principle Terminal Intent Entries gains a fourth outcome, partial, with a Deferred field, in PHILOSOPHY.md, ENFORCEMENT.md and BOOTSTRAP.md (the operator's ruling "Add partial").
+- BOOTSTRAP.md's report rule names the disclosure sections.
+- PROTOCOL.md rule 14 is marked promoted.
+- README.md gains a row.
+
+**Scope boundary:** RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-05.md, RECORDING.md (new), ENFORCEMENT.md, PHILOSOPHY.md (Terminal Intent Entries only), BOOTSTRAP.md, PROTOCOL.md, README.md, on branch recording-method-2026-10-16 cut from Test-1 at 57af78f.
+
+Out of scope:
+
+- check_record.py and every other check script. Updating them is a separate change, on its own go, by the operator's ruling.
+- Writing any of the new entry types into this repository's own RECORD.md, which the current checker would fail.
+- Forager's record, including its 63 intents with no terminal.
+- Merging into Test-1, which waits for the operator's go.
+
+**Baseline:** Branch recording-method-2026-10-16 created at 57af78fe4fd73576132280d5e98016909a92a308, equal to origin/Test-1 after git fetch; tree clean. check_record.py PASS at 28 entries, none unterminated, a 26-commit walk; check_prompts.py PASS at 9 entries, preserved=8; check_glossary.py PASS at 45/44/45. RECORDING.md does not exist.
+
+Forager's record at 97f26098, counted by script: 1,275 entries; per type, intent 243, terminal 166, continuation 330, decision 224, outcome 40, observation 21, finding 3, device-note 11, correction 13, merge 91, dispatch-note 128, handoff 5. Terminal outcomes as written: completed 150 (8 of them with trailing punctuation), abandoned 6, superseded 5, partial 3, parked 1, both 1. Outcome entries: 35 carry Continues, 4 carry Closes, 1 neither. 1,004 entries say who wrote them; 548 name the next free ID. Claude-kit v0.2's check_record.py defines intent, terminal (outcomes completed, partial, superseded, abandoned; partial requires Deferred), dispatch-note, continuation, merge and revert.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** check_glossary.py stays at 45/44/45, PASS: no headword is added, and no line written into PHILOSOPHY.md or ENFORCEMENT.md starts with bold text and a colon or is a whole line of bold. check_record.py passes at 30 entries after the terminal, none unterminated, with a 27-commit walk before the terminal's commit (26 plus this intent's); it accepts a terminal whose Outcome is partial, because it validates only superseded and abandoned outcomes, so this repository can already write partial. check_prompts.py passes at 10 entries, preserved=9. RECORDING.md defines exactly twelve types, each with its Forager count, and those counts sum to 1,275. A scope diff against 57af78f lists only paths inside this entry's scope.
+
+**Finish line:** Every section committed and pushed; checks run after the terminal is written and before its commit, through check_register.py; a pull request opened into Test-1. Not merged.
+
+**Abort conditions:** A check failing in a way not predicted. A type that cannot be defined from Forager's actual entries without inventing fields (stop and report it rather than fill it in). Any wording that would make this repository's checker fail its own record.
+
+---
