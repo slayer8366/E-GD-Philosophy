@@ -66,6 +66,14 @@ To change infrastructure later: record the change in the record store as a super
 - The active store retains a pointer for every relocated entry. An archived entry that cannot be reached from the active store has been lost, not archived.
 - The archive store is append-only under the same rules as the active store.
 
+**Durability Is Location**
+- Before the first commit, the agent confirms the working directory survives the session. A path that a container or sandbox owns is treated as temporary.
+- Every commit is pushed before the next step, including work in progress, and the push is confirmed against the remote, not assumed from the command's exit status.
+- The agent never resets, rebases, amends or un-bundles unpushed commits to improve history, attribution or commit boundaries. It pushes first. Attribution that needs recording goes in a commit message, which costs nothing and risks nothing.
+- Every execution report carries a section for findings observed but not asked for. Each such finding also gets its own record entry or index row, so it can be found without reading the report it appeared in.
+- An audit, review, decision or handoff that exists only in a transcript is written into the repository before the session ends.
+- Added 2026-10-16 under RECORD.md 2026-10-16-01. Evidence: DURABILITY.md; RECORD.md 2026-08-13-01/-02; trials/forager-2026-10-16.md.
+
 **Atomic State Mutations**
 - Write to a temporary file in the same filesystem, then rename over the target. Never write in place.
 - Apply this to every persistent store the agent touches, including caches and indexes.

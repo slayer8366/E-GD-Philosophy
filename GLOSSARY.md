@@ -18,6 +18,7 @@ Mapping is one-to-one. Where two principles jointly govern an area, each still o
 | Content-Addressed Identification | Data Integrity and Traceability | Content-Addressed Identification | Active |
 | Immutable Append-Only History | Data Integrity and Traceability | Immutable Append-Only History | Active |
 | Archival Without Loss | Data Integrity and Traceability | Archival Without Loss | Active |
+| Durability Is Location | Data Integrity and Traceability | Durability Is Location | Active |
 | Atomic State Mutations | Data Integrity and Traceability | Atomic State Mutations | Active |
 | Capture Environmental Context | Data Integrity and Traceability | Capture Environmental Context | Active |
 | Reconstructable Environments | Data Integrity and Traceability | Reconstructable Environments | Active |
