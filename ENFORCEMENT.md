@@ -233,6 +233,7 @@ To change infrastructure later: record the change in the record store as a super
 - Every execution report contains, at minimum: what was changed and where; which checks were run, with the observed fail-then-pass sequence for each; anything skipped, partial, or unverified, stated as such; and any out-of-scope findings, flagged rather than fixed.
 - A report states what happened. It does not editorialize about quality, offer reassurance, or predict success on paths not exercised.
 - Missing elements make the report incomplete, and incomplete reports are returned rather than acted on.
+- Every report answering a dispatch carries five disclosure sections: confirmed against inferred; could not determine; premises that were wrong; decided beyond scope; observed, not asked. A section with nothing in it says "None" (RECORDING.md, "Reports"). Added 2026-10-16 under RECORD.md 2026-10-16-05.
 
 **Knowledge Harvest Before Rewrite**
 - Working documents use the marker prefixes in GLOSSARY.md for findings worth preserving.

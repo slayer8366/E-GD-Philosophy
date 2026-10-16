@@ -167,6 +167,20 @@ Forager's index is `docs/audits/README.md`, with 356 dated rows at `402489ae`. f
 
 This repository has no separate index. At its present size, RECORD.md and `prompts/` do the job.
 
+## Reports
+
+Every report that answers a dispatch carries, beside what landed and the evidence for it, five disclosure sections:
+
+- **Confirmed against inferred:** which claims were read or observed, and which were reasoned.
+- **Could not determine:** what was looked for and not settled, and why.
+- **Premises that were wrong:** each premise of the dispatch found false, with the line that shows it.
+- **Decided beyond scope:** every choice the dispatch did not make and the writer did (PROTOCOL rule 6).
+- **Observed, not asked:** findings outside the task's scope (Durability Is Location).
+
+A section with nothing in it says "None". An empty section and a missing one both read as unchecked.
+
+Source: Forager's planner operating guide of 2026-08-25, which asked of every report "the disclosure norm: confirmed vs. inferred, could-not-determine, any premise that turned out wrong, anything decided the dispatch didn't cover" (`docs/qc/planner-operating-guide-2026-08-25.md`). The first four were in use in roughly 90 to 100 of Forager's 258 audit documents, with nothing enforcing them (pattern counts). Forager added the fifth on 2026-09-12, after four findings were found to exist only in transcripts.
+
 ## This repository's own record
 
 This repository's check_record.py accepts only intent and terminal entries. Updating it is a separate change, made on its own go, by the operator's ruling (prompts/preserved/2026-10-16-05.md). Until then, this repository's own record writes intent and terminal entries only, and records decisions, corrections and observations inside them. The other ten types are for adopters' records, and a checker that does not know them fails them.
