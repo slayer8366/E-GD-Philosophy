@@ -214,6 +214,8 @@ Evidence:
 
 Standing: the shape of one project's record, plus the operator's practice. Untested here.
 
+Promoted 2026-10-16 into RECORDING.md (RECORD.md 2026-10-16-05), on the operator's ruling, with the twelve entry types kept as Forager used them rather than reduced to the two this rule proposed. The text above stays as written.
+
 **15. A display may change a fact's form, never remove or soften it.**
 
 Presentation Is Not Acquisition lets display paths transform data freely for the person reading them. A display is still a claim, and a person acts on it.

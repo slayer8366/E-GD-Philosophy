@@ -36,6 +36,7 @@ None of these require the agent to be smart. They require it to be observed. Tha
 | `DURABILITY.md` | Both | What an unpushed record store cost, and the rule that followed. |
 | `REGISTER.md` | Machines | The append-only log of observed check failures, written by `check_register.py`. |
 | `BUILD_TASKS.md` | Both | Two early tooling task records, kept as written. |
+| `RECORDING.md` | Both | How the record is kept: what every entry carries, what goes in, and the twelve entry types. |
 | `trials/` | Both | Readings of projects that have run the method: what fired, what was dropped, what decayed. |
 | `skills/` | Agents | The operator's skills, which the agent harness loads when their triggers fire, mapped to the principles they carry out. |
 

@@ -14,7 +14,7 @@ This lag is deliberate. If a philosophy change turns out to be wrong, the unrevi
 
 EGD assumes four pieces of infrastructure, the fourth only where a project's outputs are data artifacts. Each is named by role, not by tool, so adopters can substitute implementations without touching any enforcement entry. Set these up once before the first task.
 
-1. **Record store.** An append-only file (a CHANGELOG is enough) where intent records, completions, deviations, and superseding entries are appended. Requirements: append-only, diffable, and readable by both human and agent. Entries reference each other by stable identifiers (dates, headwords, or commit hashes).
+1. **Record store.** An append-only file (a CHANGELOG is enough) where intent records, completions, deviations, and superseding entries are appended. Requirements: append-only, diffable, and readable by both human and agent. Entries reference each other by stable identifiers (dates, headwords, or commit hashes). The recording method, its entry types and their fields, is RECORDING.md (added 2026-10-16 under RECORD.md 2026-10-16-05).
 
 2. **Working document with a harvest marker.** A scratch document (a HANDOFF file is enough) where in-progress findings accumulate, plus the marker prefixes listed in GLOSSARY.md, which flag lines that must be drained to the record store before any rewrite.
 
