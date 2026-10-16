@@ -200,3 +200,25 @@ A minimal trial record looks like this. Prediction: which gates you expect to fi
 At the finish line, compare against the prediction and write the terminal entry. Gates that fired earn their place. Gates that never fired are candidates for the appendix, not automatically failures, since a gate can be load-bearing and rare. Gates you kept bypassing are telling you something about either the gate or the project, and the log is what lets you tell which.
 
 One cheap experiment worth folding in: run part of the trial with PHILOSOPHY.md available to the agents and part with only BOOTSTRAP.md and enforcement entries. Whether rationale in context improves agent judgment on unanticipated cases, or just spends tokens, is an open question these documents cannot answer about themselves. Your trial can.
+
+## Where these ideas come from
+
+None of this is new. Most of it is the working practice of science, carried over to a setting where the instrument is a fast, confident agent. Knowing the lineage helps when a gate feels arbitrary, because the reason it exists is usually older than this project. It is not evidence that the method works. That evidence is the record, and only the record.
+
+**Falsifiability.** Popper's point, in *The Logic of Scientific Discovery* (1934, in English 1959), is that a claim no observation could contradict says nothing about the world. That is why an intent states a prediction concrete enough to be wrong, and why a check must be seen failing before its passing means anything.
+
+**Severity.** Mayo made the point operational, in *Error and the Growth of Experimental Knowledge* (1996) and *Statistical Inference as Severe Testing* (2018): passing a test is evidence for a claim only if the test would probably have failed were the claim false. Severity of Checks is this, and the revert check is its everyday form. The commonest way a check loses severity in practice is not a bad assertion but a step between the check and its subject: a coincident default, a stale artifact, a filter that drops the cases that would disagree.
+
+**Pre-registration.** An analysis whose thresholds, samples and exclusions are chosen after the data has been seen can find almost anything. Simmons, Nelson and Simonsohn called these researcher degrees of freedom ("False-Positive Psychology", 2011); Gelman and Loken called the many paths through them a garden of forking paths. Fixing those choices in a commit before the data is read is the protocol's rule 10.
+
+**Replication.** A result one investigator produced once is a candidate. Independent reproduction, with its own materials, is what promotes it. The record's own early finding, "one investigation is one sample", and the protocol's rule 11 come from here.
+
+**Construct validity.** Cronbach and Meehl asked whether a measure measures the thing it is named for ("Construct Validity in Psychological Tests", 1955). A check that counts labels correctly and never asks what a label means has the same problem. That is Assert Structural and Semantic Truths, and the protocol's rule 16.
+
+**Provenance and calibration.** A measurement without its instrument, calibration and conditions is not a measurement. That is the governing principle, Inseparability of Result and Conditions, and Sourced Claims' rule that a claim carries when it was read.
+
+**Correction by supersession.** Journals do not edit a published paper to make it right; they append an erratum or a retraction that points at it, and the original stays readable. The append-only record works the same way, for the same reason: what was believed at the time, and why it was wrong, is information.
+
+**Blinding.** A prediction seen by the person who then shapes the outcome is an unblinded assessment. The record's prediction-leak finding (2026-08-15-04) is that problem, met in a new setting.
+
+Added 2026-10-16 under RECORD.md 2026-10-16-01.
