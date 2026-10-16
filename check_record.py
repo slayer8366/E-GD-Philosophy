@@ -44,6 +44,15 @@ copy: only RECORD_NAME and the two quoted field labels differ from
 what ledger_validator_core.py carries, and that difference is
 configuration, not logic.
 
+Extended 2026-10-16 (RECORD.md 2026-10-16-07), so the "unmodified"
+above no longer holds for two functions: validate_entries and
+check_duplicate_terminals now implement RECORDING.md's twelve entry
+types with minimal required fields (OTHER_REQUIRED and the constants
+beside it), terminal outcomes completed/partial/superseded/abandoned,
+and backward links for Continues and Corrects. An outcome carrying
+Closes counts as its intent's closing entry. render_check gains checks
+19 to 36 for these rules. The other vendored functions are unchanged.
+
 main() and render_check() below are NEW CONSTRUCTION, modeled on
 OSCam's ledger_cli.py (itself new construction there, since the
 original main()/render_check() were never vendored) but not a copy of
@@ -92,6 +101,38 @@ OUTCOME_FIELD = "Prediction (outcome — planner)"
 # Not restored -- see module docstring. Carried forward unchanged from
 # the LEDGER.md-adapted value; no quoted original exists to replace it.
 SUPPLIED_FIELD = "Prediction-outcome-supplied"
+
+# RECORDING.md's entry types, added 2026-10-16 (RECORD.md 2026-10-16-07).
+# Minimal required fields, by the operator's ruling: Kind, ID, Timestamp,
+# the who-wrote-it Notes line, and each type's link field. Everything else
+# a type carries is checked by reading, not here.
+OTHER_REQUIRED = {
+    "continuation": ["Kind", "ID", "Timestamp", "Notes", "Continues"],
+    "decision": ["Kind", "ID", "Timestamp", "Notes"],
+    "outcome": ["Kind", "ID", "Timestamp", "Notes"],
+    "observation": ["Kind", "ID", "Timestamp", "Notes"],
+    "finding": ["Kind", "ID", "Timestamp", "Notes", "Continues"],
+    "device-note": ["Kind", "ID", "Timestamp", "Notes"],
+    "correction": ["Kind", "ID", "Timestamp", "Notes", "Corrects"],
+    "merge": ["Kind", "ID", "Timestamp", "Notes", "Merge-commit", "Backup"],
+    "dispatch-note": ["Kind", "ID", "Timestamp", "Notes"],
+    "handoff": ["Kind", "ID", "Timestamp", "Notes"],
+}
+# Types whose link takes one of two fields; one of the pair is required.
+ONE_OF_REQUIRED = {
+    "outcome": ("Continues", "Closes"),
+    "dispatch-note": ("Dispatch-file", "Dispatch"),
+}
+KINDS = ("intent", "terminal") + tuple(OTHER_REQUIRED)
+# Only these close an intent; an outcome closes one only when it carries Closes.
+CLOSING_KINDS = ("terminal", "outcome")
+# A continuation opens and closes nothing (Claude-kit v0.2's rule).
+CONT_FORBIDDEN = ["Closes", "Outcome", "Superseded-by", "Finish line",
+                  "Prediction (outcome — planner)",
+                  "Prediction (mechanism — coder)"]
+TERMINAL_OUTCOMES = {"completed", "partial", "superseded", "abandoned"}
+DEFERRED_FIELD = "Deferred"
+ENTRY_ID_TOKEN_RE = re.compile(r"\d{4}-\d{2}-\d{2}-\d+")
 
 
 def split_entries(text):
@@ -151,7 +192,7 @@ def validate_entries(text):
         entry_id = fields.get("ID", "").strip()
         label_for_errors = entry_id or f"entry #{i + 1} (no ID)"
 
-        if kind not in ("intent", "terminal"):
+        if kind not in KINDS:
             errors.append(f"{label_for_errors}: missing or invalid Kind "
                           f"(got {kind!r})")
             continue
@@ -163,7 +204,12 @@ def validate_entries(text):
             errors.append(f"{kind} {entry_id}: malformed ID (expected "
                           f"YYYY-MM-DD-NN)")
 
-        required = INTENT_REQUIRED if kind == "intent" else TERMINAL_REQUIRED
+        if kind == "intent":
+            required = INTENT_REQUIRED
+        elif kind == "terminal":
+            required = TERMINAL_REQUIRED
+        else:
+            required = OTHER_REQUIRED[kind]
         for req_label in required:
             value = fields.get(req_label, "").strip()
             if not value:
@@ -192,6 +238,35 @@ def validate_entries(text):
             if outcome == "abandoned" and not fields.get("Working-state", "").strip():
                 errors.append(f"terminal {label_for_errors}: outcome "
                               f"'abandoned' requires field 'Working-state'")
+            if outcome and outcome not in TERMINAL_OUTCOMES:
+                errors.append(f"terminal {label_for_errors}: outcome "
+                              f"{outcome!r} is not one of "
+                              f"{sorted(TERMINAL_OUTCOMES)}")
+            if outcome == "partial" and not fields.get(DEFERRED_FIELD, "").strip():
+                errors.append(f"terminal {label_for_errors}: outcome "
+                              f"'partial' requires field 'Deferred'")
+            if outcome == "completed" and DEFERRED_FIELD in fields:
+                errors.append(f"terminal {label_for_errors}: outcome "
+                              f"'completed' may not carry field 'Deferred'; "
+                              f"work with parts held back is 'partial'")
+
+        if kind in ONE_OF_REQUIRED:
+            one, other = ONE_OF_REQUIRED[kind]
+            if not fields.get(one, "").strip() and not fields.get(other, "").strip():
+                errors.append(f"{kind} {label_for_errors}: needs field "
+                              f"{one!r} or field {other!r}")
+
+        if kind not in CLOSING_KINDS and "Closes" in fields:
+            errors.append(f"{kind} {label_for_errors}: carries field "
+                          f"'Closes', but only a terminal or an outcome "
+                          f"closes an intent")
+
+        if kind == "continuation":
+            for label in CONT_FORBIDDEN:
+                if label in fields:
+                    errors.append(f"continuation {label_for_errors}: carries "
+                                  f"field {label!r}, but a continuation opens "
+                                  f"and closes nothing")
 
         if entry_id:
             if entry_id in seen_ids:
@@ -205,16 +280,61 @@ def validate_entries(text):
     intent_ids = {e["id"] for e in entries if e["kind"] == "intent" and e["id"]}
     closed_ids = set()
     for e in entries:
-        if e["kind"] != "terminal":
+        if e["kind"] not in CLOSING_KINDS:
             continue
         closes = e["fields"].get("Closes", "").strip()
         if not closes:
             continue
         if closes not in intent_ids:
-            errors.append(f"terminal {e['id']}: Closes names no existing "
+            errors.append(f"{e['kind']} {e['id']}: Closes names no existing "
                           f"intent ID (closes={closes!r})")
         else:
             closed_ids.add(closes)
+
+    # Continues and Corrects point backwards at entries that exist. A
+    # continuation's Continues names an intent still open at that point
+    # (Claude-kit v0.2's rule); any other type's names any earlier entry.
+    # The ID is the token the value starts with, since Forager's practice
+    # sometimes follows it with a parenthesis. Corrects names one or more
+    # earlier entries by ID.
+    first_pos = {}
+    for pos, e in enumerate(entries):
+        if e["id"] and e["id"] not in first_pos:
+            first_pos[e["id"]] = pos
+    for pos, e in enumerate(entries):
+        label = e["id"] or "(no ID)"
+        target_text = e["fields"].get("Continues", "").strip()
+        if target_text:
+            m = ENTRY_ID_TOKEN_RE.match(target_text)
+            target = m.group(0) if m else target_text
+            tpos = first_pos.get(target)
+            if tpos is None or tpos >= pos:
+                errors.append(f"{e['kind']} {label}: Continues {target!r} "
+                              f"names no earlier entry")
+            elif e["kind"] == "continuation":
+                if entries[tpos]["kind"] != "intent":
+                    errors.append(f"continuation {label}: Continues "
+                                  f"{target!r} names a "
+                                  f"{entries[tpos]['kind']}, not an intent")
+                else:
+                    closers = [c["id"] for c in entries[:pos]
+                               if c["kind"] in CLOSING_KINDS
+                               and c["fields"].get("Closes", "").strip() == target]
+                    if closers:
+                        errors.append(f"continuation {label}: Continues "
+                                      f"{target!r}, an intent already closed "
+                                      f"by {', '.join(closers)}")
+        corrects = e["fields"].get("Corrects", "").strip()
+        if corrects:
+            cids = ENTRY_ID_TOKEN_RE.findall(corrects)
+            if not cids:
+                errors.append(f"{e['kind']} {label}: Corrects names no "
+                              f"entry ID")
+            for cid in cids:
+                cpos = first_pos.get(cid)
+                if cpos is None or cpos >= pos:
+                    errors.append(f"{e['kind']} {label}: Corrects {cid!r}, "
+                                  f"which names no earlier entry")
 
     # A later-supplied outcome prediction cannot be written into the
     # sentinel's own intent entry -- that entry is already committed, and
@@ -284,18 +404,21 @@ def check_duplicate_terminals(entries):
     there are two or five."""
     by_closes = {}
     for e in entries:
-        if e["kind"] != "terminal":
+        if e["kind"] not in CLOSING_KINDS:
             continue
         closes = e["fields"].get("Closes", "").strip()
         if not closes:
             continue
-        by_closes.setdefault(closes, []).append(e["id"])
+        by_closes.setdefault(closes, []).append((e["id"], e["kind"]))
 
     errs = []
-    for closes, ids in sorted(by_closes.items()):
-        if len(ids) > 1:
-            errs.append(f"intent {closes} is closed by {len(ids)} terminal "
-                       f"entries, not one: {', '.join(ids)}")
+    for closes, closers in sorted(by_closes.items()):
+        if len(closers) > 1:
+            ids = [i for i, _ in closers]
+            noun = ("terminal entries" if all(k == "terminal" for _, k in closers)
+                    else "closing entries (terminal or outcome)")
+            errs.append(f"intent {closes} is closed by {len(closers)} {noun}, "
+                       f"not one: {', '.join(ids)}")
     return not errs, errs
 
 
