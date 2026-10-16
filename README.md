@@ -64,7 +64,7 @@ This is one sustained case study. Treat it as a hypothesis with a paper trail, n
 
 ## Trying it
 
-Read `OVERVIEW.md`. Set up the four pieces of infrastructure it describes, which is one afternoon. Run one small task through the whole loop, ceremony included, so you have felt the shape of it.
+Read `OVERVIEW.md`. Set up the infrastructure it describes, four pieces or three if your outputs are not data artifacts, which is one afternoon. Run one small task through the whole loop, ceremony included, so you have felt the shape of it.
 
 Then adopt the gates that keep catching things and stay skeptical of the ones that never do. Your own experience with it is evidence, which is what this asks of everything else.
 

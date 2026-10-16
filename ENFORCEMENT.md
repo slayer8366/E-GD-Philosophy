@@ -12,7 +12,7 @@ This lag is deliberate. If a philosophy change turns out to be wrong, the unrevi
 
 ## Minimal Required Infrastructure
 
-EGD assumes four pieces of infrastructure. Each is named by role, not by tool, so adopters can substitute implementations without touching any enforcement entry. Set these up once before the first task.
+EGD assumes four pieces of infrastructure, the fourth only where a project's outputs are data artifacts. Each is named by role, not by tool, so adopters can substitute implementations without touching any enforcement entry. Set these up once before the first task.
 
 1. **Record store.** An append-only file (a CHANGELOG is enough) where intent records, completions, deviations, and superseding entries are appended. Requirements: append-only, diffable, and readable by both human and agent. Entries reference each other by stable identifiers (dates, headwords, or commit hashes).
 
@@ -20,7 +20,7 @@ EGD assumes four pieces of infrastructure. Each is named by role, not by tool, s
 
 3. **Boundary checks.** A runnable check suite, however small, that mechanically asserts the structural rules in force: import restrictions, append-only verification by diff, layout assertions. One script the agent can run before commit is enough to start. Every new structural rule adds a check here or records why it cannot be checked mechanically.
 
-4. **Identity function.** One canonical content-hash routine for the project's data artifacts, owned in one module, used everywhere identity is needed. No second implementation is ever written; consumers import the one that exists.
+4. **Identity function.** One canonical content-hash routine for the project's data artifacts, owned in one module, used everywhere identity is needed. No second implementation is ever written; consumers import the one that exists. Conditional: this applies where the project's outputs are data artifacts whose identity matters, such as measurements, datasets or derived files. A project whose outputs are not such artifacts records that it has no identity function and why; Forager, an app, declined it on those grounds (trials/forager-2026-10-16.md). Made conditional 2026-10-16 under RECORD.md 2026-10-16-01.
 
 To change infrastructure later: record the change in the record store as a superseding entry, migrate or freeze the old store rather than deleting it, and update the affected enforcement entries with pointers to the change. The roles are permanent; the implementations are not.
 
