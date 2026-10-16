@@ -1817,3 +1817,175 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** reason_wording_hook_removal
+
+**Timestamp:** 2026-10-16T21:27:27Z
+
+**Expected failure mode:** Would fail naming any line in README.md, the trial record or PROTOCOL.md that gives usage or weekly limits as the reason for the hook removal without attributing them to the 2026-09-27 note. Expected PASS: one cost-kind line (rule 12's list), two attributed lines.
+
+**Command:** python3 -I /tmp/egd-scripts/reason_check.py /home/zynergy-labs/Zynergy/E-GD-Philosophy
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    trials/forager-2026-10-16.md:31: attributed
+    PROTOCOL.md:149: cost-kind
+    PROTOCOL.md:160: attributed
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** control_reason_wording_catches_old_readme
+
+**Timestamp:** 2026-10-16T21:27:27Z
+
+**Expected failure mode:** Positive control: scratch copy with README.md as of 8203cf2 ('removed them five days later because of usage limits'). Expected exit 1, FAIL naming README.md.
+
+**Command:** python3 -I /tmp/egd-scripts/reason_check.py /tmp/egd-rc-control
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    README.md:57: UNATTRIBUTED
+    trials/forager-2026-10-16.md:31: attributed
+    PROTOCOL.md:149: cost-kind
+    PROTOCOL.md:160: attributed
+    FAIL: README.md:57
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** scope_diff_2026_10_16_03
+
+**Timestamp:** 2026-10-16T21:27:27Z
+
+**Expected failure mode:** Against e098f94: would fail naming any changed path outside 2026-10-16-03's scope. Expected PASS with RECORD.md, REGISTER.md not yet (register is appended by this very run, uncommitted), README.md, PROTOCOL.md, BUILD_TASKS.md, the trial record and the new preserved prompt.
+
+**Command:** python3 -I /tmp/egd-scripts/scope_check2.py /home/zynergy-labs/Zynergy/E-GD-Philosophy e098f94
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    paths changed since e098f94: 7
+      BUILD_TASKS.md
+      PROTOCOL.md
+      README.md
+      RECORD.md
+      REGISTER.md
+      prompts/preserved/2026-10-16-03.md
+      trials/forager-2026-10-16.md
+    PASS: all inside scope
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_terminal_2026_10_16_04
+
+**Timestamp:** 2026-10-16T21:27:56Z
+
+**Expected failure mode:** Expected PASS: 28 entries, no unterminated intent, walk 25 commits (24 plus intent 2026-10-16-03's commit), working tree clean against HEAD's prefix.
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 28
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-03: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 25 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_terminal_2026_10_16_04
+
+**Timestamp:** 2026-10-16T21:27:56Z
+
+**Expected failure mode:** Expected PASS: 9 dispatch-recording entries, preserved=8.
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 9
+    files under prompts/: preserved=8, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_terminal_2026_10_16_04
+
+**Timestamp:** 2026-10-16T21:27:56Z
+
+**Expected failure mode:** Expected PASS, unchanged at 45/44/45.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 45
+    enforcement entries:  44
+    glossary rows:        45
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+

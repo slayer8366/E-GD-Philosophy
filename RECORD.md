@@ -1066,3 +1066,37 @@ This entry corrects 2026-10-16-01's characterization by citation; 2026-10-16-01 
 **Abort conditions:** A check failing in a way not predicted. Any edit that would need 2026-10-16-01 or -02 changed. Wording for the operator's approach that goes beyond what the operator said: stop and ask rather than extend it.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-04
+
+**Timestamp:** 2026-10-16T21:27:55Z
+
+**Closes:** 2026-10-16-03
+
+**Outcome:** completed
+
+**Observed:** All four changes are on branch curation-2026-10-16, pushed, after the intent (15122af):
+
+- 7b296df corrects the stated reason for Forager's hook removal in README.md, the trial record's 2026-09-27 row and PROTOCOL rule 12. Each now gives the operator's account; the 2026-09-27 note's "weekly limits" stays quoted and attributed to the note; rule 12 gains the sharper form of its lesson.
+- e793915 adds PROTOCOL candidate 21 and a trial-record section quoting the operator in full.
+- af9ea9a adds BUILD_TASKS.md's status line.
+- 0dd2193 adds the trial-record section on the five data-pipeline principles.
+
+This entry corrects 2026-10-16-01's and -02's characterization of the removal by citation; neither is edited. The "usage limits" wording also stands in the preserved proposal (prompts/preserved/2026-10-16-01.md) and in the file contents of earlier commits on this branch: README.md from 8203cf2, and rule 12 from d8bfd1d. Those are history and are not changed; this entry is the correction to read beside them.
+
+Checks, run after this entry was written and before its commit, through check_register.py:
+
+- Wording check: every mention of usage or weekly limits in README.md, the trial record and PROTOCOL.md is either attributed to the 2026-09-27 note (two lines) or names a kind of cost (one line, rule 12's list). PASS, as predicted. Positive control: the same check on a scratch copy holding README.md as of 8203cf2 failed, naming README.md:57.
+- Scope against e098f94: 7 paths, all in scope, PASS. The registered expectation was muddled about REGISTER.md, saying it would not appear yet; it appears because the register run itself modifies it in the working tree, and it is in scope either way.
+- PROTOCOL.md holds 21 numbered rules, as predicted.
+- check_glossary.py, check_record.py and check_prompts.py results are in REGISTER.md beside this commit.
+
+Observed but not asked: Forager's own 2026-09-27 note still gives only the weekly limits. Adding the operator's account there is a change to another repository, and is the operator's to direct.
+
+**Deviations:** One addition beyond the operator's words, labelled as such in rule 21: a paragraph marked "the curator's reading, not the operator's words". It reconciles rule 21 with Operator Authority by saying the operator's explicit go at a decision point is not an action gate in this rule's sense. Without it, rule 21 and the Operator Authority amendment of 2026-10-16-01 read as contradicting each other. It is offered for the operator to strike or keep.
+
+No existing RECORD.md or REGISTER.md entry was edited. No check script or principle file was changed.
+
+---
