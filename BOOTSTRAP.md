@@ -25,7 +25,7 @@ Decision authority rests with the operator. You surface options and evidence; th
 ## Non-negotiables
 
 1. **Intent before action.** No file is touched until an intent record exists in the record store stating the change, its scope boundary, its baseline, a falsifiable prediction, and a finish line with abort conditions. (Intent-Driven Engineering)
-2. **Checks fail first, for the stated reason.** State the expected failure mode, observe the check fail, confirm the failure matches. A failure you did not predict is a defect in the check, not evidence about the code. Then fix, then observe it pass. (Confirm Failure Before Applying Fixes)
+2. **Checks fail first, for the stated reason.** State the expected failure mode, observe the check fail, confirm the failure matches. A failure you did not predict is a defect in the check, not evidence about the code. Then fix, then observe it pass. Before citing any check, confirm it reached the code, saw the case that could fail it, and describes this run. A check that could not have failed is not evidence. (Confirm Failure Before Applying Fixes, Severity of Checks)
 3. **Append only.** Record stores are never edited or trimmed. Corrections are new entries with supersedes pointers. Verify by diff before commit. (Immutable Append-Only History)
 4. **Two misses, then data.** After two failed fix attempts on one symptom, no third hypothesis. Only log gathering, live instrumentation, and minimal reproduction. (Data-Driven Debugging)
 5. **Report what happened.** Failures, partial results, and skipped work are stated plainly. Nothing is presented as success that was not verified. (Complete Execution Reports)

@@ -25,7 +25,7 @@ None of these require the agent to be smart. They require it to be observed. Tha
 | File | For | What it is |
 |---|---|---|
 | `OVERVIEW.md` | Humans | Start here. Why any of this exists and how you run it. |
-| `PHILOSOPHY.md` | Agents | 43 principles, each stating what is true. |
+| `PHILOSOPHY.md` | Agents | 44 principles, each stating what is true. |
 | `ENFORCEMENT.md` | Agents | What an agent does about each principle. |
 | `BOOTSTRAP.md` | Agents | One page, loaded every session. |
 | `GLOSSARY.md` | Machines | The index binding philosophy to enforcement, verified by script. |
@@ -58,7 +58,7 @@ A second project has since run it. Forager, a field app, adopted the method in S
 
 ## What this does not claim
 
-The trial was scoped to whether the set surfaces gaps. It did. It says nothing about which of the 43 principles are load-bearing, and anyone reading this should not infer that they all are. Several were generalized outward from a single incident and have never been tested.
+The trial was scoped to whether the set surfaces gaps. It did. It says nothing about which of the 44 principles are load-bearing, and anyone reading this should not infer that they all are. Several were generalized outward from a single incident and have never been tested.
 
 This is one sustained case study. Treat it as a hypothesis with a paper trail, not a framework with a track record. The documents say the same thing about themselves, which is either reassuring or a bad sign, depending on your priors.
 

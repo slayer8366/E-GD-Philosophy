@@ -158,6 +158,17 @@ To change infrastructure later: record the change in the record store as a super
 - When the agent modifies code covered by a check and the check passes both before and after the change, the agent flags the check as possibly not covering what it claims. The flag is a report to the operator, not a trigger for the agent to rewrite the check.
 - A check with no recorded failure observation, or one whose recorded observation was voided under Confirm Failure Before Applying Fixes, is listed as unverified in any coverage claim the agent makes.
 
+**Severity of Checks**
+- Before citing any check as evidence, the agent confirms four things and states each in its report.
+  1. Reachability: the path the check exercises is reached from production code. "Who calls this?" is answered by search before "what did it produce?" is measured.
+  2. Sample: the input the check actually consumed contains the case that could fail it, confirmed by a count read against a source outside the check, such as a total that matches the source or a named property of the fixture.
+  3. Same test: the red seen before the fix came from the same, unchanged test that goes green after it, and failed with a message specific to the edit. A red from an earlier version of the test, a compile error or an unrelated exception is not that red.
+  4. Current state: the tool's output describes the state it claims to describe. The build it reports on compiled; the results it reads were written by this run; the tree it restored still holds the change under test; the path it checked is the path it was given.
+- A check that fails any of the four is reported as not having run, not as passing.
+- Verification tooling is held to this entry: revert runners, baseline comparators, guards, record checkers. Each gets a positive control before it is relied on: the case it exists to catch, fed to it, observed caught.
+- Where a test environment supplies a constant in place of a real-world quantity (a simulated device reading, a default, a fixture value), the agent reports that the check cannot test anything depending on that quantity, and routes it to Separate Execution Contexts.
+- Added 2026-10-16 under RECORD.md 2026-10-16-01. Evidence: trials/forager-2026-10-16.md.
+
 **Data-Driven Debugging**
 - After two failed fix attempts on the same symptom, the agent stops proposing fixes. Next actions are limited to: gathering raw runtime logs, instrumenting the live path, and constructing a minimal reproduction. A third speculative fix is a violation.
 

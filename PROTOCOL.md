@@ -58,6 +58,8 @@ Values that answer yes carry their source: a capture identifier, a datasheet ref
 
 The executor cannot verify these by any amount of care or capability, because it cannot observe the thing being claimed. That is what distinguishes them from every other claim in the codebase.
 
+Evidence, added 2026-10-16 (RECORD.md 2026-10-16-01): Forager supports this rule's premise at n of 5 or more. A simulated test environment reported zero for a quantity that is never zero on a device, and a fixed constant matching that zero passed the suite and failed on the device. A fake camera defaulted to ready, so the deadlock under test could not be represented. A test harness supplied a value from outside the component under test. A device reported a constant positional accuracy. The `assumed` marker this rule prescribes was never tried there, so the marking practice is still untested. Severity of Checks now carries the premise as a principle; this rule stays here for its marking practice.
+
 **6. Deciding above your authority produces output identical to deciding within it.**
 
 A role that decides something it was not authorized to decide leaves no mark. The build is coherent, the checks pass, and no later inspection of the artifact recovers where the decision was made. This is why the prohibitions in this project depend on an agent stopping to ask rather than on anything downstream catching it.

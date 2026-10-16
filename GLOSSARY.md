@@ -40,6 +40,7 @@ Mapping is one-to-one. Where two principles jointly govern an area, each still o
 | Separate Execution Contexts | Testing and Verification Culture | Separate Execution Contexts | Active |
 | Confirm Failure Before Applying Fixes | Testing and Verification Culture | Confirm Failure Before Applying Fixes | Active |
 | Checks Decay | Testing and Verification Culture | Checks Decay | Active |
+| Severity of Checks | Testing and Verification Culture | Severity of Checks | Active |
 | Data-Driven Debugging | Testing and Verification Culture | Data-Driven Debugging | Active |
 | Validate Real Event Paths | Testing and Verification Culture | Validate Real Event Paths | Active |
 | Assert Structural and Semantic Truths | Testing and Verification Culture | Assert Structural and Semantic Truths | Active |
