@@ -19,7 +19,7 @@ A test failing is not enough; it has to fail for the reason you intend.
 
 Read the message and say why it is the right one. "The dialog never opened the session because it could not, opening living inside the slot it withheld" is a report of the right failure. "It failed" is not.
 
-The red must also come from the same test, unchanged, that later goes green on the fix. A red from an earlier version of the test, rewritten before the fix landed, says nothing about the version that passes. Following fail-first to the letter does not guarantee this: the red can be real and still belong to a different test.
+The red must also come from the same test, unchanged, that later goes green on the fix. When a test still fails after the fix and is edited to pass, the edit voids the earlier red: it belongs to the version that was thrown away. And a red counts only if that same test could have passed: one that would also have failed against the fixed build carries no information about the defect. Following fail-first to the letter does not guarantee either.
 
 ## Positive controls for checks that only ever pass
 
