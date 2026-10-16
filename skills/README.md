@@ -56,3 +56,4 @@ Forager keeps untracked local copies of nine of these skills. Three of them (com
 
 ## Edits made here after copying
 - `revert-check`, protocol step 5: after restoring, confirm the forward change is still present. From Forager's CLAUDE.md, where a restore from git discarded an uncommitted change the check had just vouched for. The account copy does not have this edit.
+- `failing-test-first`, after "Read the message and say why it is the right one.": the red must come from the same unchanged test that later goes green. From Forager's "red that proves nothing" (its audit index, 2026-09-12), where the rule was followed and the red still belonged to an earlier version of the test. The account copy does not have this edit.
