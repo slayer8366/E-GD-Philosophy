@@ -148,6 +148,8 @@ Standing: the strongest of the candidates, in one project family. Role Partition
 
 Every gate has a running cost, paid in operator attention, compute, latency or usage limits. A gate whose cost is paid on every action is the first to be removed, and it is often removed wholesale, taking the cheap gates down with the expensive one. So a gate's running cost is priced before it is installed, and checks that run at commit or in CI are preferred over checks that run on every action.
 
+The sharpest form of that cost is a gate that blocks actions the agent is expected to take. Each block hands the judgment of an ordinary action back to the operator, so delegation turns into hand-holding: the operator ends up doing the agent's job of deciding that each step is fine, which is the opposite of what the gate was installed to make possible.
+
 A guard enforced only in some checkouts, sessions or command routes protects only those. The routes it does not see are listed when it is installed.
 
 When a gate is removed or disabled, the removal records what stops being enforced. A required field with no checker behind it should be expected to disappear at the next change of session, so whoever removes a checker says which fields it was holding.
@@ -155,7 +157,7 @@ When a gate is removed or disabled, the removal records what stops being enforce
 Evidence, all from Forager (trials/forager-2026-10-16.md):
 
 - Per-dispatch operator approval was removed four days after it began. The operator: "Can't have me hitting buttons. Those hooks need to change" (`docs/audits/2026-09-26-approval-exempt-build-device.md`).
-- The whole hook kit was disabled and deleted on 2026-09-27 "to work around weekly limits" (`docs/audits/2026-09-27-kit-hooks-disabled.md`). That note is the model for recording a removal: its section 3 lists what stops being enforced.
+- The whole hook kit was disabled and deleted on 2026-09-27. The operator's account, 2026-10-16: "The hooks were removed because actions agents are expected to perform were being hindered. The operator had to hold the agent's hand every step of the way, which was the opposite of the kit's intentions." (prompts/preserved/2026-10-16-03.md). The note written on 2026-09-27 records the operator's words then, "to work around weekly limits" (`docs/audits/2026-09-27-kit-hooks-disabled.md`). That note is the model for recording a removal: its section 3 lists what stops being enforced.
 - The guards' own bypass table: a script, a subshell, a split variable or a build alias passed every guard except the planner's tool restriction. A merge went through the hosting service's API from a checkout that carried no hooks.
 - What decayed after the checkers went:
   - Prediction fields fell from 99 of 100 intents to 0 of 143, and Finish line to 31 of 143.

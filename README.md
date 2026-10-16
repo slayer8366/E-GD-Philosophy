@@ -55,7 +55,7 @@ One intent record is permanently unterminated. Its prediction was never written,
 
 The prompts in `prompts/` are preserved exactly as dispatched, including a reference to a file that never existed, two contradictory section names in one document, and an instruction to close a record that was never opened. A prompt store that quietly fixes the planner's mistakes destroys its own evidentiary value.
 
-A second project has since run it. Forager, a field app, adopted the method in September 2026, installed its gates as harness hooks on 2026-09-22, removed them five days later because of usage limits, and kept going. What fired, what was dropped, and what decayed once the checkers were gone is in `trials/forager-2026-10-16.md`. Its lessons are what the October 2026 changes to the philosophy and the protocol rest on.
+A second project has since run it. Forager, a field app, adopted the method in September 2026, installed its gates as harness hooks on 2026-09-22, removed them five days later because they blocked actions the agents were expected to take, leaving the operator to hold the agent's hand at every step, and kept going without them. What fired, what was dropped, and what decayed once the checkers were gone is in `trials/forager-2026-10-16.md`. Its lessons are what the October 2026 changes to the philosophy and the protocol rest on.
 
 ## What this does not claim
 
