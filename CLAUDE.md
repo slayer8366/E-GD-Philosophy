@@ -10,7 +10,7 @@ Then, by headword rather than whole: `ENFORCEMENT.md` holds what to do about eac
 
 Loading everything every session is not diligence. It is context spent on rules that do not bear on the task.
 
-Not yet rebuilt after the store was lost: `PROTOCOL.md` (eight untested working rules) and `OPERATOR_PROFILE.template.md`. When they return, both are read at session start too.
+`PROTOCOL.md` holds the working rules still on probation; it was rebuilt on 2026-08-13 (RECORD.md 2026-08-13-13) and is read at session start too. Not yet rebuilt after the store was lost: `OPERATOR_PROFILE.template.md`. When it returns, it is read at session start too.
 
 ## Your role
 

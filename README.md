@@ -25,14 +25,19 @@ None of these require the agent to be smart. They require it to be observed. Tha
 | File | For | What it is |
 |---|---|---|
 | `OVERVIEW.md` | Humans | Start here. Why any of this exists and how you run it. |
-| `PHILOSOPHY.md` | Agents | 46 principles, each stating what is true. |
+| `PHILOSOPHY.md` | Agents | 43 principles, each stating what is true. |
 | `ENFORCEMENT.md` | Agents | What an agent does about each principle. |
 | `BOOTSTRAP.md` | Agents | One page, loaded every session. |
 | `GLOSSARY.md` | Machines | The index binding philosophy to enforcement, verified by script. |
-| `OPERATOR_PROFILE.md` | Both | Your communication requirements, filled at onboarding. |
 | `check_*.py` | Machines | The boundary checks. |
 | `RECORD.md` | Both | The append-only record store. |
 | `prompts/` | Both | Every prompt dispatched, preserved verbatim. |
+| `PROTOCOL.md` | Both | Working rules on probation: candidates that have not yet earned a place in the philosophy, each with its evidence. |
+| `DURABILITY.md` | Both | What an unpushed record store cost, and the rule that followed. |
+| `REGISTER.md` | Machines | The append-only log of observed check failures, written by `check_register.py`. |
+| `BUILD_TASKS.md` | Both | Two early tooling task records, kept as written. |
+
+`OPERATOR_PROFILE.md`, listed in this table until 2026-10-16, was lost with the first record store (see `DURABILITY.md`) and has not been rebuilt.
 
 ## What it has actually been through
 
@@ -50,7 +55,7 @@ The prompts in `prompts/` are preserved exactly as dispatched, including a refer
 
 ## What this does not claim
 
-The trial was scoped to whether the set surfaces gaps. It did. It says nothing about which of the 46 principles are load-bearing, and anyone reading this should not infer that they all are. Several were generalized outward from a single incident and have never been tested.
+The trial was scoped to whether the set surfaces gaps. It did. It says nothing about which of the 43 principles are load-bearing, and anyone reading this should not infer that they all are. Several were generalized outward from a single incident and have never been tested.
 
 This is one sustained case study. Treat it as a hypothesis with a paper trail, not a framework with a track record. The documents say the same thing about themselves, which is either reassuring or a bad sign, depending on your priors.
 
