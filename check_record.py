@@ -51,7 +51,7 @@ types with minimal required fields (OTHER_REQUIRED and the constants
 beside it), terminal outcomes completed/partial/superseded/abandoned,
 and backward links for Continues and Corrects. An outcome carrying
 Closes counts as its intent's closing entry. render_check gains checks
-19 to 36 for these rules. The other vendored functions are unchanged.
+19 to 38 for these rules. The other vendored functions are unchanged.
 
 main() and render_check() below are NEW CONSTRUCTION, modeled on
 OSCam's ledger_cli.py (itself new construction there, since the
@@ -1215,8 +1215,40 @@ def render_check():
           "a Continues on a decision naming no existing entry is accepted",
           check36)
 
+    # Checks 37-38 were written after the rules (gaps found before the
+    # revert runs); their evidence is the revert run, not a red before.
+    def check37():
+        missing = []
+        for k in OTHER_REQUIRED:
+            fields = {"Notes": None}
+            if k == "merge":
+                fields.update({"Merge-commit": "a" * 40, "Backup": "b"})
+            errors, _ = errs_of(ent(k, "2026-01-01-01", **fields))
+            if not any("2026-01-01-01" in e and "'Notes'" in e for e in errors):
+                missing.append(k)
+        assert not missing, f"types accepted without Notes: {missing}"
+
+    check("check37_every_new_kind_requires_notes",
+          "some new entry type is accepted without its who-wrote-it Notes line",
+          check37)
+
+    def check38():
+        cases = [("finding", {}, "'Continues'"), ("correction", {}, "'Corrects'"),
+                 ("merge", {"Backup": "b"}, "'Merge-commit'")]
+        missing = []
+        for k, fields, label in cases:
+            errors, _ = errs_of(ent(k, "2026-01-01-01", **fields))
+            if not any("2026-01-01-01" in e and label in e for e in errors):
+                missing.append((k, label))
+        assert not missing, f"link fields not required: {missing}"
+
+    check("check38_link_fields_required",
+          "a finding without Continues, a correction without Corrects, or a merge "
+          "without Merge-commit is accepted",
+          check38)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{36} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{38} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
