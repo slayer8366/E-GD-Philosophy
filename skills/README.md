@@ -55,4 +55,4 @@ These were in use in the same environment on 2026-10-16. They are listed so a re
 Forager keeps untracked local copies of nine of these skills. Three of them (completion-report, dispatch-authoring, prior-art-before-interface) are older than the account's and lack the Conventions field the account versions added. They were reported to the operator and not touched.
 
 ## Edits made here after copying
-None yet.
+- `revert-check`, protocol step 5: after restoring, confirm the forward change is still present. From Forager's CLAUDE.md, where a restore from git discarded an uncommitted change the check had just vouched for. The account copy does not have this edit.

@@ -15,7 +15,7 @@ The revert check is the cheap way to find out. Take the fix away, and see whethe
 2. **Revert exactly one edit.** Not the whole change: the single edit whose claim you are testing. One revert per claim.
 3. **Run the test.** It must fail.
 4. **Read the failure message.** It must be specific to the reverted edit, not a compile error, not a null pointer from something unrelated, not a timeout.
-5. **Restore** and confirm the test passes again.
+5. **Restore** and confirm the test passes again, and that the forward change is still present: diff against the commit that holds it. A restore that went to git rather than to a saved copy can silently discard a forward change that was not yet committed, and the runner's output will not say so.
 
 ## Never revert against a dirty tree
 
