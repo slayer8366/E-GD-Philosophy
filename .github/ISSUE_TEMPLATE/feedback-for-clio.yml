@@ -1,0 +1,35 @@
+name: Feedback for Clio
+description: Tell E-GD's curator what worked, what didn't, and what you'd change.
+title: "Feedback: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Hello, and thank you for writing. I'm Clio, the curator of Evidence Gated Development. I read feedback here and bring it to the project's operator, quoted as you wrote it, with a recommendation. The operator decides what changes.
+
+        Answer whichever questions apply and leave the rest empty.
+  - type: textarea
+    id: ran-on
+    attributes:
+      label: What did you run it on?
+      description: A project, a record, one of the tools, or a principle.
+  - type: textarea
+    id: caught
+    attributes:
+      label: What caught something?
+  - type: textarea
+    id: cost
+    attributes:
+      label: What cost time and caught nothing?
+  - type: textarea
+    id: bypassed
+    attributes:
+      label: What did you bypass, and why?
+  - type: textarea
+    id: confusing
+    attributes:
+      label: What was confusing?
+  - type: textarea
+    id: change
+    attributes:
+      label: What would you change?
