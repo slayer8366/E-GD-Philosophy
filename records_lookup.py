@@ -1,33 +1,58 @@
 #!/usr/bin/env python3
-"""records_lookup.py -- read-only lookup over Forager's and forager-forecast's
-records: specs/2026-10-16-records-lookup.md, built under RECORD.md
-2026-10-17-03.
+"""records_lookup.py -- read-only lookup over a project's records, in any
+set of repositories a config names: specs/2026-10-16-records-lookup.md,
+built under RECORD.md 2026-10-17-03 for Forager and forager-forecast, and
+generalized under 2026-10-17-07.
 
-  records_lookup.py COMMAND [ARGS] --forager PATH --forecast PATH [options]
+  records_lookup.py COMMAND [ARGS] [--config FILE | --preset NAME]
+                    [--repo NAME=PATH ...] [--ref NAME=REF ...] [--no-fetch]
 
-  show ID       an entry verbatim, with its citation (ID: a full Forager ID,
-                a short form -NNNN, or a forager-forecast D-number)
+  show ID       an entry verbatim, with its citation (a full ID, a short
+                form -NNNN of a dated ID, or the ID of a table row)
   links ID      what names this entry, and what it names
   search WORDS  every source, newest first, each hit cited
-  open          Forager intents with no closing entry
-  next-id       the next free Forager ID across every record file
+  open          intents with no closing entry
+  next-id       the next free ID after the record's last, across every
+                record file
+
+With no config the tool reads one repository's record at HEAD: the current
+directory, or the folder --repo repo=PATH names. --preset forager reads
+Forager's and forager-forecast's records (lookups/forager.json; give
+--repo forager=PATH and --repo forecast=PATH). --print-config prints the
+config in use. A config is one JSON object:
+
+  repos    each repository's name, with a path or null (--repo NAME=PATH
+           gives or replaces it)
+  record   name, repo, ref; shape: check_record's config keys, or null to
+           read records.json from the repository at the ref (check_record's
+           default when there is none); links: each link field, "first" or
+           "all", or null for the shape's backward links and closes field;
+           replaced_by: the words search shows beside an entry that a
+           field names, e.g. {"Supersedes": "superseded by"}
+  tables   each: name, repo, ref, path, row_pattern (two groups: an ID,
+           which may be empty, and a YYYY-MM-DD date); optional section
+           (only rows under that heading), id_pattern (show finds rows by
+           ID), supersedes_column (0 is the first), record_reference (a
+           pattern whose group names a record entry)
+  folders  each: name, repo, ref, path; files searched whole
+
+--ref NAME=REF overrides the ref of one source by its name, or of every
+source in a repository by the repository's name; a source's own wins.
 
 Every answer carries repository, ref, commit, file and line. Sources are
 read with git show and git ls-tree at a resolved commit, after git fetch
 for origin/ refs, and never checked out or written. A source that cannot
-be read is reported as NOT READ, never skipped.
+be read is reported as NOT READ, never skipped. A command the record's
+shape cannot answer says it is unsupported.
 
-Default refs (the spec's per-source decision, each overridable):
-  Forager record and prompts  origin/records-after-173
-  Forager audit index         origin/pre-main
-  forager-forecast            origin/main
-
-A Continues or Closes value is read by the ID it starts with, since
-Forager's practice sometimes follows the ID with a parenthesis; Corrects
-and Supersedes are read for every ID they carry.
+A "first" link is read by the ID its value starts with, since Forager's
+practice sometimes follows the ID with a parenthesis; an "all" link is read
+for every ID it carries.
 """
 import argparse
+import copy
 import io
+import json
 import re
 import subprocess
 import sys
@@ -39,14 +64,140 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import check_record as cr  # noqa: E402
 
-ID_TOKEN = cr.ENTRY_ID_TOKEN_RE
-LEADING_ONLY = ("Continues", "Closes")
-LINK_FIELDS = ("Continues", "Closes", "Corrects", "Supersedes")
-FORAGER_REF_RE = re.compile(r"Forager RECORD (-\d+)")
-D_ID_RE = re.compile(r"^D\d+$")
 SHORT_RE = re.compile(r"^-\d+$")
 DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})")
 MONTH_NAME_RE = re.compile(r"^\d{4}-\d{2}\.md$")
+TRAILING_NUMBER_RE = re.compile(r"^(.*?)(\d+)$")
+PRESETS_DIR = Path(__file__).resolve().parent / "lookups"
+
+# With no config: one repository's record at HEAD, shaped by its records.json
+# or check_record's default (2026-10-17-07).
+DEFAULT_LOOKUP = {
+    "repos": {"repo": "."},
+    "record": {"name": "record", "repo": "repo", "ref": "HEAD", "shape": None,
+               "links": None,
+               "replaced_by": {"Supersedes": "superseded by", "Corrects": "corrected by"}},
+    "tables": [],
+    "folders": [],
+}
+
+
+class LookupConfigError(Exception):
+    """A lookup config, or a --repo/--ref value, that cannot be used. The
+    message names the key; main() reports it and exits 2, reading nothing."""
+
+
+def _need(cond, key, msg):
+    if not cond:
+        raise LookupConfigError(f"{key}: {msg}")
+
+
+def _pattern(value, key, groups=0):
+    _need(isinstance(value, str) and value, key, "must be a non-empty pattern")
+    try:
+        rx = re.compile(value)
+    except re.error as e:
+        raise LookupConfigError(f"{key}: does not compile ({e})") from e
+    _need(rx.groups >= groups, key, f"needs {groups} group(s), has {rx.groups}")
+
+
+def _source_def(obj, key, required, optional, repos):
+    _need(isinstance(obj, dict), key, "must be an object")
+    unknown = sorted(set(obj) - set(required) - set(optional))
+    _need(not unknown, key, f"unknown key(s) {unknown}; allowed: "
+          f"{', '.join(required + optional)}")
+    for k in required:
+        _need(isinstance(obj.get(k), str) and obj[k], f"{key}.{k}", "must be a non-empty string")
+    _need(obj["repo"] in repos, f"{key}.repo", f"names {obj['repo']!r}, which is not in "
+          f"repos ({', '.join(repos)})")
+
+
+def validate_lookup(cfg):
+    """Raises LookupConfigError naming the first key that is wrong."""
+    unknown = sorted(set(cfg) - set(DEFAULT_LOOKUP))
+    _need(not unknown, "config", f"unknown key(s) {unknown}; known keys: "
+          f"{', '.join(DEFAULT_LOOKUP)}")
+    repos = cfg["repos"]
+    _need(isinstance(repos, dict) and repos and all(
+        isinstance(k, str) and k and (v is None or isinstance(v, str)) for k, v in repos.items()),
+          "repos", "must map repository names to a path or null")
+    rec = cfg["record"]
+    _source_def(rec, "record", ["name", "repo", "ref"], ["shape", "links", "replaced_by"], repos)
+    if rec.get("shape") is not None:
+        _need(isinstance(rec["shape"], dict), "record.shape",
+              "must be an object of check_record config keys, or null")
+        merged = copy.deepcopy(cr.DEFAULT_CONFIG)
+        merged.update(rec["shape"])
+        try:
+            cr.validate_config(merged)
+        except cr.ConfigError as e:
+            raise LookupConfigError(f"record.shape: {e}") from e
+    links = rec.get("links")
+    _need(links is None or (isinstance(links, dict) and all(
+        isinstance(k, str) and k and v in ("first", "all") for k, v in links.items())),
+          "record.links", 'must map field names to "first" or "all", or be null')
+    replaced = rec.get("replaced_by", {})
+    _need(isinstance(replaced, dict) and all(
+        isinstance(k, str) and k and isinstance(v, str) and v for k, v in replaced.items()),
+          "record.replaced_by", "must map field names to the words shown")
+    names = [rec["name"]]
+    _need(isinstance(cfg["tables"], list), "tables", "must be a list")
+    for i, t in enumerate(cfg["tables"]):
+        key = f"tables[{i}]"
+        _source_def(t, key, ["name", "repo", "ref", "path", "row_pattern"],
+                    ["section", "id_pattern", "supersedes_column", "record_reference"], repos)
+        _pattern(t["row_pattern"], f"{key}.row_pattern", groups=2)
+        if t.get("id_pattern") is not None:
+            _pattern(t["id_pattern"], f"{key}.id_pattern")
+        if t.get("record_reference") is not None:
+            _pattern(t["record_reference"], f"{key}.record_reference", groups=1)
+        _need(t.get("section") is None or (isinstance(t["section"], str) and t["section"]),
+              f"{key}.section", "must be a heading line or null")
+        col = t.get("supersedes_column")
+        _need(col is None or (isinstance(col, int) and not isinstance(col, bool) and col >= 0),
+              f"{key}.supersedes_column", "must be a column index (0 for the first) or null")
+        names.append(t["name"])
+    _need(isinstance(cfg["folders"], list), "folders", "must be a list")
+    for i, f in enumerate(cfg["folders"]):
+        _source_def(f, f"folders[{i}]", ["name", "repo", "ref", "path"], [], repos)
+        names.append(f["name"])
+    repeated = sorted({n for n in names if names.count(n) > 1})
+    _need(not repeated, "config", f"source names must differ; repeated: {repeated}")
+    clash = sorted(set(names) & set(repos))
+    _need(not clash, "config", f"a source and a repository share a name, so --ref "
+          f"would be ambiguous: {clash}")
+    return cfg
+
+
+def load_lookup(config=None, preset=None):
+    """(config, source file or None). A config's top-level keys replace the
+    default's whole."""
+    _need(not (config and preset), "--config", "and --preset cannot both be given")
+    if preset:
+        path = PRESETS_DIR / f"{preset}.json"
+        _need(path.is_file(), "--preset", f"no preset {preset!r} ({path} does not exist)")
+    elif config:
+        path = Path(config)
+        _need(path.is_file(), "--config", f"{config} does not exist")
+    else:
+        return copy.deepcopy(DEFAULT_LOOKUP), None
+    try:
+        user = json.loads(path.read_text())
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as e:
+        raise LookupConfigError(f"{path}: not readable as JSON ({e})") from e
+    _need(isinstance(user, dict), str(path), "must hold one JSON object")
+    merged = copy.deepcopy(DEFAULT_LOOKUP)
+    merged.update(user)
+    return validate_lookup(merged), str(path)
+
+
+def _pairs(values, flag):
+    out = {}
+    for v in values or []:
+        name, sep, val = v.partition("=")
+        _need(sep and name and val, flag, f"{v!r} is not NAME=VALUE")
+        out[name] = val
+    return out
 
 
 def _run_git(repo, *args):
@@ -60,7 +211,7 @@ class Source:
         self.repo_label, self.repo, self.ref = repo_label, repo, ref
         self.commit, self.note, self.error = None, "", ""
         if repo is None:
-            self.error = f"no --{repo_label} path given"
+            self.error = f"no path given for repo {repo_label} (--repo {repo_label}=PATH)"
             return
         if not Path(repo).is_dir():
             self.error = f"{repo} is not a directory"
@@ -120,23 +271,35 @@ def _entries_with_lines(text):
 
 
 class Records:
-    def __init__(self, args):
-        fetch = not args.no_fetch
-        self.sources = {
-            "forager record": Source("forager", args.forager, args.forager_record_ref, fetch),
-            "forager prompts": Source("forager", args.forager, args.forager_prompts_ref, fetch),
-            "forager audits": Source("forager", args.forager, args.forager_audits_ref, fetch),
-            "forecast": Source("forecast", args.forecast, args.forecast_ref, fetch),
-        }
+    def __init__(self, cfg, repo_paths, refs, fetch):
+        self.cfg = cfg
+        paths = dict(cfg["repos"])
+        paths.update(repo_paths)
+        self.sources, cache = {}, {}
+        for d in [cfg["record"]] + cfg["tables"] + cfg["folders"]:
+            ref = refs.get(d["name"]) or refs.get(d["repo"]) or d["ref"]
+            if (d["repo"], ref) not in cache:
+                cache[(d["repo"], ref)] = Source(d["repo"], paths.get(d["repo"]), ref, fetch)
+            self.sources[d["name"]] = cache[(d["repo"], ref)]
         self.entries, self.read_errors = [], []
-        rec = self.sources["forager record"]
-        if rec.commit:
-            files = []
-            if rec.show(cr.RECORD_NAME) is not None:
-                files.append(cr.RECORD_NAME)
-            files += sorted(f"records/{n}" for n in rec.ls("records") if MONTH_NAME_RE.match(n))
+        rec_def = cfg["record"]
+        self.record_name = rec_def["name"]
+        rec = self.sources[self.record_name]
+        self.shape_ok = True
+        self.shape = self._shape(rec_def, rec)
+        self.token = re.compile(self.shape["id_token_pattern"])
+        self.links = (rec_def["links"] if rec_def.get("links") is not None else
+                      {**self.shape["backward_links"], self.shape["closes_field"]: "first"})
+        self.replaced_by = rec_def.get("replaced_by", {})
+        if rec.commit and self.shape_ok:
+            record_file, mdir = self.shape["record_file"], self.shape["monthly_dir"]
+            files = [record_file] if rec.show(record_file) is not None else []
+            if mdir:
+                files += sorted(f"{mdir}/{n}" for n in rec.ls(mdir) if MONTH_NAME_RE.match(n))
             if not files:
-                rec.error = f"no RECORD.md or records/YYYY-MM.md at {rec.ref}"
+                self.read_errors.append(f"{self.record_name}: no {record_file}"
+                                        f"{' or ' + mdir + '/YYYY-MM.md' if mdir else ''} "
+                                        f"at {rec.ref}")
             for path in files:
                 for start, end, block in _entries_with_lines(rec.show(path)):
                     f = cr.parse_fields(block)
@@ -149,34 +312,51 @@ class Records:
         self.by_id = {}
         for e in self.entries:
             self.by_id.setdefault(e["id"], e)
-        self.decisions = self._rows("forecast", "docs/planning/DECISIONS.md",
-                                    r"^\| (D\d+) \| (\d{4}-\d{2}-\d{2})", "forecast decisions")
-        self.forecast_audits = self._rows("forecast", "docs/audits/README.md",
-                                          r"^\| ()(\d{4}-\d{2}-\d{2})", "forecast audits")
-        self.forager_audits = self._rows("forager audits", "docs/audits/README.md",
-                                         r"^\| ()(\d{4}-\d{2}-\d{2})", "forager audits")
-        self.session_log = self._rows("forecast", "docs/planning/START_HERE.md",
-                                      r"^\| ()(\d{4}-\d{2}-\d{2})", "forecast session log",
-                                      section="## Session log")
+        self.tables = [(t, self._rows(t)) for t in cfg["tables"]]
 
-    def _rows(self, source_name, path, pattern, label, section=None):
-        src = self.sources[source_name]
+    def _shape(self, rec_def, rec):
+        """The record's check_record config: the lookup config's shape, else
+        records.json in the record repository at the ref, else the default.
+        A records.json that is not a usable config leaves the record unread,
+        reported, rather than read with the default instead."""
+        shape = copy.deepcopy(cr.DEFAULT_CONFIG)
+        if rec_def.get("shape") is not None:
+            shape.update(rec_def["shape"])
+            return shape
+        text = rec.show(cr.CONFIG_NAME) if rec.commit else None
+        if text is None:
+            return shape
+        try:
+            user = json.loads(text)
+            if not isinstance(user, dict):
+                raise cr.ConfigError("must hold one JSON object")
+            shape.update(user)
+            return cr.validate_config(shape)
+        except (json.JSONDecodeError, cr.ConfigError) as e:
+            self.read_errors.append(f"{self.record_name}: {cr.CONFIG_NAME} at {rec.ref} is "
+                                    f"not a usable config ({e}); the record was not read")
+            self.shape_ok = False
+            return copy.deepcopy(cr.DEFAULT_CONFIG)
+
+    def _rows(self, t):
+        src = self.sources[t["name"]]
         if not src.commit:
             return []
-        text = src.show(path)
+        text = src.show(t["path"])
         if text is None:
-            self.read_errors.append(f"{label}: {path} not found at {src.ref}")
+            self.read_errors.append(f"{t['name']}: {t['path']} not found at {src.ref}")
             return []
+        section = t.get("section")
         rows, inside = [], section is None
         for n, line in enumerate(text.split("\n"), 1):
             if section is not None and line.startswith("## "):
                 inside = line.strip() == section
                 continue
-            m = re.match(pattern, line) if inside else None
+            m = re.match(t["row_pattern"], line) if inside else None
             if m:
                 cells = [c.strip() for c in line.strip().strip("|").split("|")]
                 rows.append({"id": m.group(1), "date": m.group(2), "text": line, "cells": cells,
-                             "label": label, "cite": src.cite(path, n)})
+                             "label": t["name"], "cite": src.cite(t["path"], n)})
         return rows
 
     def header(self):
@@ -208,29 +388,34 @@ class Records:
         out = []
         for label, value in e["fields"].items():
             base = re.split(r"[,(]", label)[0].strip()
-            if base not in LINK_FIELDS:
+            mode = self.links.get(base)
+            if mode is None:
                 continue
-            toks = ID_TOKEN.findall(value)
-            if base in LEADING_ONLY:
-                m = ID_TOKEN.match(value.strip())
+            if mode == "first":
+                m = self.token.match(value.strip())
                 toks = [m.group(0)] if m else []
+            else:
+                toks = self.token.findall(value)
             out += [(base, t) for t in toks]
         return out
 
 
 def cmd_show(r, key):
-    if D_ID_RE.match(key):
-        rows = [d for d in r.decisions if d["id"] == key]
-        if not rows:
-            print(f"not found: {key} in forecast decisions")
+    for t, rows in r.tables:
+        if t.get("id_pattern") is None or not re.fullmatch(t["id_pattern"], key):
+            continue
+        hit = [d for d in rows if d["id"] == key]
+        if not hit:
+            print(f"not found: {key} in {t['name']}")
             return 1
-        d = rows[0]
+        d = hit[0]
         print(f"citation: {d['cite']}")
         print(d["text"])
-        for ref in FORAGER_REF_RE.findall(d["text"]):
-            e, msg = r.resolve(ref)
-            print(f"references: Forager RECORD {ref} -> {e['id']} — {e['cite']}" if e
-                  else f"references: Forager RECORD {ref} -> {msg}")
+        if t.get("record_reference") is not None:
+            for m in re.finditer(t["record_reference"], d["text"]):
+                e, msg = r.resolve(m.group(1))
+                print(f"references: {m.group(0)} -> {e['id']} — {e['cite']}" if e
+                      else f"references: {m.group(0)} -> {msg}")
         return 0
     if _record_unread(r, f"show {key}"):
         return 1
@@ -240,10 +425,13 @@ def cmd_show(r, key):
         return 1
     print(f"citation: {e['cite']}")
     print(e["text"])
-    num = "-" + e["id"].rsplit("-", 1)[1]
-    for d in r.decisions:
-        if num in FORAGER_REF_RE.findall(d["text"]):
-            print(f"referenced by: forecast {d['id']} — {d['cite']}")
+    for t, rows in r.tables:
+        if t.get("record_reference") is None:
+            continue
+        for d in rows:
+            if any(r.resolve(m.group(1))[0] is e
+                   for m in re.finditer(t["record_reference"], d["text"])):
+                print(f"referenced by: {t['repo']} {d['id']} — {d['cite']}")
     return 0
 
 
@@ -277,37 +465,36 @@ def cmd_search(r, words):
         extra = []
         for other in r.entries:
             for field, target in r.links_from(other):
-                if target == e["id"] and field in ("Supersedes", "Corrects"):
-                    verb = "superseded by" if field == "Supersedes" else "corrected by"
-                    extra.append(f"    {verb} {other['id']} — {other['cite']}")
+                if target == e["id"] and field in r.replaced_by:
+                    extra.append(f"    {r.replaced_by[field]} {other['id']} — {other['cite']}")
         for field, target in r.links_from(e):
-            if field in ("Supersedes", "Corrects"):
+            if field in r.replaced_by:
                 extra.append(f"    {field.lower()} {target}")
-        hits.append((e["date"], "forager record", e["cite"], f"{e['id']} {title[:120]}", extra))
-    for rows in (r.forager_audits, r.decisions, r.forecast_audits, r.session_log):
+        hits.append((e["date"], r.record_name, e["cite"], f"{e['id']} {title[:120]}", extra))
+    for t, rows in r.tables:
+        col = t.get("supersedes_column")
         for row in _hits_text(rows, words):
             extra = []
-            if row["label"] == "forecast decisions":
-                sup = row["cells"][5] if len(row["cells"]) > 5 else ""
+            if col is not None:
+                sup = row["cells"][col] if len(row["cells"]) > col else ""
                 if sup and sup.lower() not in ("none", "-", ""):
                     extra.append(f"    supersedes {sup[:120]}")
-                for other in r.decisions:
-                    sup_o = other["cells"][5] if len(other["cells"]) > 5 else ""
+                for other in rows:
+                    sup_o = other["cells"][col] if len(other["cells"]) > col else ""
                     if other is not row and re.search(rf"\b{re.escape(row['id'])}\b", sup_o):
                         extra.append(f"    superseded by {other['id']} — {other['cite']}")
             hits.append((row["date"], row["label"], row["cite"], row["text"][:140], extra))
-    for name, directory, label in (("forager prompts", "prompts/preserved", "forager prompts"),
-                                   ("forecast", "docs/dispatch", "forecast dispatch")):
-        src = r.sources[name]
+    for f in r.cfg["folders"]:
+        src = r.sources[f["name"]]
         if not src.commit:
             continue
-        for fname in src.ls(directory):
-            text = src.show(f"{directory}/{fname}") or ""
+        for fname in src.ls(f["path"]):
+            text = src.show(f"{f['path']}/{fname}") or ""
             if all(w in text.lower() for w in words):
                 lines = text.split("\n")
                 n = next((i for i, l in enumerate(lines, 1) if any(w in l.lower() for w in words)), 1)
                 m = DATE_RE.match(fname)
-                hits.append((m.group(1) if m else "", label, src.cite(f"{directory}/{fname}", n),
+                hits.append((m.group(1) if m else "", f["name"], src.cite(f"{f['path']}/{fname}", n),
                              lines[n - 1][:140], []))
     hits.sort(key=lambda h: h[0], reverse=True)
     for date, label, cite, excerpt, extra in hits:
@@ -319,25 +506,29 @@ def cmd_search(r, words):
 
 
 def _record_unread(r, what):
-    """True, after saying so, when the Forager record could not be read: an
-    answer drawn from it would be a plausible value standing in for
-    nothing."""
-    if r.sources["forager record"].commit and r.entries:
+    """True, after saying so, when the record could not be read: an answer
+    drawn from it would be a plausible value standing in for nothing."""
+    if r.sources[r.record_name].commit and r.entries:
         return False
-    print(f"{what}: unknown, the Forager record was not read")
+    print(f"{what}: unknown, the record was not read")
     return True
 
 
 def cmd_open(r):
+    sh = r.shape
+    if not sh["intent_kind"]:
+        print("open intents: unsupported, the record's shape has no intent type "
+              "(intent_kind is null)")
+        return 1
     if _record_unread(r, "open intents"):
         return 1
     closed = set()
     for e in r.entries:
-        if e["kind"] in ("terminal", "outcome"):
-            m = ID_TOKEN.match(e["fields"].get("Closes", "").strip())
+        if e["kind"] in sh["closing_kinds"]:
+            m = r.token.match(e["fields"].get(sh["closes_field"], "").strip())
             if m:
                 closed.add(m.group(0))
-    opened = [e for e in r.entries if e["kind"] == "intent" and e["id"] not in closed]
+    opened = [e for e in r.entries if e["kind"] == sh["intent_kind"] and e["id"] not in closed]
     for e in opened:
         print(f"open intent: {e['id']} — {e['cite']}")
     print(f"open intents: {len(opened)}")
@@ -345,7 +536,7 @@ def cmd_open(r):
 
 
 def cmd_next_id(r):
-    src = r.sources["forager record"]
+    src = r.sources[r.record_name]
     if _record_unread(r, "next free ID"):
         return 1
     counts = Counter(e["id"] for e in r.entries)
@@ -353,27 +544,55 @@ def cmd_next_id(r):
         if n > 1:
             where = ", ".join(e["cite"] for e in r.entries if e["id"] == eid)
             print(f"warning: duplicate ID {eid} ({n} times): {where}")
-    prefix = r.entries[-1]["id"][:10]
-    nums = [e["id"][11:] for e in r.entries if e["id"][:10] == prefix and e["id"][11:].isdigit()]
+    last = TRAILING_NUMBER_RE.match(r.entries[-1]["id"])
+    if not last:
+        print(f"next free ID: unsupported, the last entry's ID "
+              f"{r.entries[-1]['id']!r} does not end in a number")
+        return 1
+    prefix = last.group(1)
+    nums = [m.group(2) for m in (TRAILING_NUMBER_RE.match(e["id"]) for e in r.entries)
+            if m and m.group(1) == prefix]
     top = max(nums, key=int)
-    print(f"next free ID: {prefix}-{int(top) + 1:0{max(2, len(top))}d} "
+    width = len(top) if top.startswith("0") else 0
+    print(f"next free ID: {prefix}{int(top) + 1:0{width}d} "
           f"(read at {src.ref}@{src.commit[:8]})")
     return 0
 
 
 def main(argv=None):
     p = argparse.ArgumentParser(prog="records_lookup.py", description=__doc__.split("\n")[0])
-    p.add_argument("command", choices=["show", "links", "search", "open", "next-id"])
+    p.add_argument("command", nargs="?", choices=["show", "links", "search", "open", "next-id"])
     p.add_argument("args", nargs="*")
-    p.add_argument("--forager")
-    p.add_argument("--forecast")
-    p.add_argument("--forager-record-ref", default="origin/records-after-173")
-    p.add_argument("--forager-prompts-ref", default="origin/records-after-173")
-    p.add_argument("--forager-audits-ref", default="origin/pre-main")
-    p.add_argument("--forecast-ref", default="origin/main")
+    p.add_argument("--config", help="a lookup config file")
+    p.add_argument("--preset", help="a config in lookups/, by name (e.g. forager)")
+    p.add_argument("--repo", action="append", metavar="NAME=PATH",
+                   help="a repository's path, by its name in the config")
+    p.add_argument("--ref", action="append", metavar="NAME=REF",
+                   help="a source's ref by its name, or every source's in a repository")
     p.add_argument("--no-fetch", action="store_true")
+    p.add_argument("--print-config", action="store_true", help="print the config in use")
     args = p.parse_intermixed_args(argv)
-    r = Records(args)
+    try:
+        cfg, _ = load_lookup(args.config, args.preset)
+        if args.print_config:
+            print(json.dumps(cfg, indent=2, ensure_ascii=False))
+            return 0
+        repo_paths = _pairs(args.repo, "--repo")
+        for name in repo_paths:
+            _need(name in cfg["repos"], "--repo", f"{name!r} is not a repository in the config "
+                  f"({', '.join(cfg['repos'])})")
+        refs = _pairs(args.ref, "--ref")
+        known = {d["name"] for d in [cfg["record"]] + cfg["tables"] + cfg["folders"]}
+        for name in refs:
+            _need(name in known or name in cfg["repos"], "--ref", f"{name!r} names no source "
+                  f"or repository in the config")
+    except LookupConfigError as e:
+        print(f"config error: {e}\nNothing was read.")
+        return 2
+    if not args.command:
+        print("give a command: show, links, search, open or next-id")
+        return 2
+    r = Records(cfg, repo_paths, refs, not args.no_fetch)
     r.header()
     if args.command in ("show", "links") and len(args.args) != 1:
         print(f"{args.command} takes one ID")

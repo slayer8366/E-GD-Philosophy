@@ -1,0 +1,70 @@
+{
+  "repos": {
+    "forager": null,
+    "forecast": null
+  },
+  "record": {
+    "name": "forager record",
+    "repo": "forager",
+    "ref": "origin/records-after-173",
+    "shape": null,
+    "links": {
+      "Continues": "first",
+      "Closes": "first",
+      "Corrects": "all",
+      "Supersedes": "all"
+    },
+    "replaced_by": {
+      "Supersedes": "superseded by",
+      "Corrects": "corrected by"
+    }
+  },
+  "tables": [
+    {
+      "name": "forager audits",
+      "repo": "forager",
+      "ref": "origin/pre-main",
+      "path": "docs/audits/README.md",
+      "row_pattern": "^\\| ()(\\d{4}-\\d{2}-\\d{2})"
+    },
+    {
+      "name": "forecast decisions",
+      "repo": "forecast",
+      "ref": "origin/main",
+      "path": "docs/planning/DECISIONS.md",
+      "row_pattern": "^\\| (D\\d+) \\| (\\d{4}-\\d{2}-\\d{2})",
+      "id_pattern": "^D\\d+$",
+      "supersedes_column": 5,
+      "record_reference": "Forager RECORD (-\\d+)"
+    },
+    {
+      "name": "forecast audits",
+      "repo": "forecast",
+      "ref": "origin/main",
+      "path": "docs/audits/README.md",
+      "row_pattern": "^\\| ()(\\d{4}-\\d{2}-\\d{2})"
+    },
+    {
+      "name": "forecast session log",
+      "repo": "forecast",
+      "ref": "origin/main",
+      "path": "docs/planning/START_HERE.md",
+      "row_pattern": "^\\| ()(\\d{4}-\\d{2}-\\d{2})",
+      "section": "## Session log"
+    }
+  ],
+  "folders": [
+    {
+      "name": "forager prompts",
+      "repo": "forager",
+      "ref": "origin/records-after-173",
+      "path": "prompts/preserved"
+    },
+    {
+      "name": "forecast dispatch",
+      "repo": "forecast",
+      "ref": "origin/main",
+      "path": "docs/dispatch"
+    }
+  ]
+}
