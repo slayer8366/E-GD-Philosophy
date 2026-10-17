@@ -1453,3 +1453,45 @@ The proposal's "Hand out the next free ID safely, so two planners can't take the
 **Abort conditions:** A figure in the spec that does not match its source when re-read before commit.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-12
+
+**Timestamp:** 2026-10-17T01:49:47Z
+
+**Closes:** 2026-10-16-11
+
+**Outcome:** completed
+
+**Observed:** specs/2026-10-16-records-lookup.md is committed on branch records-lookup-spec-2026-10-16, pushed (3b51dd5, after the intent at ac933a8), with a README.md row for specs/.
+
+- 592 words, under the template's 600.
+- Seven requirements, each with its check.
+- Three open questions for the operator: where the tool lives, whether next-id reserves IDs, and whether forager-forecast's START_HERE.md session log is a source.
+
+Nothing is built. Approving the spec is the operator's, and building on it needs its own go.
+
+Confirmed against inferred. Every figure in the spec was re-counted at the commit it cites before commit:
+
+- efef0e46: 1,287 entries, 385 prompts, 280 audit rows;
+- 462bb8ba: 735 entries, 295 prompts, 356 audit rows;
+- 97f26098: 63 intents with no closing entry, and 8 entries carrying Supersedes, 6 of them decisions;
+- b9127e5: 63 "Forager RECORD -NNNN" references.
+
+Inferred, not checked: that pre-main's audit index holds every row of the records branch's. The spec lists this as unverified.
+
+Could not determine: what forager-forecast's START_HERE.md session log holds. It was not read, and the spec says so.
+
+Premises that were wrong:
+
+- The draft said "only 6 Forager decisions carry an explicit Supersedes", where the property that matters to the tool is any entry carrying one: 8. It was corrected before commit.
+- The reply preserved in the dispatch file promised "Hand out the next free ID safely". A read-only tool can only report the next free ID and warn on duplicates; the spec says so, as the intent anticipated.
+
+Decided beyond scope: the per-source default refs (RECORD.md and prompts from records-after-173, the audit index from pre-main). This follows from the counts above, and the spec states it as a decision the operator can overturn.
+
+Observed, not asked: no Forager branch holds all of its record sources at their newest. records-after-173 has the full record and prompts but 76 fewer audit rows than pre-main, main and dev. pre-main, main and dev hold 552 fewer record entries.
+
+**Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
+
+---
