@@ -2824,3 +2824,54 @@ Registered as forager_record_1185_accepted_2026_10_17_18. The operator: "Go ahea
 **Notes:** Written by the curator, Clio, on branch forager-acceptance-verified-2026-10-17. Nothing was written in Forager's repository.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-17-19
+
+**Timestamp:** 2026-10-17T21:14:28Z
+
+**Title:** The operator profile rebuilt as a template, and an onboarding process: Clio's hello, how the operator likes to work, their profile in their own words, then the method
+
+**Dispatch-file:** preserved/2026-10-17-19.md
+
+**Change:**
+
+1. OPERATOR_PROFILE.template.md, rebuilt, since what the lost one held is not recorded. It is the form each project's operator profile is built from:
+   - who the operator is, how to ask them, how to report to them, what they decide, and standing instructions;
+   - how it is kept: every line the operator's own words, cited; added only on their yes; one-time overrides never written in.
+2. ONBOARDING.md: Clio says hello; asks how the operator likes to work, or offers to learn as we go; writes their profile; learns as it goes; then the method is set up.
+3. skills/onboarding/SKILL.md, so any agent runs onboarding the same way.
+4. Small edits:
+   - BOOTSTRAP.md: read the project's operator profile at session start, or offer onboarding where there is none.
+   - CLAUDE.md: the template is rebuilt.
+   - OVERVIEW.md, "Getting started": points to ONBOARDING.md.
+   - README.md and skills/README.md: rows for the new files.
+5. The text handed to Forager's planner: a draft of Forager's operator profile, from the owner's recorded words, plus 12 practices to confirm with the owner. Recorded as a dispatch-note.
+
+All wording is as shown to the operator and approved, with formatting and record citations added.
+
+**Scope boundary:** OPERATOR_PROFILE.template.md, ONBOARDING.md, skills/onboarding/SKILL.md (all new), BOOTSTRAP.md, CLAUDE.md, OVERVIEW.md, README.md, skills/README.md (one line or row each), RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-17-19.md and -20.md, on branch onboarding-2026-10-17, cut from Test-1 at 78975a1.
+
+Out of scope:
+
+- An operator profile in E-GD; the operator: "In each project".
+- Writing anything in Forager's repository.
+- Merging, which waits for the operator's go.
+
+**Baseline:** Test-1 at 78975a15f521c1e62999ad82cdd178f9d8b4d83e.
+- CLAUDE.md:13 says "Not yet rebuilt after the store was lost: `OPERATOR_PROFILE.template.md`".
+- README.md:48 says `OPERATOR_PROFILE.md` "has not been rebuilt".
+- RECORD.md 2026-08-13-01 names the template among the lost files and nothing else about it.
+
+The Forager quotes were checked at records-after-173 0335c015: 17 found and verified line by line. Nine practices were not found in the owner's words; five of those were spot-checked by hand.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** Documentation only. check_record.py passes at 69 entries after the terminal, none unterminated. check_prompts.py passes with 27 claims and preserved=26. check_glossary.py stays at 45/44/45.
+
+**Finish line:** The files committed, one per place, and pushed; the dispatch-note and the terminal; the checks through check_register.py; a PR. Not merged until the operator's go.
+
+**Abort conditions:** An approved wording that turns out false against the repository. Any check failing.
+
+---
