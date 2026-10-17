@@ -12,6 +12,8 @@ Loading everything every session is not diligence. It is context spent on rules 
 
 `PROTOCOL.md` holds the working rules still on probation; it was rebuilt on 2026-08-13 (RECORD.md 2026-08-13-13) and is read at session start too. Not yet rebuilt after the store was lost: `OPERATOR_PROFILE.template.md`. When it returns, it is read at session start too.
 
+A session working as E-GD's curator reads `profiles/curator.md` before its first action: it models how the curator works, from the record (PROTOCOL rule 22). A session in any other role named under that rule reads its own profile in `profiles/`. Where a profile and this file disagree, this file wins.
+
 ## Your role
 
 You are the executing agent. You edit files and run code. You make no architectural decisions. An ambiguity or a gap in your prompt is a stop-and-ask, not a judgment call.
