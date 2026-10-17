@@ -2150,3 +2150,56 @@ Out of scope:
 **Abort conditions:** A test failing first for a reason other than the missing behaviour. A requirement that cannot be met without writing to a source repository. A real-data result that contradicts the source it cites.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-17-04
+
+**Timestamp:** 2026-10-17T08:25:09Z
+
+**Closes:** 2026-10-17-03
+
+**Outcome:** completed
+
+**Observed:** records_lookup.py is built on branch records-lookup-tool-2026-10-17, stacked on PR #10's branch, pushed, after the intent (dae328e):
+
+- 12e3158: tests committed failing, 7 of 7 against a stub entry point.
+- 8cc592d: the tool.
+- A later commit: r3's fixture repaired.
+- A later commit: the unread-record answer fixed.
+- The README row.
+
+--render-check 7 of 7. The revert run's 15 sabotages each bit their requirement's check, and the repository files equalled the committed copies at the start and the end.
+
+Real data, through check_register.py where marked:
+
+- R4: open at Forager 97f26098 gave 77, and an independent script sharing no code gave the same 77 intents.
+- R6: forager-forecast's D132 (docs/planning/DECISIONS.md:8 at b9127e58) resolves "Forager RECORD -1054" to 2026-09-28-1054 at Forager's RECORD.md lines 18117 to 18124 of eb9e73d1, read by git show.
+- Registered: show for -1142, -1104, -385, -544 and -1106 printed each entry exactly as git show has its cited lines, and links listed each entry's links.
+- next-id on eb9e73d1 gave 2026-09-28-1173 after the last ID, -1172, with warnings for the duplicate -540 and -542.
+- R7: a bad ref was reported NOT READ.
+
+Confirmed against inferred: every result above was run and read. The acceptance step that the spec gives the operator, show and links on five entries of the operator's own choosing checked by hand, has not been done. The five above were the curator's choice.
+
+Could not determine: none.
+
+Premises that were wrong:
+
+- The intent expected open's real count might differ from the spec's 63, and it does: 77. The 14 extra intents count as open under the spec's rule but closed under the broader one behind 63. 12 of them are closed by a merge entry's Closes field (10 merge entries in Forager carry Closes), and 2 are named only as a later ID inside a terminal's or outcome's Closes.
+- The intent's draft claimed the governing prompt file a second time. It was corrected to "Governed by" before commit.
+
+Decided beyond scope:
+
+- The short form -NNNN, and listing candidates when it is ambiguous.
+- Reading Continues and Closes by their leading ID.
+- A forecast decision's references are resolved in show, and a Forager entry's show lists the forecast rows citing it.
+- Exit code 1 when an answer is unknown.
+
+Observed, not asked:
+
+- Forager's merge entries sometimes close intents (12 at 97f26098), while E-GD's rules let only a terminal or an outcome close one. This is a third place where Forager's practice and E-GD's rules differ, beside the two in 2026-10-17-02.
+- Four defects were found and fixed in this build. A fixture helper passed one field twice, giving a red for the wrong reason, which was repaired before any build. A name collision hid the tool's git helper. r3's fixture could not fail on the log-only rule, which the revert run found. open answered 0 from an unread record, which the real-data run found.
+
+**Deviations:** None beyond the premises above. No existing RECORD.md or REGISTER.md entry was edited. check_record.py and check_prompts.py are unchanged.
+
+---
