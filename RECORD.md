@@ -1420,3 +1420,36 @@ Observed, not asked: none.
 **Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no check script changed.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-11
+
+**Timestamp:** 2026-10-17T01:48:28Z
+
+**Title:** A spec for a read-only records lookup tool over Forager's and forager-forecast's records, for the operator's approval; no code
+
+**Dispatch-file:** preserved/2026-10-16-11.md
+
+**Change:** Write specs/2026-10-16-records-lookup.md in the form of the operator's plan-forge spec template (Goal, Scope, Out of scope, Decisions, Requirements with a check each, Constraints, Acceptance, Unverified, Open questions), under 600 words. Add a README.md row for specs/. Nothing is built.
+
+**Scope boundary:** specs/2026-10-16-records-lookup.md (new), README.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-11.md, on branch records-lookup-spec-2026-10-16 cut from Test-1 at 6ceefbf. Out of scope: any code; any change in Forager or forager-forecast; E-GD's own record as a source of the tool (the operator's scope answer names Forager and forager-forecast only).
+
+**Baseline:** Read for the spec, 2026-10-16:
+
+- Forager origin/records-after-173 at efef0e46: RECORD.md 1,287 entries, prompts/preserved/ 385 files, docs/audits/README.md 280 dated rows.
+- Forager origin/pre-main at 462bb8ba: RECORD.md 735 entries, prompts/preserved/ 295 files, docs/audits/README.md 356 dated rows. origin/main and origin/dev carry the same counts.
+- forager-forecast origin/main at b9127e5: no RECORD.md; docs/planning/DECISIONS.md 124 decision rows; docs/audits/README.md 147 dated rows; docs/dispatch/ 57 files. DECISIONS.md contains 63 references of the form "Forager RECORD -NNNN".
+- At 97f26098, 63 intents had no closing entry and 6 decisions carried Supersedes (counted earlier this session).
+
+The proposal's "Hand out the next free ID safely, so two planners can't take the same one" overclaims for a read-only tool. Reading can only report the next free ID as of a fetched commit and detect duplicates; reserving one is a write. The spec states this and leaves reservation as an open question.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** The spec file is under 600 words and every requirement names its check. check_record.py passes at 36 entries after the terminal, none unterminated, with a 33-commit walk before the terminal's commit; --render-check 38 of 38. check_prompts.py passes at 13 entries, preserved=12. check_glossary.py stays at 45/44/45. A scope diff against 6ceefbf lists only paths in scope.
+
+**Finish line:** Spec and README row committed and pushed; checks run through check_register.py; a pull request into Test-1; the spec shown to the operator for approval. Not merged; nothing built.
+
+**Abort conditions:** A figure in the spec that does not match its source when re-read before commit.
+
+---
