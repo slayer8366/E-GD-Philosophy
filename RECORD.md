@@ -1927,3 +1927,46 @@ Observed, not asked: none.
 **Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-23
+
+**Timestamp:** 2026-10-17T05:14:41Z
+
+**Title:** PROTOCOL candidate 23: a release passes an evidence gate (checks, an independent audit, the operator's approval), from Forager's production gate and auditor
+
+**Dispatch-file:** preserved/2026-10-16-23.md
+
+**Change:**
+
+- PROTOCOL.md gains rule 23, as the proposal in the dispatch file sets out. It follows the addendum where the addendum changed the original document, cites both documents at their Forager source rather than copying them, and quotes the owner only from Forager record entries.
+- trials/forager-2026-10-16.md gains a short section on the gate.
+
+**Scope boundary:** PROTOCOL.md, trials/forager-2026-10-16.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-23.md, on branch release-gate-2026-10-16 cut from Test-1 at 9f9c494. Out of scope: copying the framework documents into E-GD; any change in Forager; merging, which waits for the operator's go.
+
+**Baseline:** Test-1 at 9f9c494c9c9cbac1a397fb54ad70af384b08eb66.
+
+Read from Forager's origin/records-after-173 at 830638c3:
+
+- prompts/preserved/2026-10-16-05-auditor-framework-for-egd.md, last changed f09ff09c, sha256 beginning e4a430061c2f.
+- prompts/preserved/2026-10-16-05b-auditor-framework-addendum.md, last changed 7d6cdd45, sha256 beginning 896e06bd7e07.
+- Entries -1085, -1086, -1087, -1092, -1094, -1097, -1100, -1131 to -1136 and -1138 all exist.
+
+Quotes the rule will use, each found verbatim in its entry:
+
+- "Advises, you decide" (-1086);
+- "to reflect workability" (-1087);
+- "Field walks and device checks aren't always necessary" (-1133);
+- "the same model shares blind spots" (-1134);
+- "the rules we have are simply what we already do. Just codified" (-1138).
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** The protocol holds 23 numbered rules. check_glossary.py stays at 45/44/45. check_record.py passes at 48 entries after the terminal, none unterminated; --render-check 38 of 38. check_prompts.py passes at 19 entries, preserved=18. A scope diff against 9f9c494 lists only paths in scope.
+
+**Finish line:** Rule 23 and the trial section committed and pushed; the terminal and checks through check_register.py; a pull request into Test-1. Not merged until the operator's go.
+
+**Abort conditions:** A quote not found verbatim in its cited entry. A check failing.
+
+---
