@@ -2057,3 +2057,51 @@ Out of scope:
 **Abort conditions:** A new check not failing first for its stated reason. An existing check failing after the change. This repository's record failing. A revert or dry run whose script errors (stop rather than read its results).
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-17-02
+
+**Timestamp:** 2026-10-17T08:16:40Z
+
+**Closes:** 2026-10-17-01
+
+**Outcome:** completed
+
+**Observed:** Done on branch checker-monthly-2026-10-17, pushed, after the intent (631456c):
+
+- f50b042: tests committed failing. check_record.py had 7 of 46 checks failing, each an AssertionError naming its missing rule; the one-digit guard, check 40, passed by design. check_prompts.py's p2 failed and p1 passed.
+- be89700: the rules. Now 46 of 46 and 2 of 2 pass, and this repository's record passes unchanged in single-file mode.
+- 90f9b9f: RECORDING.md.
+
+Revert run, through check_register.py: 8 sabotages on temporary copies of the committed files, each biting its own check. Every run printed its summary line, and the repository files equalled the committed copies at the start and the end.
+
+Dry run, read-only, on a copy of Forager's RECORD.md at origin/records-after-173 eb9e73d1, split by Timestamp month in /tmp:
+
+- 1,341 entries: 511 in 2026-09, including the 43 undated ones by position, and 830 in 2026-10.
+- No step back a month.
+- The counts sum to the total, and the months' entries, joined, equal the original's byte for byte.
+- validate_entries on the single file and validate_repo on the split give the same 1,329 errors and the same 146 unterminated intents, so splitting changes nothing the checker reports.
+
+Confirmed against inferred: every result above was run and read. That the dry run's procedure is the one the Forager planner will follow is by construction: it is the steps in 2026-10-16-18. The planner's own run is not this one.
+
+Could not determine: none.
+
+Premises that were wrong: none.
+
+Decided beyond scope:
+
+- An entry-less RECORD.md beside monthly files is reported as the index, and its append-only checks are not applied. This follows RECORDING.md's one-time exception, and means the index's own history is not walked.
+- check_prompts.py gained its first self-tests.
+
+Observed, not asked. Forager's record under E-GD's rules, from the dry run: 1,329 errors. Checked against the entries:
+
+- 893 are intents missing required fields. 168 have no predictions, which is the drift the operator ruled on at 2026-10-16-01.
+- 76 of the 78 "Closes names no existing intent" errors are Closes values that carry a parenthesis after the ID, as in "2026-09-28-154 (stage device check Part 2)". The checker reads Continues by its leading ID but requires Closes to be the bare ID, and this also inflates the unterminated count.
+- 82 are continuations that continue another continuation, which Forager does and E-GD's rule, taken from the kit, does not allow.
+
+Whether E-GD's rules should follow Forager's practice on Closes and on chained continuations is the operator's to decide.
+
+**Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited.
+
+---

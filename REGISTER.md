@@ -4667,3 +4667,367 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** revert_runs_monthly_checkers_2026_10_17_01
+
+**Timestamp:** 2026-10-17T08:15:11Z
+
+**Expected failure mode:** 8 sabotages on temporary copies of the committed check_record.py and check_prompts.py, each disabling one new rule: each makes its named check fail, every run prints its summary line, and the repository files equal the committed copies at start and end. The monthly-files-read sabotage is expected to fail several monthly checks besides check41.
+
+**Command:** python3 -I /tmp/egd-scripts/revert_runner2.py /home/zynergy-labs/Zynergy/E-GD-Philosophy
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repo files equal committed copies at start: True
+    [id_digits] BITES: expected ['check39_four_digit_id_number_accepted']; failed 1 of 46; others: []
+    [month_check] BITES: expected ['check43_entry_in_wrong_month_caught']; failed 1 of 46; others: []
+    [monthly_files_read] BITES: expected ['check41_monthly_files_read_as_one_record']; failed 6 of 46; others: ['check42_duplicate_id_across_months_caught', 'check43_entry_in_wrong_month_caught', 'check44_monthly_file_append_only_checked', 'check45_index_record_md_reported_not_checked', 'check46_monthly_file_history_walked']
+    [cross_file_record] BITES: expected ['check42_duplicate_id_across_months_caught']; failed 2 of 46; others: ['check41_monthly_files_read_as_one_record']
+    [index_reported] BITES: expected ['check45_index_record_md_reported_not_checked']; failed 1 of 46; others: []
+    [per_file_append_only] BITES: expected ['check44_monthly_file_append_only_checked']; failed 1 of 46; others: []
+    [per_file_history] BITES: expected ['check46_monthly_file_history_walked']; failed 1 of 46; others: []
+    [prompts_monthly_claims] BITES: expected ['p2_claims_read_from_monthly_files']; failed 1 of 2; others: []
+    repo files equal committed copies at end: True
+    sabotages: 8, not biting or not run: 0
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** forager_split_dry_run_2026_10_17_01
+
+**Timestamp:** 2026-10-17T08:15:42Z
+
+**Expected failure mode:** Read-only dry run on a copy of Forager's RECORD.md (records-after-173), split by Timestamp month: no step back a month; per-month counts sum to the total; the months' entries joined equal the original's byte for byte; validate_entries on the single file and validate_repo on the split give the same errors. Expected DRY RUN PASS; the errors themselves are Forager's existing record under E-GD's rules, reported as data.
+
+**Command:** python3 -I /tmp/egd-scripts/dry_split.py /home/zynergy-labs/Zynergy/E-GD-Philosophy /tmp/egd-dry/single /tmp/egd-dry/split
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries 1341; months ['2026-09', '2026-10']; steps back a month: 0
+    entries per month: {'2026-09': 511, '2026-10': 830} sum 1341 original 1341
+    joined monthly entries equal the original's, byte for byte: True
+    single file: 1341 entries validated, 1329 errors, 146 unterminated
+    split files: 1341 entries validated, 1329 errors, 146 unterminated
+    errors only in the split form: 0 []
+    errors only in the single form: 0 []
+    duplicate-ID errors: 2 ['duplicate ID 2026-09-28-540: used by entry #709 and entry #710', 'duplicate ID 2026-09-28-542: used by entry #712 and entry #713']
+    most common error shapes (single file):
+       893  intent <ID>: missing required field '…'
+        82  continuation <ID>: Continues '…' names a continuation, not an intent
+        80  terminal <ID>: missing required field '…'
+        76  terminal <ID>: Closes names no existing intent ID (closes='…')
+        47  merge <ID>: missing required field '…'
+        46  dispatch-note <ID>: missing required field '…'
+    DRY RUN PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_terminal_2026_10_17_02
+
+**Timestamp:** 2026-10-17T08:16:40Z
+
+**Expected failure mode:** Expected PASS: 50 entries, none unterminated, single-file mode.
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 50
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-07: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-09: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-11: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-15: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-17: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-19: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-21: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-23: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-01: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 47 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_selftest_2026_10_17_02
+
+**Timestamp:** 2026-10-17T08:16:41Z
+
+**Expected failure mode:** Expected PASS: 0 of 46.
+
+**Command:** python3 check_record.py --render-check
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    check_record.py --render-check
+    
+    [check1_well_formed_record_passes] expected failure mode if broken: N/A -- positive case, validated by the negative checks below catching sabotages of the same fixture
+    [check1_well_formed_record_passes] PASS
+    
+    [check2_missing_field_names_fault] expected failure mode if broken: an entry missing a required field is accepted, or the error does not name both the entry and the missing field
+    [check2_missing_field_names_fault] PASS
+    
+    [check3_missing_restored_prediction_field_caught] expected failure mode if broken: an intent entry missing the restored 'Prediction (outcome — planner)' field is accepted, or the error does not name it
+    [check3_missing_restored_prediction_field_caught] PASS
+    
+    [check4_closes_resolution_catches_dangling_reference] expected failure mode if broken: a terminal entry's Closes field naming a nonexistent intent ID is accepted silently
+    [check4_closes_resolution_catches_dangling_reference] PASS
+    
+    [check5_duplicate_id_caught] expected failure mode if broken: two entries sharing the same ID are accepted, or the error does not name the colliding ID
+    [check5_duplicate_id_caught] PASS
+    
+    [check6_duplicate_terminal_names_both_closers] expected failure mode if broken: one intent closed by two terminal entries is accepted, or the error does not name both closing entries
+    [check6_duplicate_terminal_names_both_closers] PASS
+    
+    [check7_withheld_sentinel_reported_pending] expected failure mode if broken: a 'withheld' outcome-prediction sentinel is either treated as an error or not surfaced in sentinel_reports as pending
+    [check7_withheld_sentinel_reported_pending] PASS
+    
+    [check8_withheld_sentinel_resolved_by_terminal] expected failure mode if broken: a terminal entry supplying the outcome for an intent whose prediction was legitimately 'withheld' is not recognized as a resolution
+    [check8_withheld_sentinel_resolved_by_terminal] PASS
+    
+    [check9_not_authored_plus_supplied_is_fabrication] expected failure mode if broken: an intent whose outcome prediction is permanently 'not authored' is not flagged when a terminal entry later supplies a value anyway
+    [check9_not_authored_plus_supplied_is_fabrication] PASS
+    
+    [check10_sentinel_forbidden_in_terminal_entry] expected failure mode if broken: a terminal entry carrying a sentinel value in any field is accepted, or the error does not name the field and value
+    [check10_sentinel_forbidden_in_terminal_entry] PASS
+    
+    [check11_working_tree_append_only_catches_modified_line] expected failure mode if broken: modifying an existing, already-committed line in RECORD.md is not caught, or the failure does not name the changed line
+    [check11_working_tree_append_only_catches_modified_line] PASS
+    
+    [check12_working_tree_append_only_vacuous_before_first_commit] expected failure mode if broken: a RECORD.md that exists in the working tree but has never been committed is reported as a violation, or the vacuous case is not flagged as vacuous
+    [check12_working_tree_append_only_vacuous_before_first_commit] PASS
+    
+    [check13_history_walk_real_repo] expected failure mode if broken: a genuinely append-only two-commit history is reported as violating, or the wrong commit count is walked
+    [check13_history_walk_real_repo] PASS
+    
+    [check14_history_walk_vacuous_single_commit] expected failure mode if broken: a RECORD.md history with only one committed version performs a comparison anyway, or is not reported vacuous
+    [check14_history_walk_vacuous_single_commit] PASS
+    
+    [check15_history_walk_catches_removed_line] expected failure mode if broken: a commit that removed an existing line from RECORD.md's history is accepted by the walk
+    [check15_history_walk_catches_removed_line] PASS
+    
+    [check16_merge_commit_stops_the_walk] expected failure mode if broken: a merge commit touching RECORD.md is silently walked (wrong parent guessed) instead of raising MergeCommitEncountered
+    [check16_merge_commit_stops_the_walk] PASS
+    
+    [check17_superseded_by_vacuous_when_none_declared] expected failure mode if broken: a record with no terminal entry declaring Outcome: superseded is not reported vacuous, or is reported as a failure
+    [check17_superseded_by_vacuous_when_none_declared] PASS
+    
+    [check18_superseded_by_catches_dangling_reference] expected failure mode if broken: a terminal entry's Superseded-by field naming a nonexistent intent ID is accepted
+    [check18_superseded_by_catches_dangling_reference] PASS
+    
+    [check19_all_twelve_kinds_accepted] expected failure mode if broken: a record using every RECORDING.md entry type with minimal fields is rejected
+    [check19_all_twelve_kinds_accepted] PASS
+    
+    [check20_unknown_kind_still_rejected] expected failure mode if broken: a kind outside the twelve is accepted (guard: passes before and after the change by design, so it is not evidence for the change)
+    [check20_unknown_kind_still_rejected] PASS
+    
+    [check21_new_kind_missing_notes_named] expected failure mode if broken: an entry of a new type without its Notes line is accepted
+    [check21_new_kind_missing_notes_named] PASS
+    
+    [check22_continuation_missing_continues_named] expected failure mode if broken: a continuation with no Continues field is accepted
+    [check22_continuation_missing_continues_named] PASS
+    
+    [check23_continuation_of_closed_intent_caught] expected failure mode if broken: a continuation naming an intent already closed earlier in the file is accepted
+    [check23_continuation_of_closed_intent_caught] PASS
+    
+    [check24_continuation_of_non_intent_caught] expected failure mode if broken: a continuation naming an entry that is not an intent is accepted
+    [check24_continuation_of_non_intent_caught] PASS
+    
+    [check25_continuation_forbidden_field_caught] expected failure mode if broken: a continuation carrying a closing field (Outcome) is accepted
+    [check25_continuation_forbidden_field_caught] PASS
+    
+    [check26_outcome_with_closes_closes_intent] expected failure mode if broken: an outcome carrying Closes is rejected, or leaves its intent unterminated
+    [check26_outcome_with_closes_closes_intent] PASS
+    
+    [check27_terminal_and_outcome_double_close_caught] expected failure mode if broken: an intent closed by both a terminal and an outcome passes the closed-once check
+    [check27_terminal_and_outcome_double_close_caught] PASS
+    
+    [check28_outcome_needs_continues_or_closes] expected failure mode if broken: an outcome with neither Continues nor Closes is accepted
+    [check28_outcome_needs_continues_or_closes] PASS
+    
+    [check29_correction_dangling_reference_caught] expected failure mode if broken: a correction whose Corrects names no existing entry is accepted
+    [check29_correction_dangling_reference_caught] PASS
+    
+    [check30_closes_on_other_kind_caught] expected failure mode if broken: a type other than terminal or outcome carrying Closes is accepted
+    [check30_closes_on_other_kind_caught] PASS
+    
+    [check31_unknown_terminal_outcome_caught] expected failure mode if broken: a terminal Outcome outside completed, partial, superseded, abandoned is accepted
+    [check31_unknown_terminal_outcome_caught] PASS
+    
+    [check32_partial_requires_deferred] expected failure mode if broken: a partial terminal without a Deferred field is accepted
+    [check32_partial_requires_deferred] PASS
+    
+    [check33_completed_with_deferred_caught] expected failure mode if broken: a completed terminal carrying Deferred is accepted
+    [check33_completed_with_deferred_caught] PASS
+    
+    [check34_merge_requires_backup] expected failure mode if broken: a merge entry that names no backup is accepted
+    [check34_merge_requires_backup] PASS
+    
+    [check35_dispatch_note_requires_dispatch_reference] expected failure mode if broken: a dispatch-note naming neither Dispatch-file nor Dispatch is accepted
+    [check35_dispatch_note_requires_dispatch_reference] PASS
+    
+    [check36_continues_dangling_on_other_kind_caught] expected failure mode if broken: a Continues on a decision naming no existing entry is accepted
+    [check36_continues_dangling_on_other_kind_caught] PASS
+    
+    [check37_every_new_kind_requires_notes] expected failure mode if broken: some new entry type is accepted without its who-wrote-it Notes line
+    [check37_every_new_kind_requires_notes] PASS
+    
+    [check38_link_fields_required] expected failure mode if broken: a finding without Continues, a correction without Corrects, or a merge without Merge-commit is accepted
+    [check38_link_fields_required] PASS
+    
+    [check39_four_digit_id_number_accepted] expected failure mode if broken: an ID like 2026-09-28-1106 (Forager's running sequence) is rejected as malformed
+    [check39_four_digit_id_number_accepted] PASS
+    
+    [check40_one_digit_id_number_still_rejected] expected failure mode if broken: a one-digit ID number is accepted (guard: passes before and after by design)
+    [check40_one_digit_id_number_still_rejected] PASS
+    
+    [check41_monthly_files_read_as_one_record] expected failure mode if broken: records/YYYY-MM.md files are not read, or not read as one record across months
+    [check41_monthly_files_read_as_one_record] PASS
+    
+    [check42_duplicate_id_across_months_caught] expected failure mode if broken: the same ID in two monthly files is accepted
+    [check42_duplicate_id_across_months_caught] PASS
+    
+    [check43_entry_in_wrong_month_caught] expected failure mode if broken: an entry whose Timestamp month differs from its monthly file's month is accepted
+    [check43_entry_in_wrong_month_caught] PASS
+    
+    [check44_monthly_file_append_only_checked] expected failure mode if broken: an edit to a committed line of a monthly file passes the working-tree check
+    [check44_monthly_file_append_only_checked] PASS
+    
+    [check45_index_record_md_reported_not_checked] expected failure mode if broken: with monthly files and an entry-less RECORD.md, RECORD.md is not reported as the index
+    [check45_index_record_md_reported_not_checked] PASS
+    
+    [check46_monthly_file_history_walked] expected failure mode if broken: a line removed from a monthly file in a committed change passes the history walk
+    [check46_monthly_file_history_walked] PASS
+    
+    PASS: 0 of 46 checks failed
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_selftest_2026_10_17_02
+
+**Timestamp:** 2026-10-17T08:16:41Z
+
+**Expected failure mode:** Expected PASS: 0 of 2.
+
+**Command:** python3 check_prompts.py --render-check
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    check_prompts.py --render-check
+    
+    [p1_single_file_binding_unchanged] expected failure mode if broken: a single RECORD.md claiming its one preserved prompt is reported as a violation
+    [p1_single_file_binding_unchanged] PASS
+    
+    [p2_claims_read_from_monthly_files] expected failure mode if broken: a Dispatch-file claim in records/YYYY-MM.md is not read, so its prompt is reported orphaned
+    [p2_claims_read_from_monthly_files] PASS
+    
+    PASS: 0 of 2 checks failed
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_terminal_2026_10_17_02
+
+**Timestamp:** 2026-10-17T08:16:41Z
+
+**Expected failure mode:** Expected PASS: 20 entries, preserved=19.
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 20
+    files under prompts/: preserved=19, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_terminal_2026_10_17_02
+
+**Timestamp:** 2026-10-17T08:16:42Z
+
+**Expected failure mode:** Expected PASS at 45/44/45.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 45
+    enforcement entries:  44
+    glossary rows:        45
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+
