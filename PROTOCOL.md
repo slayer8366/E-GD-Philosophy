@@ -178,7 +178,7 @@ So:
 - Unique numbers (record IDs, decision numbers, migration or schema versions) are assigned up front, or checked against the current base immediately before use.
 - A shared index is treated as a serialization point: the sessions that append to it are sequenced, or it is split so each appends to its own fragment.
 - On a merge conflict in a record or index file, every row from both sides is kept.
-- No record entry is written inside a merge commit. This repository's history check cannot walk past one.
+- No record entry is written inside a merge commit. Since 2026-10-17, this repository's history check walks merges and reports one that adds anything of its own, or drops or changes a row from either side (RECORD.md 2026-10-17-11).
 - A retired ID is not reused.
 - A planner session believed dead is confirmed stopped before another takes over its branch.
 
