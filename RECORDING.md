@@ -181,6 +181,23 @@ A section with nothing in it says "None". An empty section and a missing one bot
 
 Source: Forager's planner operating guide of 2026-08-25, which asked of every report "the disclosure norm: confirmed vs. inferred, could-not-determine, any premise that turned out wrong, anything decided the dispatch didn't cover" (`docs/qc/planner-operating-guide-2026-08-25.md`). The first four were in use in roughly 90 to 100 of Forager's 258 audit documents, with nothing enforcing them (pattern counts). The fifth comes from Forager's finding of 2026-09-12: four findings existed only in transcripts, and only one of 80 reports had a slot for something noticed in passing (Forager's audit index, line 113 at `402489ae`). This method added it on 2026-10-16 (Durability Is Location).
 
+## Layout: one file per month
+
+A record that grows large is kept as one file per month, `records/YYYY-MM.md`. `RECORD.md` at the root becomes the index: its header, and a list of the monthly files with the first and last entry in each, so a link to `RECORD.md` still lands somewhere useful. Added 2026-10-16 (RECORD.md 2026-10-16-17), on the operator's ruling; one file per entry was judged excessive.
+
+- **An entry's month is the month of its Timestamp, in UTC, not its ID.** An ID scheme can freeze its date: Forager's IDs have begun `2026-09-28` since that day, so its 777 October entries carry September IDs. An entry with no Timestamp goes in the month of the entries around it.
+- **Each monthly file is append-only,** with a short header ending in the entries heading. New entries go in the file for their Timestamp's month, so only the current month's file grows.
+- **IDs stay unique across all the files.** A running sequence carries on across months, so the next free ID is read from every file, not only the current one.
+- **Links may point into an earlier month.** `Continues`, `Closes`, `Corrects` and `Supersedes` are resolved across all the files. In Forager, 10 of 709 such links crossed the first month boundary.
+- **Splitting an existing single file is done once, on the operator's word,** as archival without loss:
+  - Any other branch that edited the file is merged in first, so the split starts from one reconciled file.
+  - Every entry is moved byte for byte.
+  - The counts of entries per file sum to the original's count, and the monthly files' entries, joined in order, equal the original's entries exactly.
+  - The split is recorded, with the commit before it, the counts, and what it stops enforcing: append-only for the original file, this once.
+- **What it does not fix.** Two sessions writing at once still meet in the current month's file (PROTOCOL rule 13). A busy month is still large: Forager's October reached about 8,500 lines in its first 16 days.
+
+This repository's own record stays one file at its present size. Its checker reads only `RECORD.md` until it is updated to read monthly files, which is code, on its own go.
+
 ## This repository's own record
 
 Since 2026-10-16 (RECORD.md 2026-10-16-07), this repository's check_record.py accepts all twelve types, with the minimal required fields the operator chose. Everything beyond these is checked by reading.
