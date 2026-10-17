@@ -40,6 +40,7 @@ None of these require the agent to be smart. They require it to be observed. Tha
 | `trials/` | Both | Readings of projects that have run the method: what fired, what was dropped, what decayed. |
 | `skills/` | Agents | The operator's skills, which the agent harness loads when their triggers fire, mapped to the principles they carry out. |
 | `specs/` | Both | Specifications awaiting or carrying the operator's approval, each read against named commits. A spec is not a go to build. |
+| `profiles/` | Agents | Role profiles, each named by its role from the project's scope and written from the record (PROTOCOL rule 22). |
 
 `OPERATOR_PROFILE.md`, listed in this table until 2026-10-16, was lost with the first record store (see `DURABILITY.md`) and has not been rebuilt.
 
