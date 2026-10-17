@@ -2605,3 +2605,66 @@ On Forager, one merge's record differs from both of its parents: bebeb573, on or
 **Notes:** Written by the curator, Clio, on branch merge-walk-2026-10-17, on the operator's "yes go ahead and correct it" (prompts/preserved/2026-10-17-11.md). The profile line that carried the same claim is corrected in this branch.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-17-13
+
+**Timestamp:** 2026-10-17T09:42:51Z
+
+**Closes:** 2026-10-17-11
+
+**Outcome:** completed
+
+**Observed:** The history walk handles merges, the profile's merge reason is corrected, and the lookup spec names Forager as the tool's first use case. Built on branch merge-walk-2026-10-17, cut from Test-1 at 2212af2 after the operator's "merge #12, #13 and #14" was carried out. After the intent (0de10b3):
+
+- b824e33: checks 57 to 62, committed failing.
+- 176ff4e: check_history_with_merges, used by history_checks.
+- 815d2b3: check 63, written after the walk.
+- 70af7ec, 2b3ba84, 1408f15, 818bb58, 44ce2aa: the profile, rule 13, ADOPTING.md, the skill and the spec.
+- d96f85e: correction 2026-10-17-12.
+
+Results, each registered in REGISTER.md:
+
+- check_record.py --render-check passes 63 of 63.
+- The revert run: a control with no edit failed nothing, and each of 7 one-line sabotages on a temporary copy failed its own checks among 57 to 63. The repository file equalled the committed copy at the start and the end.
+- ADOPTING.md: 18 of 18 claims hold, including the new merge behaviour and its two remaining limits.
+- Forager, in a throwaway clone at its true remote refs:
+  - records-after-173 d23daa5d: bebeb573, for the entry written inside the merge, plus 8 committed edits or removals.
+  - pre-main b221e85b and main 969ecf0a: bebeb573, dc4ef1c1 and 4 more.
+  The old walk stopped at bebeb573 and reported nothing past it.
+
+Confirmed against inferred:
+
+- The red at b824e33 was read check by check. 57, 58, 59 and 61 failed because the old walk stopped at the merge. 60 failed because the old walk never saw a merge that dropped a branch's entry.
+- Check 63's evidence is the revert run alone, since the rule existed first.
+- Real data exercised two of the merge rule's outcomes, counted at records-after-173 (and at main). 163 merges (257) had the record the same on every side; 247 (260) took one branch's record while the others left it as the base had it; and 1 (1), bebeb573, needed the full check and was reported. No Forager merge has both branches adding to the record. A merge that keeps both whole is shown passing only by the fixtures.
+
+Could not determine:
+
+- Whether "each branch's additions whole, in any order" matches how other people resolve record conflicts. Shuffled rows are reported, and ADOPTING.md says so.
+- Whether GitHub's new-issue page now shows the "Feedback for Clio" form. The file is on Test-1. GitHub's template list through its API is empty; I believe that list covers only markdown templates, but that is unverified. The page needs a logged-in look.
+
+Premises that were wrong:
+
+- My first real-data run walked Forager's local branches for pre-main and main, not their remote refs: a clone of a local repository names that repository's own branches origin/*. The commit ids, compared with Forager's origin refs, showed it. It was rerun on the true refs before anything was registered or committed.
+
+Decided beyond scope:
+
+- A branch's additions must stay whole, in any order. Identical additions from two branches count once.
+- A merge that takes one branch's record, while every other branch left it as the base had it, passes without the file being read. That branch's own commits are walked.
+- Every merge reachable from HEAD is examined, not only those git lists in the file's history.
+- A merge that removes the record is reported. No self-check covers that.
+- The profile's corrected line gives the reason that remains for a fast-forward: it lands exactly the commits that were checked.
+- ADOPTING.md lists two limits in place of the old one: a past violation keeps failing, and additions must stay whole.
+- The spec's line is in my wording around the operator's quoted words. The spec is now 627 words, over the 600 the spec skill aims for.
+- Check 63.
+
+Observed, not asked:
+
+- On Forager's records-after-173, the walk reports 8 committed edits or removals besides bebeb573, several made on the owner's instruction: -638 removed, a dispatch-note undone, a maker's name removed from -844, and the header rewritten to E-GD's text (11794f55). Because history is never rewritten, they will fail every run. A list of acknowledged past violations, each with its reason, would let a record pass once its exceptions are recorded. That is a design choice for the operator, and out of this intent's scope.
+- The walk checks the whole file, header included. So the header text E-GD handed to Forager's planner (2026-10-16-08) shows as a violation where it was placed. Any future header change E-GD recommends will do the same.
+
+**Deviations:** Check 63 was added beyond 57 to 62. No existing RECORD.md or REGISTER.md entry was edited.
+
+---
