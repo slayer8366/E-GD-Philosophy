@@ -1830,3 +1830,42 @@ Read from Forager for the proposal:
 **Abort conditions:** A practice in the profile that its cited entry does not show. A check failing.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-20
+
+**Timestamp:** 2026-10-17T04:57:26Z
+
+**Closes:** 2026-10-16-19
+
+**Outcome:** completed
+
+**Observed:** Done on branch role-names-profiles-2026-10-16, pushed, after the intent (752eacb):
+
+- PROTOCOL.md gains rule 22 (83ad0c8), and the protocol now holds 22 numbered rules.
+- The rule's quote of Forager's planner-profile name line was corrected from a peer's relay to the source (6da5b1d).
+- profiles/curator.md, the profile of the curator Clio Ledger (58 lines, the operator's pick), is written from this repository's record, with a README.md row (e075cb0).
+
+Checks, through check_register.py: every record ID, commit and preserved prompt the profile cites exists, with a positive control below; check_record.py, check_prompts.py and check_glossary.py are run before this commit.
+
+Confirmed against inferred. Each practice's citation was read against its entry before commit. Six did not show what they were cited for, and were corrected:
+
+- 2026-10-16-14 does not record re-running checks on Test-1, so that clause was removed.
+- 2026-10-16-02 quotes no withdrawn wording, so the citation is now 4ca06d0 and 5c6b56f.
+- The 2026-10-16-07 round had no separate go question, so it was removed from that citation.
+- "Reported in the next message" is in the chat, not the record, so it is now "listed in the closing entry".
+- Timestamps now cite the Sourced Claims rule (4adf4be), since no entry says how its timestamp was read.
+- The practices on talking to the operator now cite Forager's planner profile, where the operator's preferences are recorded.
+
+Could not determine: none.
+
+Premises that were wrong: rule 22 first quoted the planner profile's name line as a peer's message gave it, not as the profile has it. It was corrected in 6da5b1d.
+
+Decided beyond scope: the profile's section headings, adapted from Forager's planner profile to the curator's work.
+
+Observed, not asked: nothing tells a curator session to read profiles/curator.md at its start. E-GD's CLAUDE.md lists what is read at session start, and changing it is the operator's call.
+
+**Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
+
+---
