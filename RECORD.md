@@ -2328,3 +2328,58 @@ Observed, not asked:
 **Deviations:** Check 56 was added beyond the planned 47 to 55. It was found while verifying ADOPTING.md and built test-first, inside the scope boundary. No existing RECORD.md or REGISTER.md entry was edited. records_lookup.py is unchanged, and is the next intent.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-17-07
+
+**Timestamp:** 2026-10-17T08:55:10Z
+
+**Title:** records_lookup.py reads its sources from a JSON config, for any set of repositories; Forager and forager-forecast become a preset
+
+**Governed by:** preserved/2026-10-17-05.md, claimed by 2026-10-17-05. The operator's answer "All three now" to "The lookup tool is wired to Forager and forager-forecast. Generalize it too?" covers this, and a prompt file is claimed by one intent and its terminal only.
+
+**Change:**
+
+1. A lookup config (JSON) names the repositories, the record and how to read it, any tables (a markdown file whose dated rows are read), and any folders (files searched whole). Each source carries a repository and a ref.
+2. The record's shape (file, monthly folder, ID token, intent and closing types, closes field) comes from check_record's config. It is either given inside the lookup config or read from the record repository's records.json at the ref. The link fields default to that shape's backward links and closes field.
+3. With no config, the tool reads one repository's record at HEAD: the current directory, or the folder --repo names. --preset forager loads lookups/forager.json, which holds today's Forager and forager-forecast sources, refs, table patterns, the D-number IDs and the "Forager RECORD -NNNN" references. --repo NAME=PATH gives a repository's path. --ref NAME=REF overrides a source's ref, or every source in a repository. --print-config prints the default.
+4. A command the record's shape cannot answer says it is unsupported: open on a record with no intent type, for example. next-id works for any ID that ends in digits.
+5. The old flags --forager, --forecast and the four --*-ref flags are removed, since the preset and --repo/--ref replace them. The tool was merged about thirty minutes before this intent.
+
+Built tests-first: the new self-checks are committed failing and revert-checked. r1 to r7 keep their bodies, run through the preset; only the argument helper changes, and r7's one line naming the ref flag. Real data: before and after, show, links, search, open and next-id give the same answers on Forager and forager-forecast, header lines aside.
+
+**Scope boundary:** records_lookup.py, lookups/forager.json (new), ADOPTING.md (a section on the lookup tool), skills/record-checking/SKILL.md (a pointer), README.md (its row), RECORD.md and REGISTER.md (append only), on branch lookup-config-2026-10-17, cut from general-checkers-2026-10-17 at 95b8cd2 and stacked on PR #12.
+
+Out of scope:
+
+- The lookup spec's acceptance step, which is the operator's.
+- A --json mode for the lookup tool, which was not asked.
+- check_record.py and check_prompts.py.
+- Merging, which waits for the operator's go.
+
+**Baseline:** general-checkers-2026-10-17 at 95b8cd24782c702af1178fbf0408935ffe8eaba9, equal to its remote after fetch; PR #12 open; Test-1 at 7dc4a25. records_lookup.py --render-check 7 of 7. Its sources are fixed:
+
+- the patterns at records_lookup.py:42-49 (ID_TOKEN, LEADING_ONLY, LINK_FIELDS, FORAGER_REF_RE, D_ID_RE);
+- Records.__init__ at :122-160, with four sources and four table reads;
+- the folder pair in cmd_search at :299-300;
+- the flags in main at :366-374.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):**
+
+- Each new self-check fails first by an assertion naming the missing behaviour, not by a name error.
+- After the change, r1 to r7 pass through the preset, and the new checks pass.
+- The revert run makes each new rule's check fail.
+- On real data, the old and new tools give the same answer lines for the same commits.
+
+**Finish line:**
+
+- The intent, the tests-first commit, the implementation, the preset, the docs and the terminal are committed and pushed.
+- The revert run, the real-data comparison and the closing checks run through check_register.py.
+- A PR is open, stacked on PR #12. It is not merged until the operator's go.
+
+**Abort conditions:** An r1 to r7 body would need to change to pass. A real-data answer differs between the old and new tool in a way the change does not explain. The config cannot express one of today's Forager sources.
+
+---
