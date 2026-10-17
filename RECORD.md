@@ -2203,3 +2203,57 @@ Observed, not asked:
 **Deviations:** None beyond the premises above. No existing RECORD.md or REGISTER.md entry was edited. check_record.py and check_prompts.py are unchanged.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-17-05
+
+**Timestamp:** 2026-10-17T08:32:23Z
+
+**Title:** The record checkers work on any repository, shaped by an optional JSON config; with --json, a starter config, an adoption guide and an agent skill
+
+**Dispatch-file:** preserved/2026-10-17-05.md
+
+**Change:**
+
+1. check_record.py and check_prompts.py take the repository to check as an argument. The default is the current directory, never the script's own folder.
+2. An optional records.json in that repository, or a file named by --config, sets the record's shape, and with none the RECORDING.md format applies. The config covers:
+   - the record file and monthly folder (null turns monthly files off);
+   - the ID pattern and the ID-token pattern;
+   - the entry types, each with required, one-of and forbidden fields;
+   - which types are the intent, terminal and continuation, and which close an intent;
+   - the terminal outcomes and their fields;
+   - the prediction sentinels;
+   - which link fields must point backwards, and how;
+   - the prompts folder, its provenance folders and the dispatch field.
+   Top-level keys replace the defaults whole. Unknown keys, wrong types and regexes that do not compile are refused by name, with exit status 2.
+3. --json prints the results as one JSON object, and --print-config prints the default config.
+4. ADOPTING.md explains how to adopt the checkers, and skills/record-checking/SKILL.md tells an agent when and how to run them on any repository.
+
+The checkers' code reads the config instead of module constants. With the default config, every existing self-check passes unchanged. The new self-checks are written and committed first, observed failing, and revert-checked. The lookup tool is the next intent, stacked on this branch.
+
+**Scope boundary:** check_record.py, check_prompts.py, ADOPTING.md (new), skills/record-checking/SKILL.md (new), skills/README.md, README.md, RECORDING.md (a pointer), RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-17-05.md, on branch general-checkers-2026-10-17 cut from Test-1 at 7dc4a25.
+
+Out of scope:
+
+- records_lookup.py, which is the next intent.
+- Packaging for a package index.
+- This repository's own record format.
+- Merging, which waits for the operator's go.
+
+**Baseline:** Test-1 at 7dc4a25a72bc4446e67ba30c2d18da7d145f5bf5, equal to origin/Test-1 after fetch. check_record.py's main() validates HERE, the script's own folder, at check_record.py:475-488 and :691-723. check_prompts.py's check_binding() falls back to HERE at :148. Neither reads any argument but --render-check. check_record.py --render-check 46 of 46, check_prompts.py 2 of 2, check_record.py PASS at 52 entries. Python 3.14.4 here; the code keeps to the standard library.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):**
+
+- Tests-first: each new check fails with an assertion naming its missing behaviour. No check fails on a name error, because missing functions are looked up.
+- After the change, checks 1 to 46 and p1 to p2 still pass with the default config, the new checks pass, and this repository's record passes when the checker is run from a different working directory with the repository given as the argument.
+- The revert run, on temporary copies, makes each new rule's check fail.
+- check_glossary.py stays at 45/44/45.
+
+**Finish line:** Tests-first commit, implementation, guide and skill committed and pushed; the revert run and checks through check_register.py; the terminal; the branch ready for the lookup tool to stack on. Not merged until the operator's go.
+
+**Abort conditions:** An existing check failing with the default config. A new check not failing first for its stated reason. A rule that cannot be expressed in the config without changing this repository's own record.
+
+---
