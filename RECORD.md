@@ -2105,3 +2105,48 @@ Whether E-GD's rules should follow Forager's practice on Closes and on chained c
 **Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-17-03
+
+**Timestamp:** 2026-10-17T08:18:05Z
+
+**Title:** Build records_lookup.py, the read-only records lookup tool of specs/2026-10-16-records-lookup.md
+
+**Governed by:** preserved/2026-10-17-01.md, claimed by 2026-10-17-01. The operator's one go, "Go ahead on both", covers both builds, and a prompt file is claimed by one intent and its terminal only.
+
+**Change:** A new records_lookup.py, standard library only, built from the approved spec and reusing check_record.py's parsing. It provides show, links, search, open and next-id over Forager's and forager-forecast's records, read from named refs after git fetch, with no checkout. The default refs per source are as the spec sets them, each overridable, and every answer carries repository, ref, commit, file and line.
+
+- The tool is told where each repository's clone is by flag, and no machine's paths are written into it.
+- A short form, -NNNN, resolves to a Forager ID ending in that number. Ambiguous short forms list their candidates.
+- A forager-forecast decision row's "Forager RECORD -NNNN" references resolve to the Forager entry.
+
+Its self-tests (--render-check) cover R1 to R7, each written and committed first against a stub entry point that answers nothing, and observed failing. They run through main(), the real entry point. Each requirement is then revert-checked. Real-data runs follow: open at Forager 97f26098 against an independent script, the R6 reference D132 to Forager -1054, and show and links on five entries, for the operator to confirm or replace with five of the operator's own choosing.
+
+**Scope boundary:** records_lookup.py (new), README.md (one row), specs/2026-10-16-records-lookup.md untouched, RECORD.md and REGISTER.md (append only), on branch records-lookup-tool-2026-10-17, stacked on checker-monthly-2026-10-17 at 10d0fa0 because it imports that branch's check_record.py.
+
+Out of scope:
+
+- Any write to Forager or forager-forecast. Only git fetch and git show are used against them.
+- ID reservation (the spec's decision).
+- The Closes-with-parenthesis and chained-continuation questions found in 2026-10-17-02. The tool reads a Closes or Continues by its leading ID token, which is a reading, not a rule.
+- Merging, which waits for the operator's go.
+
+**Baseline:** Branch at 10d0fa01552f3d62b98f67b8177ba8f69d8532b3, PR #10's head. records_lookup.py does not exist. Forager's origin/records-after-173 was at eb9e73d1 for the dry run in 2026-10-17-02. forager-forecast's origin/main at b9127e5. DECISIONS.md's D132 row cites "Forager RECORD -1054", read at 2026-10-16-11's baseline.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):**
+
+- Tests-first: every R1 to R7 check fails with an assertion naming its missing behaviour. The stub's main returns without output, so none fails on an import or name error.
+- After the build, all pass.
+- Revert run: disabling each requirement's code in a temporary copy fails that requirement's check.
+- Real data: open's count at 97f26098 equals an independent script's count under the same definition. That count may differ from the spec's 63, which used a broader one, and any difference is explained rather than adjusted.
+- check_record.py and check_prompts.py are unchanged, and the repository's checks pass at 52 entries after this intent's terminal.
+
+**Finish line:** Tests-first commit, implementation commit and README row pushed; the revert run and real-data runs through check_register.py; the terminal; a pull request into Test-1, after PR #10. Not merged until the operator's go.
+
+**Abort conditions:** A test failing first for a reason other than the missing behaviour. A requirement that cannot be met without writing to a source repository. A real-data result that contradicts the source it cites.
+
+---
