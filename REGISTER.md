@@ -7311,3 +7311,322 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** check_record_selftest_2026_10_17_11
+
+**Timestamp:** 2026-10-17T09:37:35Z
+
+**Expected failure mode:** Exit 0, 62 of 62: 1-56 unchanged, 57-61 (red at b824e33) green, guard 62 green.
+
+**Command:** python3 check_record.py --render-check
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    check_record.py --render-check
+    
+    [check1_well_formed_record_passes] expected failure mode if broken: N/A -- positive case, validated by the negative checks below catching sabotages of the same fixture
+    [check1_well_formed_record_passes] PASS
+    
+    [check2_missing_field_names_fault] expected failure mode if broken: an entry missing a required field is accepted, or the error does not name both the entry and the missing field
+    [check2_missing_field_names_fault] PASS
+    
+    [check3_missing_restored_prediction_field_caught] expected failure mode if broken: an intent entry missing the restored 'Prediction (outcome — planner)' field is accepted, or the error does not name it
+    [check3_missing_restored_prediction_field_caught] PASS
+    
+    [check4_closes_resolution_catches_dangling_reference] expected failure mode if broken: a terminal entry's Closes field naming a nonexistent intent ID is accepted silently
+    [check4_closes_resolution_catches_dangling_reference] PASS
+    
+    [check5_duplicate_id_caught] expected failure mode if broken: two entries sharing the same ID are accepted, or the error does not name the colliding ID
+    [check5_duplicate_id_caught] PASS
+    
+    [check6_duplicate_terminal_names_both_closers] expected failure mode if broken: one intent closed by two terminal entries is accepted, or the error does not name both closing entries
+    [check6_duplicate_terminal_names_both_closers] PASS
+    
+    [check7_withheld_sentinel_reported_pending] expected failure mode if broken: a 'withheld' outcome-prediction sentinel is either treated as an error or not surfaced in sentinel_reports as pending
+    [check7_withheld_sentinel_reported_pending] PASS
+    
+    [check8_withheld_sentinel_resolved_by_terminal] expected failure mode if broken: a terminal entry supplying the outcome for an intent whose prediction was legitimately 'withheld' is not recognized as a resolution
+    [check8_withheld_sentinel_resolved_by_terminal] PASS
+    
+    [check9_not_authored_plus_supplied_is_fabrication] expected failure mode if broken: an intent whose outcome prediction is permanently 'not authored' is not flagged when a terminal entry later supplies a value anyway
+    [check9_not_authored_plus_supplied_is_fabrication] PASS
+    
+    [check10_sentinel_forbidden_in_terminal_entry] expected failure mode if broken: a terminal entry carrying a sentinel value in any field is accepted, or the error does not name the field and value
+    [check10_sentinel_forbidden_in_terminal_entry] PASS
+    
+    [check11_working_tree_append_only_catches_modified_line] expected failure mode if broken: modifying an existing, already-committed line in RECORD.md is not caught, or the failure does not name the changed line
+    [check11_working_tree_append_only_catches_modified_line] PASS
+    
+    [check12_working_tree_append_only_vacuous_before_first_commit] expected failure mode if broken: a RECORD.md that exists in the working tree but has never been committed is reported as a violation, or the vacuous case is not flagged as vacuous
+    [check12_working_tree_append_only_vacuous_before_first_commit] PASS
+    
+    [check13_history_walk_real_repo] expected failure mode if broken: a genuinely append-only two-commit history is reported as violating, or the wrong commit count is walked
+    [check13_history_walk_real_repo] PASS
+    
+    [check14_history_walk_vacuous_single_commit] expected failure mode if broken: a RECORD.md history with only one committed version performs a comparison anyway, or is not reported vacuous
+    [check14_history_walk_vacuous_single_commit] PASS
+    
+    [check15_history_walk_catches_removed_line] expected failure mode if broken: a commit that removed an existing line from RECORD.md's history is accepted by the walk
+    [check15_history_walk_catches_removed_line] PASS
+    
+    [check16_merge_commit_stops_the_walk] expected failure mode if broken: a merge commit touching RECORD.md is silently walked (wrong parent guessed) instead of raising MergeCommitEncountered
+    [check16_merge_commit_stops_the_walk] PASS
+    
+    [check17_superseded_by_vacuous_when_none_declared] expected failure mode if broken: a record with no terminal entry declaring Outcome: superseded is not reported vacuous, or is reported as a failure
+    [check17_superseded_by_vacuous_when_none_declared] PASS
+    
+    [check18_superseded_by_catches_dangling_reference] expected failure mode if broken: a terminal entry's Superseded-by field naming a nonexistent intent ID is accepted
+    [check18_superseded_by_catches_dangling_reference] PASS
+    
+    [check19_all_twelve_kinds_accepted] expected failure mode if broken: a record using every RECORDING.md entry type with minimal fields is rejected
+    [check19_all_twelve_kinds_accepted] PASS
+    
+    [check20_unknown_kind_still_rejected] expected failure mode if broken: a kind outside the twelve is accepted (guard: passes before and after the change by design, so it is not evidence for the change)
+    [check20_unknown_kind_still_rejected] PASS
+    
+    [check21_new_kind_missing_notes_named] expected failure mode if broken: an entry of a new type without its Notes line is accepted
+    [check21_new_kind_missing_notes_named] PASS
+    
+    [check22_continuation_missing_continues_named] expected failure mode if broken: a continuation with no Continues field is accepted
+    [check22_continuation_missing_continues_named] PASS
+    
+    [check23_continuation_of_closed_intent_caught] expected failure mode if broken: a continuation naming an intent already closed earlier in the file is accepted
+    [check23_continuation_of_closed_intent_caught] PASS
+    
+    [check24_continuation_of_non_intent_caught] expected failure mode if broken: a continuation naming an entry that is not an intent is accepted
+    [check24_continuation_of_non_intent_caught] PASS
+    
+    [check25_continuation_forbidden_field_caught] expected failure mode if broken: a continuation carrying a closing field (Outcome) is accepted
+    [check25_continuation_forbidden_field_caught] PASS
+    
+    [check26_outcome_with_closes_closes_intent] expected failure mode if broken: an outcome carrying Closes is rejected, or leaves its intent unterminated
+    [check26_outcome_with_closes_closes_intent] PASS
+    
+    [check27_terminal_and_outcome_double_close_caught] expected failure mode if broken: an intent closed by both a terminal and an outcome passes the closed-once check
+    [check27_terminal_and_outcome_double_close_caught] PASS
+    
+    [check28_outcome_needs_continues_or_closes] expected failure mode if broken: an outcome with neither Continues nor Closes is accepted
+    [check28_outcome_needs_continues_or_closes] PASS
+    
+    [check29_correction_dangling_reference_caught] expected failure mode if broken: a correction whose Corrects names no existing entry is accepted
+    [check29_correction_dangling_reference_caught] PASS
+    
+    [check30_closes_on_other_kind_caught] expected failure mode if broken: a type other than terminal or outcome carrying Closes is accepted
+    [check30_closes_on_other_kind_caught] PASS
+    
+    [check31_unknown_terminal_outcome_caught] expected failure mode if broken: a terminal Outcome outside completed, partial, superseded, abandoned is accepted
+    [check31_unknown_terminal_outcome_caught] PASS
+    
+    [check32_partial_requires_deferred] expected failure mode if broken: a partial terminal without a Deferred field is accepted
+    [check32_partial_requires_deferred] PASS
+    
+    [check33_completed_with_deferred_caught] expected failure mode if broken: a completed terminal carrying Deferred is accepted
+    [check33_completed_with_deferred_caught] PASS
+    
+    [check34_merge_requires_backup] expected failure mode if broken: a merge entry that names no backup is accepted
+    [check34_merge_requires_backup] PASS
+    
+    [check35_dispatch_note_requires_dispatch_reference] expected failure mode if broken: a dispatch-note naming neither Dispatch-file nor Dispatch is accepted
+    [check35_dispatch_note_requires_dispatch_reference] PASS
+    
+    [check36_continues_dangling_on_other_kind_caught] expected failure mode if broken: a Continues on a decision naming no existing entry is accepted
+    [check36_continues_dangling_on_other_kind_caught] PASS
+    
+    [check37_every_new_kind_requires_notes] expected failure mode if broken: some new entry type is accepted without its who-wrote-it Notes line
+    [check37_every_new_kind_requires_notes] PASS
+    
+    [check38_link_fields_required] expected failure mode if broken: a finding without Continues, a correction without Corrects, or a merge without Merge-commit is accepted
+    [check38_link_fields_required] PASS
+    
+    [check39_four_digit_id_number_accepted] expected failure mode if broken: an ID like 2026-09-28-1106 (Forager's running sequence) is rejected as malformed
+    [check39_four_digit_id_number_accepted] PASS
+    
+    [check40_one_digit_id_number_still_rejected] expected failure mode if broken: a one-digit ID number is accepted (guard: passes before and after by design)
+    [check40_one_digit_id_number_still_rejected] PASS
+    
+    [check41_monthly_files_read_as_one_record] expected failure mode if broken: records/YYYY-MM.md files are not read, or not read as one record across months
+    [check41_monthly_files_read_as_one_record] PASS
+    
+    [check42_duplicate_id_across_months_caught] expected failure mode if broken: the same ID in two monthly files is accepted
+    [check42_duplicate_id_across_months_caught] PASS
+    
+    [check43_entry_in_wrong_month_caught] expected failure mode if broken: an entry whose Timestamp month differs from its monthly file's month is accepted
+    [check43_entry_in_wrong_month_caught] PASS
+    
+    [check44_monthly_file_append_only_checked] expected failure mode if broken: an edit to a committed line of a monthly file passes the working-tree check
+    [check44_monthly_file_append_only_checked] PASS
+    
+    [check45_index_record_md_reported_not_checked] expected failure mode if broken: with monthly files and an entry-less RECORD.md, RECORD.md is not reported as the index
+    [check45_index_record_md_reported_not_checked] PASS
+    
+    [check46_monthly_file_history_walked] expected failure mode if broken: a line removed from a monthly file in a committed change passes the history walk
+    [check46_monthly_file_history_walked] PASS
+    
+    [check47_repository_argument_is_the_one_checked] expected failure mode if broken: the checker checks its own folder, not the repository it is given
+    [check47_repository_argument_is_the_one_checked] PASS
+    
+    [check48_records_json_in_repository_is_read] expected failure mode if broken: a records.json in the checked repository is ignored
+    [check48_records_json_in_repository_is_read] PASS
+    
+    [check49_config_sets_the_entry_types] expected failure mode if broken: a config's own entry types and required fields are not applied
+    [check49_config_sets_the_entry_types] PASS
+    
+    [check50_config_sets_the_id_pattern] expected failure mode if broken: a config's ID pattern is not applied
+    [check50_config_sets_the_id_pattern] PASS
+    
+    [check51_invalid_config_refused_by_name] expected failure mode if broken: an unknown key or an uncompilable regex in the config is accepted or not named
+    [check51_invalid_config_refused_by_name] PASS
+    
+    [check52_json_output] expected failure mode if broken: --json does not print one JSON object carrying ok, entries and errors
+    [check52_json_output] PASS
+    
+    [check53_print_config_round_trips] expected failure mode if broken: --print-config does not print the default, or the printed default is not a valid config
+    [check53_print_config_round_trips] PASS
+    
+    [check54_monthly_dir_configurable] expected failure mode if broken: a configured monthly folder is not read, or null does not turn monthly files off
+    [check54_monthly_dir_configurable] PASS
+    
+    [check55_terminal_outcomes_configurable] expected failure mode if broken: a config's terminal outcomes are not applied
+    [check55_terminal_outcomes_configurable] PASS
+    
+    [check56_zero_entries_marked_vacuous] expected failure mode if broken: a record file that yields no entries passes without being marked vacuous
+    [check56_zero_entries_marked_vacuous] PASS
+    
+    [check57_merge_keeping_both_branches_passes] expected failure mode if broken: a merge whose record is the base followed by each branch's additions, in either order, fails
+    [check57_merge_keeping_both_branches_passes] PASS
+    
+    [check58_merge_editing_an_entry_fails] expected failure mode if broken: a merge that changes a line one branch committed passes, or fails without naming the merge
+    [check58_merge_editing_an_entry_fails] PASS
+    
+    [check59_entry_written_inside_a_merge_fails] expected failure mode if broken: a merge that adds an entry of its own passes, against PROTOCOL rule 13
+    [check59_entry_written_inside_a_merge_fails] PASS
+    
+    [check60_merge_dropping_a_branch_entry_fails] expected failure mode if broken: a merge that discards an entry committed on the other branch passes (git's default history of the file hides such a merge)
+    [check60_merge_dropping_a_branch_entry_fails] PASS
+    
+    [check61_side_branch_edit_reported] expected failure mode if broken: a committed edit on a merged-in branch goes unreported because the walk follows one parent
+    [check61_side_branch_edit_reported] PASS
+    
+    [check62_linear_edit_still_reported] expected failure mode if broken: a committed line edited in linear history passes (guard: passes before and after by design)
+    [check62_linear_edit_still_reported] PASS
+    
+    PASS: 0 of 62 checks failed
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** forager_record_walk_with_merges_2026_10_17_11
+
+**Timestamp:** 2026-10-17T09:39:18Z
+
+**Expected failure mode:** The new walk on Forager's RECORD.md in a throwaway clone at Forager's true remote refs: records-after-173 d23daa5d, pre-main b221e85b, main 969ecf0a. Predicted: bebeb573 reported on all three (an entry written inside the merge), dc4ef1c1 on pre-main. Every other violation printed is a committed edit or removal, each read against its commit subject.
+
+**Command:** python3 /tmp/egd-scripts/forager_walk.py . /tmp/egd-scripts/forager-clone records-after-173 pre-main main
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    records-after-173 @ d23daa5d: ok=False, comparisons=1471, violations=9, 53 s
+        318741c591 ('Dispatch-note 2026-09-28-221: sundown content chan') -> c8f63838ad ("Remove the last 24 hours' sundown alert entries from the rec"): diverges at line 6645
+        1d8a477bfd ('Dispatch-note 2026-09-28-236: the planner role mov') -> 4162d6d7b8 ('Undo dispatch-note 2026-09-28-235 (owner: "Undo this")'): diverges at line 7018
+        afcfcab502 ('Dispatch-note 2026-09-28-240: planner moves to [30') -> 09d2103899 ('Remove dispatch-notes 2026-09-28-234, -237, -238 and the F5 '): diverges at line 7001
+        4b324a6d02 ('Decisions -449 and -450, -440 Amendment 1 (zoom pa') -> f18b14cb09 ("Dispatch -451 numbered correctly (was -449, the decision's n"): diverges at line 10912
+        93639e94b6 ('Continuation -638: the seven questions asked again') -> 0bda73e88e ("Remove RECORD -638 at the owner's instruction"): diverges at line 13054
+        2371caabac ('RECORD -804: merge entry for PR #210') -> 36407260c5 ('RECORD -802, -803: entry separators and Kind lines added (la'): diverges at line 14796
+        a1a6d99185 ('RECORD -845: Arrived holds ~10 s then closes; arri') -> fe3f3ae3f9 ("RECORD -846: the GPS maker's name removed from -844 on the o"): diverges at line 15259
+        72fddfb9d0 ('RECORD -1110: lens chooser merged into dev; yellow') -> 11794f55f9 ("RECORD header rewritten to the E-GD curator's text (owner, -"): diverges at line 3
+        merge bebeb5736b ('Merge plan notes from the docs branch; terminal 2026-09-27-64 closes the picker fix stage (partial: F6 held by the owner); index row'): the record is not the merge base's (36ffc2de84) followed by each branch's additions, whole, in any order; something was removed or changed, or the merge wrote an entry of its own (PROTOCOL rule 13). First difference from the base and the additions in parent order: line 2658
+    pre-main @ b221e85b: ok=False, comparisons=913, violations=6, 24 s
+        318741c591 ('Dispatch-note 2026-09-28-221: sundown content chan') -> c8f63838ad ("Remove the last 24 hours' sundown alert entries from the rec"): diverges at line 6645
+        1d8a477bfd ('Dispatch-note 2026-09-28-236: the planner role mov') -> 4162d6d7b8 ('Undo dispatch-note 2026-09-28-235 (owner: "Undo this")'): diverges at line 7018
+        afcfcab502 ('Dispatch-note 2026-09-28-240: planner moves to [30') -> 09d2103899 ('Remove dispatch-notes 2026-09-28-234, -237, -238 and the F5 '): diverges at line 7001
+        4b324a6d02 ('Decisions -449 and -450, -440 Amendment 1 (zoom pa') -> f18b14cb09 ("Dispatch -451 numbered correctly (was -449, the decision's n"): diverges at line 10912
+        8563ec6661 ('Merge pull request #211 from slayer8366/beta-diagn') -> dc4ef1c1cf ("Replace other products' names in the tree with generic descr"): diverges at line 2229
+        merge bebeb5736b ('Merge plan notes from the docs branch; terminal 2026-09-27-64 closes the picker fix stage (partial: F6 held by the owner); index row'): the record is not the merge base's (36ffc2de84) followed by each branch's additions, whole, in any order; something was removed or changed, or the merge wrote an entry of its own (PROTOCOL rule 13). First difference from the base and the additions in parent order: line 2658
+    main @ 969ecf0a: ok=False, comparisons=913, violations=6, 25 s
+        318741c591 ('Dispatch-note 2026-09-28-221: sundown content chan') -> c8f63838ad ("Remove the last 24 hours' sundown alert entries from the rec"): diverges at line 6645
+        1d8a477bfd ('Dispatch-note 2026-09-28-236: the planner role mov') -> 4162d6d7b8 ('Undo dispatch-note 2026-09-28-235 (owner: "Undo this")'): diverges at line 7018
+        afcfcab502 ('Dispatch-note 2026-09-28-240: planner moves to [30') -> 09d2103899 ('Remove dispatch-notes 2026-09-28-234, -237, -238 and the F5 '): diverges at line 7001
+        4b324a6d02 ('Decisions -449 and -450, -440 Amendment 1 (zoom pa') -> f18b14cb09 ("Dispatch -451 numbered correctly (was -449, the decision's n"): diverges at line 10912
+        8563ec6661 ('Merge pull request #211 from slayer8366/beta-diagn') -> dc4ef1c1cf ("Replace other products' names in the tree with generic descr"): diverges at line 2229
+        merge bebeb5736b ('Merge plan notes from the docs branch; terminal 2026-09-27-64 closes the picker fix stage (partial: F6 held by the owner); index row'): the record is not the merge base's (36ffc2de84) followed by each branch's additions, whole, in any order; something was removed or changed, or the merge wrote an entry of its own (PROTOCOL rule 13). First difference from the base and the additions in parent order: line 2658
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** forager_merge_classes_2026_10_17_11
+
+**Timestamp:** 2026-10-17T09:39:19Z
+
+**Expected failure mode:** How Forager's merges reached the merge rule, at real/records-after-173 and real/main: counts of merges with the record the same on every side, one branch taken with the others as the base had it, and full checks passed or reported. Shows which outcomes real data exercised and which only fixtures did.
+
+**Command:** sh -c python3 /tmp/egd-scripts/merge_classes.py . /tmp/egd-scripts/forager-clone records-after-173; python3 /tmp/egd-scripts/merge_classes.py . /tmp/egd-scripts/forager-clone main
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    records-after-173 {'all merges': 411, 'record same on every side': 163, 'one branch taken, others as base': 247, 'full check, passed': 0, 'full check, reported': 1} full-check passes: []
+    main {'all merges': 518, 'record same on every side': 257, 'one branch taken, others as base': 260, 'full check, passed': 0, 'full check, reported': 1} full-check passes: []
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** adopting_md_claims_2026_10_17_11
+
+**Timestamp:** 2026-10-17T09:40:48Z
+
+**Expected failure mode:** ADOPTING.md's claims at the new walk: the earlier ones, with the merge limit replaced by the tested behaviour (both branches kept whole passes; an entry written inside a merge fails naming it; one-branch merges pass; a past violation keeps failing; rows shuffled at a merge are reported). 18 of 18.
+
+**Command:** python3 /tmp/egd-scripts/verify_adopting.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    code blocks: 8 json configs: 3
+    [OK] example record passes, 2 entries, nothing open 
+    [OK] decision-log config: valid log passes 
+    [OK] decision-log config: missing Why, forward Corrects, bad ID all fail 
+    [OK] renamed config: both files read as one record 
+    [OK] renamed config: prompt claimed under docs/dispatches 
+    [OK] check_record JSON keys documented match output 
+    [OK] check record entries carry the documented check keys 
+    [OK] check_prompts JSON keys as documented 
+    [OK] no record: exit 0, vacuous with a note 
+    [OK] misspelled heading: exit 0, no entries, vacuous with a note 
+    [OK] refused config in check_prompts: ok, exit 2, repo, errors 
+    [OK] a prompt outside the provenance folders fails 
+    [OK] both branches added entries, kept whole: the walk passes 
+    [OK] an entry written inside the merge: the walk fails, naming the merge 
+    [OK] one branch changed the record: the walk passes 
+    [OK] a past violation keeps failing after later commits 
+    [OK] rows from two branches shuffled at a merge, every row kept: reported 
+    [OK] wrong type refused by name, exit 2 
+    18 of 18 claims hold
+
+**Stderr:**
+
+    (nothing captured)
+
