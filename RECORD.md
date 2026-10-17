@@ -2005,3 +2005,55 @@ Observed, not asked: the framework documents sit in Forager's prompts/preserved/
 **Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-17-01
+
+**Timestamp:** 2026-10-17T08:11:42Z
+
+**Title:** The record checkers read monthly record files and Forager's longer IDs
+
+**Dispatch-file:** preserved/2026-10-17-01.md
+
+**Change:** check_record.py:
+
+- An ID's number after the date may run to two or more digits; one digit is still rejected.
+- The record is read as RECORD.md plus any records/YYYY-MM.md files, in month order, as one record. Validation runs across all of them: IDs unique across files, links resolved across files, the unterminated list across files.
+- An entry with a Timestamp, filed in a monthly file, must carry that file's month.
+- The append-only working-tree check and the history walk run on each monthly file.
+- When monthly files exist and RECORD.md holds no entries, RECORD.md is the index. Its append-only checks are reported as not applied, not silently skipped, since its rewrite into the index at a split is the recorded one-time exception (RECORDING.md, "Layout: one file per month").
+
+The self-tests gain a check for each rule, written and committed first and observed failing.
+
+check_prompts.py reads Dispatch-file claims from every record file, not only RECORD.md, and gains a --render-check with its own checks, also written first.
+
+RECORDING.md's section on this repository's own record states what the checkers now read. A read-only dry run on a temporary copy of Forager's record, split by Timestamp month, exercises the monthly path on real data. It writes nothing in Forager.
+
+**Scope boundary:** check_record.py, check_prompts.py, RECORDING.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-17-01.md, on branch checker-monthly-2026-10-17 cut from Test-1 at 44745be.
+
+Out of scope:
+
+- This repository's own record, which stays one file.
+- check_prompts.py's pairing of an intent with an outcome that closes it.
+- The lookup tool, which is the next intent.
+- Forager's repository.
+- Merging, which waits for the operator's go.
+
+**Baseline:** Test-1 at 44745be16b405cb30d127bda42ed613a79ccd181, equal to origin/Test-1 after fetch. check_record.py PASS at 48 entries, none unterminated, a 46-commit walk; --render-check 38 of 38. check_prompts.py PASS at 19, preserved=18; it has no self-tests. check_glossary.py 45/44/45. ID_RE is ^\d{4}-\d{2}-\d{2}-\d{2}$ (check_record.py:84). Both checkers read only RECORD.md (check_record.py main, check_prompts.py check_binding).
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):**
+
+- check_record.py's tests-first run: the new checks for IDs, monthly reading, cross-file duplicates, wrong month, per-file append-only and the index report fail, each with an assertion naming its missing rule. The guard that a one-digit ID is still rejected passes before and after by design. Checks 1 to 38 pass.
+- check_prompts.py's tests-first run: --render-check does not exist yet. The first run is with the self-tests added but monthly reading absent, and the monthly-claims check fails.
+- After the change, all checks pass, and this repository's own record passes unchanged: single-file mode, 50 entries after this intent's terminal.
+- The revert run, on temporary copies, makes each rule's check fail, with a summary line present before any result is read.
+- The Forager dry run on a copy: entry counts per month sum to the record's total, and the months' entries joined equal the original's entries byte for byte.
+
+**Finish line:** Tests-first commit, implementation commit and RECORDING.md commit pushed; the revert run, the dry run and the checks through check_register.py; a pull request into Test-1. Not merged until the operator's go.
+
+**Abort conditions:** A new check not failing first for its stated reason. An existing check failing after the change. This repository's record failing. A revert or dry run whose script errors (stop rather than read its results).
+
+---
