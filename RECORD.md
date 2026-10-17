@@ -1620,3 +1620,47 @@ Observed, not asked: in this round a base-commit check printed an error and chec
 **Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-17
+
+**Timestamp:** 2026-10-17T02:09:34Z
+
+**Title:** A monthly record layout in RECORDING.md, the lookup spec reading monthly files, and the Forager split steps and index text for its planner
+
+**Dispatch-file:** preserved/2026-10-16-17.md
+
+**Change:**
+
+- RECORDING.md gains a section "Layout: one file per month", as the proposal in the dispatch file sets out.
+- specs/2026-10-16-records-lookup.md reads Forager's RECORD.md or, once split, the monthly files it indexes, and next-id reads every month. The spec stays under 600 words.
+- The Forager split steps and a revised RECORD.md index text, updated for monthly files and superseding the header text handed over at 2026-10-16-08, are written into this entry's terminal and handed to the operator for the Forager planner. Nothing is written in Forager.
+
+**Scope boundary:** RECORDING.md, specs/2026-10-16-records-lookup.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-17.md, on branch monthly-layout-2026-10-16 cut from Test-1 at ec31535.
+
+Out of scope:
+
+- check_record.py and check_prompts.py, which still read one RECORD.md; their update is code, on its own go.
+- E-GD's own record, which stays one file.
+- Any change in Forager or forager-forecast.
+- Merging, which waits for the operator's go.
+
+**Baseline:** Test-1 at ec3153519c2a477a82bc82d9fce77af50c7bebdf, equal to origin/Test-1 after fetch. Read from Forager for the proposal:
+
+- origin/records-after-173 at f09ff09c holds 1,288 entries in 19,122 lines. 1,109 IDs start 2026-09-28.
+- 1,245 entries carry a Timestamp: 468 in 2026-09, about 7,600 lines; 777 in 2026-10, about 8,500 lines. All 777 October entries carry September IDs.
+- 43 entries have no Timestamp, all dispatch-notes, with IDs from 2026-09-22-04 to 2026-09-28-96.
+- File order never steps back a month.
+- 10 of 709 Continues, Closes, Corrects and Supersedes links cross the month boundary.
+- origin/pre-main 462bb8ba's RECORD.md is not a byte-prefix of the records branch's. Since their merge base 84804be3, pre-main changed it only in dc4ef1c1 (2 lines replaced). The records branch's own RECORD.md is not append-only since that base either: 0bda73e8 removed -638, and fe3f3ae3 removed a maker's name from -844.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** check_glossary.py stays at 45/44/45. check_record.py passes at 42 entries after the terminal, none unterminated; --render-check 38 of 38. check_prompts.py passes at 16 entries, preserved=15. The spec stays under 600 words, with seven requirements, each with its check. The terminal's quoted Forager texts are indented four spaces, so none of their lines is read as a field, an entry separator or the entries heading; check_record.py's entry count is the proof. A scope diff against ec31535 lists only paths in scope.
+
+**Finish line:** Edits and terminal committed and pushed; checks run through check_register.py; a pull request into Test-1; the Forager steps and index text given to the operator. Not merged until the operator's go.
+
+**Abort conditions:** A check failing. A figure that does not match its source when re-read before commit.
+
+---
