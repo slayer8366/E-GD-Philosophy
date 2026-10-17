@@ -308,7 +308,7 @@ The project's standing instructions govern, and where a profile disagrees with t
 
 **A name is a label, not authority.** A named role keeps exactly the authority of its role. This is the curator's addition, not the operator's words.
 
-Evidence: Forager's docs/process/planner-profile.md, written on 2026-10-07 at the owner's request. Its planner was named from Forager's world, which is woods, foraging and wayfinding: "a rowan is the guardian tree at the edge of the woods; a waymark is the blaze that keeps the next walker on the trail". The owner's words:
+Evidence: Forager's docs/process/planner-profile.md, written on 2026-10-07 at the owner's request. Its planner was named from Forager's world, which is woods, foraging and wayfinding: "A rowan is the guardian tree at the edge of the woods. A waymark is the blaze that keeps the next walker on the trail." (planner-profile.md:5). The owner's words:
 
 - "That way each role can have a profile that models their behavior" (Forager record 2026-09-28-1141);
 - "Each role proposes, you pick" (the same entry);
