@@ -2257,3 +2257,74 @@ Out of scope:
 **Abort conditions:** An existing check failing with the default config. A new check not failing first for its stated reason. A rule that cannot be expressed in the config without changing this repository's own record.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-17-06
+
+**Timestamp:** 2026-10-17T08:51:31Z
+
+**Closes:** 2026-10-17-05
+
+**Outcome:** completed
+
+**Observed:** Both record checkers now check any repository they are given, shaped by that repository's records.json or a file named by --config. They are built on branch general-checkers-2026-10-17, pushed after the intent (a58021f):
+
+- 593bc3e: the self-checks, committed failing. check_record.py failed 9 of 55 (checks 47 to 55); check_prompts.py failed p3 and p4 of 4.
+- 5b39e2d: the implementation. DEFAULT_CONFIG is built from the old constants. load_config merges a records.json over it and refuses unknown keys, wrong types and uncompilable patterns by name. Every rule reads the config. main(argv) takes the repository, --config, --json and --print-config.
+- 3710f8d and cc5c7e2: check 56, committed failing and then made to pass. A run that reads no entries is now marked vacuous, with a note.
+- b05b137: ADOPTING.md.
+- be54384: skills/record-checking/SKILL.md, the rows in README.md and skills/README.md, and the pointer in RECORDING.md.
+
+Results, each registered in REGISTER.md:
+
+- check_record.py --render-check passes 56 of 56; check_prompts.py passes 4 of 4. records_lookup.py, which imports check_record, still passes 7 of 7.
+- This repository's record passes when the checker is run from /tmp with the repository as the argument. Run from /tmp with no argument, it exits 2: "not inside a git repository".
+- Compared with the previous checker (593bc3e's check_record.py) on this record and on Forager's record at origin/records-after-173 45a67ec2 (1,345 entries), single-file and split into months, the results were the same: entries, unterminated intents (144 in Forager), sentinel reports (57) and errors (1,331). The only difference is one reworded message, 10 times.
+- The revert run: 2 controls with no edit failed nothing. Each of 19 one-line sabotages, on temporary copies of the committed files, made its own check fail. The repository files equalled the committed copies at the start and the end.
+- Every example and key list in ADOPTING.md was run against the checkers, and 15 of 15 claims hold.
+- check_glossary.py: 45/44/45.
+
+Confirmed against inferred:
+
+- The tests-first red at 593bc3e shows the entry point was missing; it does not show that each rule was missing. Eight of checks 47 to 55 failed on the same assertion, "main() takes no arguments", and check 53 failed on "DEFAULT_CONFIG does not exist". The evidence that each check holds its own rule is the revert run, where each failure message is specific to its edit.
+- Two sabotages failed by an exception rather than by the check's assertion. regex_compile raised re.PatternError when the uncompilable pattern reached the entry rules; that is a failure this edit produces. monthly_dir_null raised a TypeError. A second sabotage for the same rule, which treats null as unset, fails check 54 by its own assertion.
+- Every other failure was read for whether its edit could have produced it.
+
+Could not determine:
+
+- Whether ADOPTING.md and the skill are enough for someone outside this project. No outside reader has tried them.
+- Behaviour on Windows or macOS, and on Python versions other than 3.14.4, is untested.
+
+Premises that were wrong:
+
+- This record and the curator profile give one reason for merging into Test-1 by fast-forward, and it is broader than how the walk behaves:
+    profiles/curator.md:28: "a merge commit touching RECORD.md stops the history check"
+    RECORD.md 2026-10-16-02: "A merge commit into Test-1 touching RECORD.md would stop check_record.py's history walk (MergeCommitEncountered)"
+  Tested with real two-parent merges, git's history of a file skips a merge that takes the file unchanged from one parent, and the walk passes. Only a merge where both branches changed the record stops it. In this repository only the curator writes the record, so a merge commit into Test-1 would most likely have passed. Fast-forward merging is still sound, and nothing was changed. The profile's wording is the operator's to rule on.
+- ADOPTING.md's first draft, never committed, carried the same broader claim. It now states the tested form.
+
+Decided beyond scope:
+
+- Three config keys not named in the intent: closes_field, continues_field and outcome_field. Each outcome also gains names_intent, which generalizes the Superseded-by cross-reference.
+- The repository given must be the top folder of a git work tree, or the checker exits 2. Git resolves HEAD:path from the top folder, so a subfolder would silently compare the wrong file.
+- A repository with no commits yet: its history walk is reported as vacuous rather than raising an error.
+- terminal_outcomes null leaves outcomes unchecked; sentinels null turns sentinels off.
+- An ID must now match its pattern in full. This changes nothing for the default pattern, which is anchored.
+- The malformed-ID message now names the pattern rather than "YYYY-MM-DD-NN". The Closes message now reads "only terminal or outcome entries close an intent".
+- One output format serves single-file and monthly records, and main_monthly is folded into main.
+- The constants KINDS, TERMINAL_OUTCOMES and MONTH_FILE_RE are removed; their values live in DEFAULT_CONFIG. So is check_record's unused HERE.
+- check_prompts.check_binding(None) now means the current directory.
+- Config errors and --json output go to stdout.
+- Exit 0 is kept for "nothing to validate", now marked vacuous.
+- skills/README.md gains a "Written here" section, since the skill is not one of the operator's account copies.
+
+Observed, not asked:
+
+- Anyone whose workflow merges two branches that both added entries will fail the history walk at that merge. For people outside this project that is likely to be common. Walking each parent, for example, is a design choice for the operator.
+- The closed-once check reports itself non-vacuous even when no entry closes anything.
+- I repeated a slip recorded in an earlier round: a `git rev-parse --short` given two names printed an error and checked nothing. Each was then checked separately.
+
+**Deviations:** Check 56 was added beyond the planned 47 to 55. It was found while verifying ADOPTING.md and built test-first, inside the scope boundary. No existing RECORD.md or REGISTER.md entry was edited. records_lookup.py is unchanged, and is the next intent.
+
+---
