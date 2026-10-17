@@ -6558,3 +6558,184 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** lookup_selftest_2026_10_17_07
+
+**Timestamp:** 2026-10-17T09:03:01Z
+
+**Expected failure mode:** Exit 0, 17 of 17: r1-r7 through the preset, c1-c8 (red at 5d5e3fa) and c9-c10 green.
+
+**Command:** python3 records_lookup.py --render-check
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    records_lookup.py --render-check
+    
+    [r1_show_verbatim_with_citation] expected failure mode if broken: show does not print the entry verbatim under a citation that git show confirms
+    [r1_show_verbatim_with_citation] PASS
+    
+    [r2_links_each_type] expected failure mode if broken: links misses a Continues, Closes, Corrects or Supersedes link, or what an entry names
+    [r2_links_each_type] PASS
+    
+    [r3_search_seven_sources_newest_first] expected failure mode if broken: search misses a source, reads the session log's prose, is not newest first, or shows no Supersedes link
+    [r3_search_seven_sources_newest_first] PASS
+    
+    [r4_open_intents] expected failure mode if broken: open lists a closed intent (by terminal, or by outcome with Closes) or misses an open one
+    [r4_open_intents] PASS
+    
+    [r5_next_id_across_months_with_duplicates] expected failure mode if broken: next-id reads only the current month, omits the commit read, or misses a duplicate
+    [r5_next_id_across_months_with_duplicates] PASS
+    
+    [r6_cross_repository_reference_resolves] expected failure mode if broken: a forecast decision's 'Forager RECORD -NN' is not resolved to the Forager entry, cited
+    [r6_cross_repository_reference_resolves] PASS
+    
+    [r7_unread_source_reported] expected failure mode if broken: a source whose ref cannot be read is skipped silently instead of reported
+    [r7_unread_source_reported] PASS
+    
+    [c1_default_reads_one_repository_at_head] expected failure mode if broken: with no config the tool does not read the given (or current) repository's record at HEAD
+    [c1_default_reads_one_repository_at_head] PASS
+    
+    [c2_config_names_the_sources] expected failure mode if broken: a config's record, table and folder, under its own names and ID scheme, are not read
+    [c2_config_names_the_sources] PASS
+    
+    [c3_shape_from_records_json_at_the_ref] expected failure mode if broken: a record repository's records.json is not read when the lookup config gives no shape
+    [c3_shape_from_records_json_at_the_ref] PASS
+    
+    [c4_open_unsupported_without_an_intent_type] expected failure mode if broken: open on a record whose shape has no intent type prints a count instead of 'unsupported'
+    [c4_open_unsupported_without_an_intent_type] PASS
+    
+    [c5_next_id_for_any_trailing_number] expected failure mode if broken: next-id assumes YYYY-MM-DD-NN IDs and fails or misnumbers another scheme
+    [c5_next_id_for_any_trailing_number] PASS
+    
+    [c6_config_refused_by_name] expected failure mode if broken: an unknown key, or a source naming a repository the config does not define, is accepted
+    [c6_config_refused_by_name] PASS
+    
+    [c7_print_config_and_preset] expected failure mode if broken: --print-config does not print the default, or --preset forager does not load lookups/forager.json
+    [c7_print_config_and_preset] PASS
+    
+    [c8_ref_overrides_source_over_repository] expected failure mode if broken: --ref by repository does not reach every source in it, or does not yield to a source's own --ref
+    [c8_ref_overrides_source_over_repository] PASS
+    
+    [c9_unusable_records_json_leaves_the_record_unread] expected failure mode if broken: a records.json that is not a usable config is ignored and the record read with the default shape
+    [c9_unusable_records_json_leaves_the_record_unread] PASS
+    
+    [c10_repo_and_ref_names_checked] expected failure mode if broken: --repo or --ref naming nothing in the config, or not in NAME=VALUE form, is accepted
+    [c10_repo_and_ref_names_checked] PASS
+    
+    PASS: 0 of 17 checks failed
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** lookup_real_data_old_vs_new_2026_10_17_07
+
+**Timestamp:** 2026-10-17T09:03:29Z
+
+**Expected failure mode:** The tool as merged at 7dc4a25 and this one with --preset forager, both --no-fetch on Forager origin/records-after-173 b0abbfa3, origin/pre-main b221e85b and forager-forecast origin/main b9127e58: the same answer lines and exit codes for 17 commands; only 'source' header lines differ. A difference prints DIFFERENT with a diff.
+
+**Command:** python3 /tmp/egd-scripts/lookup_compare.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    [SAME] show -1054: exit 0/0, 13 answer lines; stderr 0/0 chars
+    [SAME] show D132: exit 0/0, 4 answer lines; stderr 0/0 chars
+    [SAME] show -1142: exit 0/0, 10 answer lines; stderr 0/0 chars
+    [SAME] show -1104: exit 0/0, 18 answer lines; stderr 0/0 chars
+    [SAME] show 2026-09-28-544: exit 0/0, 12 answer lines; stderr 0/0 chars
+    [SAME] links -1104: exit 0/0, 6 answer lines; stderr 0/0 chars
+    [SAME] links -544: exit 0/0, 4 answer lines; stderr 0/0 chars
+    [SAME] links -385: exit 0/0, 3 answer lines; stderr 0/0 chars
+    [SAME] links -1106: exit 0/0, 5 answer lines; stderr 0/0 chars
+    [SAME] search pinch zoom: exit 0/0, 50 answer lines; stderr 0/0 chars
+    [SAME] search night mode: exit 0/0, 128 answer lines; stderr 0/0 chars
+    [SAME] search flake: exit 0/0, 69 answer lines; stderr 0/0 chars
+    [SAME] search supersedes: exit 0/0, 111 answer lines; stderr 0/0 chars
+    [SAME] open: exit 0/0, 72 answer lines; stderr 0/0 chars
+      old header: ['source forager record: forager origin/records-after-173@b0abbfa3', 'source forager prompts: forager origin/records-after-173@b0abbfa3', 'source forager audits: forager origin/pre-main@b221e85b', 'source forecast: forecast origin/main@b9127e58']
+      new header: ['source forager record: forager origin/records-after-173@b0abbfa3', 'source forager audits: forager origin/pre-main@b221e85b', 'source forecast decisions: forecast origin/main@b9127e58', 'source forecast audits: forecast origin/main@b9127e58', 'source forecast session log: forecast origin/main@b9127e58', 'source forager prompts: forager origin/records-after-173@b0abbfa3', 'source forecast dispatch: forecast origin/main@b9127e58']
+    [SAME] next-id: exit 0/0, 4 answer lines; stderr 0/0 chars
+    [SAME] show -99999: exit 1/1, 2 answer lines; stderr 0/0 chars
+    [SAME] show D9999: exit 1/1, 2 answer lines; stderr 0/0 chars
+    commands: 17, different: 0
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** revert_runs_lookup_2026_10_17_07
+
+**Timestamp:** 2026-10-17T09:03:45Z
+
+**Expected failure mode:** A control (no edit) fails nothing; each of 19 one-line sabotages on temporary copies of the committed records_lookup.py (with check_record.py and lookups/forager.json beside it) fails its own check, c1-c10, each message specific to its edit; repository files equal the committed copies at start and end.
+
+**Command:** python3 /tmp/egd-scripts/revert_runner7.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repo files equal committed copies at start: True
+    [control] CONTROL CLEAN: expected []; failed 0 of 17; others: []
+    [default_repo_cwd] BITES: expected ['c1_default_reads_one_repository_at_head']; failed 1 of 17; others: []
+        c1_default_reads_one_repository_at_head: AssertionError("with no config and no --repo, the current directory was not read: 'source record: NOT READ (no path given for repo repo (--repo repo=PATH))\\n\\nshow 2026
+    [repo_override] BITES: expected ['c1_default_reads_one_repository_at_head']; failed 13 of 17; others: ['c2_config_names_the_sources', 'c3_shape_from_records_json_at_the_ref', 'c5_next_id_for_any_trailing_number', 'c8_ref_overrides_source_over_repository', 'c9_unusable_records_json_leaves_the_record_unread', 'r1_show_verbatim_with_citation', 'r2_links_each_type', 'r3_search_seven_sources_newest_first', 'r4_open_intents', 'r5_next_id_across_months_with_duplicates', 'r6_cross_repository_reference_resolves', 'r7_unread_source_reported']
+        c1_default_reads_one_repository_at_head: AssertionError("with no config, --repo's record was not read at HEAD: 'source record: NOT READ (ref HEAD not found in .)\\n\\nshow 2026-01-01-02: unknown, the record was 
+    [links_from_shape] BITES: expected ['c2_config_names_the_sources']; failed 1 of 17; others: []
+        c2_config_names_the_sources: AssertionError("a configured record's own link field was not read: 'source notes log: notes HEAD@867ce93f\\nsource ledger: notes HEAD@867ce93f\\nsource drafts: notes HEAD
+    [table_show_by_id] BITES: expected ['c2_config_names_the_sources']; failed 3 of 17; others: ['c8_ref_overrides_source_over_repository', 'r6_cross_repository_reference_resolves']
+        c2_config_names_the_sources: AssertionError("a configured table's row was not shown by its ID: 'source notes log: notes HEAD@9a56d191\\nsource ledger: notes HEAD@9a56d191\\nsource drafts: notes HEAD@
+    [record_reference] BITES: expected ['c2_config_names_the_sources']; failed 2 of 17; others: ['r6_cross_repository_reference_resolves']
+        c2_config_names_the_sources: AssertionError("a configured table's reference to the record was not resolved: 'source notes log: notes HEAD@9a56d191\\nsource ledger: notes HEAD@9a56d191\\nsource drafts
+    [folders_searched] BITES: expected ['c2_config_names_the_sources']; failed 2 of 17; others: ['r3_search_seven_sources_newest_first']
+        c2_config_names_the_sources: AssertionError("search found no hit in the configured source drafts: 'source notes log: notes HEAD@05b05434\\nsource ledger: notes HEAD@05b05434\\nsource drafts: notes HE
+    [shape_from_records_json] BITES: expected ['c3_shape_from_records_json_at_the_ref']; failed 2 of 17; others: ['c9_unusable_records_json_leaves_the_record_unread']
+        c3_shape_from_records_json_at_the_ref: AssertionError("with no shape in the config, the record repository's records.json was not used: 'source notes log: notes HEAD@e568f1ab\\nsource ledger: notes HEAD@e568f1a
+    [open_unsupported] BITES: expected ['c4_open_unsupported_without_an_intent_type']; failed 1 of 17; others: []
+        c4_open_unsupported_without_an_intent_type: AssertionError("open on a record with no intent type answered a count: 'source notes log: notes HEAD@0648f95b\\nsource ledger: notes HEAD@0648f95b\\nsource drafts: notes 
+    [next_id_any_scheme] BITES: expected ['c5_next_id_for_any_trailing_number']; failed 1 of 17; others: []
+        c5_next_id_for_any_trailing_number: AssertionError('next-id did not work for an ID scheme other than the dated one: "source notes log: notes HEAD@e49ae3ed\\nsource ledger: notes HEAD@e49ae3ed\\nsource draft
+    [unknown_key] BITES: expected ['c6_config_refused_by_name']; failed 1 of 17; others: []
+        c6_config_refused_by_name: AssertionError("an unknown config key was not refused by name: 'source record: NOT READ (ref HEAD not found in .)\\n\\nopen intents: unknown, the record was not read\\n'"
+    [source_repo_defined] BITES: expected ['c6_config_refused_by_name']; failed 1 of 17; others: []
+        c6_config_refused_by_name: AssertionError('a source naming an unknown repository was not refused: "source notes log: NOT READ (no path given for repo notes (--repo notes=PATH))\\nsource ledger: NOT
+    [print_config_in_use] BITES: expected ['c7_print_config_and_preset']; failed 1 of 17; others: []
+        c7_print_config_and_preset: AssertionError('--preset forager does not load lookups/forager.json')
+    [preset_file] BITES: expected ['c7_print_config_and_preset']; failed 9 of 17; others: ['c8_ref_overrides_source_over_repository', 'r1_show_verbatim_with_citation', 'r2_links_each_type', 'r3_search_seven_sources_newest_first', 'r4_open_intents', 'r5_next_id_across_months_with_duplicates', 'r6_cross_repository_reference_resolves', 'r7_unread_source_reported']
+        c7_print_config_and_preset: AssertionError('--preset forager does not load lookups/forager.json')
+    [source_ref_wins] BITES: expected ['c8_ref_overrides_source_over_repository']; failed 3 of 17; others: ['r3_search_seven_sources_newest_first', 'r7_unread_source_reported']
+        c8_ref_overrides_source_over_repository: AssertionError("a source's own --ref did not win over its repository's: 'source forager record: NOT READ (no path given for repo forager (--repo forager=PATH))\\nsource f
+    [repo_wide_ref] BITES: expected ['c8_ref_overrides_source_over_repository']; failed 7 of 17; others: ['r1_show_verbatim_with_citation', 'r2_links_each_type', 'r3_search_seven_sources_newest_first', 'r4_open_intents', 'r5_next_id_across_months_with_duplicates', 'r6_cross_repository_reference_resolves']
+        c8_ref_overrides_source_over_repository: AssertionError("a repository-wide --ref did not reach that repository's other sources: 'source forager record: NOT READ (no path given for repo forager (--repo forager=PA
+    [unusable_shape_unread] BITES: expected ['c9_unusable_records_json_leaves_the_record_unread']; failed 1 of 17; others: []
+        c9_unusable_records_json_leaves_the_record_unread: AssertionError('the record was read with the default shape despite an unusable records.json: "source record: repo HEAD@6b323f19\\nsource record: records.json at HEAD is n
+    [repo_name_checked] BITES: expected ['c10_repo_and_ref_names_checked']; failed 1 of 17; others: []
+        c10_repo_and_ref_names_checked: AssertionError("--repo with a name the config lacks was accepted: 'source record: NOT READ (ref HEAD not found in .)\\n\\nopen intents: unknown, the record was not read\\
+    [ref_name_checked] BITES: expected ['c10_repo_and_ref_names_checked']; failed 1 of 17; others: []
+        c10_repo_and_ref_names_checked: AssertionError("--ref with a name the config lacks was accepted: 'source record: NOT READ (ref HEAD not found in .)\\n\\nopen intents: unknown, the record was not read\\n
+    [pair_form_checked] BITES: expected ['c10_repo_and_ref_names_checked']; failed 1 of 17; others: []
+        c10_repo_and_ref_names_checked: AssertionError("--repo without NAME=PATH was accepted: 'source record: NOT READ (ref HEAD not found in )\\n\\nopen intents: unknown, the record was not read\\n'")
+    repo files equal committed copies at end: True
+    runs: 20, not biting, not run or control failed: 0
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
