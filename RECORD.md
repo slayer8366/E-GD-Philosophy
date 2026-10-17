@@ -2804,3 +2804,23 @@ It proposes a decision entry accepting the nine violations the history walk repo
 **Notes:** Written by the curator, Clio, on branch planner-handoff-2026-10-17.
 
 ---
+
+**Kind:** observation
+
+**ID:** 2026-10-17-18
+
+**Timestamp:** 2026-10-17T11:01:14Z
+
+**Observed, read:** Forager's planner wrote the acceptance entry handed over in 2026-10-17-16. It is Forager RECORD 2026-09-28-1185, on origin/records-after-173 at 2c6df325bed530a4f975287d445af6085b95ffa5, with the nine Accepts-violation lines as proposed, and the owner, verbatim: "I accept these nine past edits and removals." E-GD's check_record.py, from Test-1 at 28619d1, ran on that commit in a shared throwaway clone that was deleted afterwards:
+- the history walk passes, with 1,476 commits checked and 9 violations accepted, all by 2026-09-28-1185;
+- there are no history, working-tree or acceptance errors;
+- the overall check still fails, on 1,334 entry-format errors, the same count as at 8ef027ca.
+Registered as forager_record_1185_accepted_2026_10_17_18. The operator: "Go ahead", asked whether to record this.
+
+**Inferred:** That the history walk stays clean only until the next violation. dc4ef1c1, on Forager's pre-main, will need its own acceptance line once pre-main is merged into records-after-173, as 2026-10-17-16's text says.
+
+**Not checked:** Forager's pre-main and main, which do not carry -1185.
+
+**Notes:** Written by the curator, Clio, on branch forager-acceptance-verified-2026-10-17. Nothing was written in Forager's repository.
+
+---

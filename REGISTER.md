@@ -8596,3 +8596,130 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** forager_record_1185_accepted_2026_10_17_18
+
+**Timestamp:** 2026-10-17T11:01:14Z
+
+**Expected failure mode:** E-GD's check_record.py on Forager's origin/records-after-173 at 2c6df325, in a shared throwaway clone: the history walk passes with 9 violations accepted, all by 2026-09-28-1185; no history, working-tree or acceptance errors; 1,334 entry-format errors, as at 8ef027ca; the scratch clone removed.
+
+**Command:** python3 /tmp/egd-scripts/forager_verify_1185.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    Forager origin/records-after-173 read at 2c6df325bed530a4f975287d445af6085b95ffa5
+    exit 1 | entries 1354 | record files ['RECORD.md']
+      working-tree  RECORD.md  ok=True  current file starts with HEAD's content unchanged
+      history walk  RECORD.md  ok=True  1476 commit(s) checked, 9 violation(s) accepted
+      names-intent  None       ok=True  0 error(s)
+      closed-once   None       ok=True  0 intent(s) closed more than once
+    accepted: 9
+      c8f63838ad2e15cdb8baaed3b709d88c4f1aab7a by 2026-09-28-1185
+      4162d6d7b82f995b0ebba07d61e4fd89f989edf7 by 2026-09-28-1185
+      09d21038999dede05e25cb5720138aa41cafdbd0 by 2026-09-28-1185
+      f18b14cb09d4a70855f8e42f34de7b1ffaa466fe by 2026-09-28-1185
+      0bda73e88eb82dd0bf502d8531489242cce27019 by 2026-09-28-1185
+      36407260c5ca8bc609a4c2db49ce982223809680 by 2026-09-28-1185
+      fe3f3ae3f9d9c98b5d95a57cab2a8ff1e4877e62 by 2026-09-28-1185
+      11794f55f99310912ed0dbc19d7eb9020ab77f6d by 2026-09-28-1185
+      bebeb5736b2a8bf324da82a3c8c267810f9b02dd by 2026-09-28-1185
+    history, working-tree or acceptance errors: []
+    entry-format errors: 1334
+    scratch clone removed: True
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_observation_2026_10_17_18
+
+**Timestamp:** 2026-10-17T11:01:38Z
+
+**Expected failure mode:** Run from /tmp with this repository as the argument: PASS at 66 entries, none unterminated.
+
+**Command:** sh -c cd /tmp && python3 /home/zynergy-labs/Zynergy/E-GD-Philosophy/check_record.py /home/zynergy-labs/Zynergy/E-GD-Philosophy
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repository: /home/zynergy-labs/Zynergy/E-GD-Philosophy
+    config: default (RECORDING.md format; no records.json)
+    record files: RECORD.md
+    entries: 66
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-07: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-09: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-11: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-15: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-17: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-19: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-21: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-23: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-07: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-09: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-11: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-14: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check: RECORD.md -- changes since the last commit] PASS: current file starts with HEAD's content unchanged
+    [history walk: RECORD.md -- every committed version] PASS: 61 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- terminals whose outcome must name an intent] PASS: no entry declares such an outcome (vacuous)
+    [closed-once check -- no intent closed by more than one closing entry] PASS: 0 intent(s) closed more than once
+    
+    PASS: entries structurally valid across 1 record file(s); working-tree check, history walk, and cross-references all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_observation_2026_10_17_18
+
+**Timestamp:** 2026-10-17T11:01:38Z
+
+**Expected failure mode:** PASS, 25 dispatch-recording entries, preserved=24.
+
+**Command:** sh -c cd /tmp && python3 /home/zynergy-labs/Zynergy/E-GD-Philosophy/check_prompts.py /home/zynergy-labs/Zynergy/E-GD-Philosophy
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repository: /home/zynergy-labs/Zynergy/E-GD-Philosophy
+    config: default (no records.json)
+    dispatch-recording entries found: 25
+    files under prompts/: preserved=24, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
