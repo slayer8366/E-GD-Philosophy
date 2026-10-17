@@ -1787,3 +1787,46 @@ Observed, not asked: the records branch's RECORD.md has not been append-only sin
 **Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-19
+
+**Timestamp:** 2026-10-17T04:54:31Z
+
+**Title:** PROTOCOL candidate 22, roles name themselves from their project and scope and keep a profile written from the record; the curator's profile as Clio Ledger
+
+**Dispatch-file:** preserved/2026-10-16-19.md
+
+**Change:**
+
+- PROTOCOL.md gains rule 22, as the proposal in the dispatch file sets out, with its evidence and standing. The curator's addition is labelled as such.
+- profiles/curator.md, the profile of E-GD's curator, Clio Ledger (the operator's pick), is written from this repository's record, entries 2026-10-16-01 to -18 and their commits. Every practice in it cites its entry, and it follows the structure of Forager's docs/process/planner-profile.md.
+- README.md gains a row for profiles/.
+
+**Scope boundary:** PROTOCOL.md, profiles/curator.md (new), README.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-19.md, on branch role-names-profiles-2026-10-16 cut from Test-1 at f6f21a9.
+
+Out of scope:
+
+- CLAUDE.md, including any line telling a curator session to read the profile at start. That is brought to the operator as a question, not written.
+- The auditor framework Forager's planner wrote for E-GD.
+- Forager.
+- Merging, which waits for the operator's go.
+
+**Baseline:** Test-1 at f6f21a9d39da465f69d4ad12b8cec4223c3ac1e9, equal to origin/Test-1 after fetch.
+
+Read from Forager for the proposal:
+
+- origin/records-after-173 at 28a1dc49 holds entries -1141 and -1142, quoted in the dispatch file.
+- prompts/preserved/2026-10-16-05b-auditor-framework-addendum.md, section 5.
+- origin/pre-main's docs/process/planner-profile.md, last changed at 5cb91fbf. Its sections run from the name through to talking to the owner, and its line 7 says CLAUDE.md governs.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** check_glossary.py stays at 45/44/45. check_record.py passes at 44 entries after the terminal, none unterminated; --render-check 38 of 38. check_prompts.py passes at 17 entries, preserved=16. The protocol holds 22 numbered rules. Every bullet of practice in profiles/curator.md cites a RECORD.md entry or commit of this repository, and each cited ID exists. A script lists the citations and checks each against the record before commit. A scope diff against f6f21a9 lists only paths in scope.
+
+**Finish line:** Rule, profile and README row committed and pushed; terminal and checks through check_register.py; a pull request into Test-1. Not merged until the operator's go.
+
+**Abort conditions:** A practice in the profile that its cited entry does not show. A check failing.
+
+---
