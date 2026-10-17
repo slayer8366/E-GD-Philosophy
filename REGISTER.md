@@ -5756,3 +5756,332 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** check_record_selftest_2026_10_17_05
+
+**Timestamp:** 2026-10-17T08:45:08Z
+
+**Expected failure mode:** After the change: exit 0, 55 of 55 pass (1-46 unchanged, 47-55 red at 593bc3e now green). A failure names the rule broken.
+
+**Command:** python3 check_record.py --render-check
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    check_record.py --render-check
+    
+    [check1_well_formed_record_passes] expected failure mode if broken: N/A -- positive case, validated by the negative checks below catching sabotages of the same fixture
+    [check1_well_formed_record_passes] PASS
+    
+    [check2_missing_field_names_fault] expected failure mode if broken: an entry missing a required field is accepted, or the error does not name both the entry and the missing field
+    [check2_missing_field_names_fault] PASS
+    
+    [check3_missing_restored_prediction_field_caught] expected failure mode if broken: an intent entry missing the restored 'Prediction (outcome — planner)' field is accepted, or the error does not name it
+    [check3_missing_restored_prediction_field_caught] PASS
+    
+    [check4_closes_resolution_catches_dangling_reference] expected failure mode if broken: a terminal entry's Closes field naming a nonexistent intent ID is accepted silently
+    [check4_closes_resolution_catches_dangling_reference] PASS
+    
+    [check5_duplicate_id_caught] expected failure mode if broken: two entries sharing the same ID are accepted, or the error does not name the colliding ID
+    [check5_duplicate_id_caught] PASS
+    
+    [check6_duplicate_terminal_names_both_closers] expected failure mode if broken: one intent closed by two terminal entries is accepted, or the error does not name both closing entries
+    [check6_duplicate_terminal_names_both_closers] PASS
+    
+    [check7_withheld_sentinel_reported_pending] expected failure mode if broken: a 'withheld' outcome-prediction sentinel is either treated as an error or not surfaced in sentinel_reports as pending
+    [check7_withheld_sentinel_reported_pending] PASS
+    
+    [check8_withheld_sentinel_resolved_by_terminal] expected failure mode if broken: a terminal entry supplying the outcome for an intent whose prediction was legitimately 'withheld' is not recognized as a resolution
+    [check8_withheld_sentinel_resolved_by_terminal] PASS
+    
+    [check9_not_authored_plus_supplied_is_fabrication] expected failure mode if broken: an intent whose outcome prediction is permanently 'not authored' is not flagged when a terminal entry later supplies a value anyway
+    [check9_not_authored_plus_supplied_is_fabrication] PASS
+    
+    [check10_sentinel_forbidden_in_terminal_entry] expected failure mode if broken: a terminal entry carrying a sentinel value in any field is accepted, or the error does not name the field and value
+    [check10_sentinel_forbidden_in_terminal_entry] PASS
+    
+    [check11_working_tree_append_only_catches_modified_line] expected failure mode if broken: modifying an existing, already-committed line in RECORD.md is not caught, or the failure does not name the changed line
+    [check11_working_tree_append_only_catches_modified_line] PASS
+    
+    [check12_working_tree_append_only_vacuous_before_first_commit] expected failure mode if broken: a RECORD.md that exists in the working tree but has never been committed is reported as a violation, or the vacuous case is not flagged as vacuous
+    [check12_working_tree_append_only_vacuous_before_first_commit] PASS
+    
+    [check13_history_walk_real_repo] expected failure mode if broken: a genuinely append-only two-commit history is reported as violating, or the wrong commit count is walked
+    [check13_history_walk_real_repo] PASS
+    
+    [check14_history_walk_vacuous_single_commit] expected failure mode if broken: a RECORD.md history with only one committed version performs a comparison anyway, or is not reported vacuous
+    [check14_history_walk_vacuous_single_commit] PASS
+    
+    [check15_history_walk_catches_removed_line] expected failure mode if broken: a commit that removed an existing line from RECORD.md's history is accepted by the walk
+    [check15_history_walk_catches_removed_line] PASS
+    
+    [check16_merge_commit_stops_the_walk] expected failure mode if broken: a merge commit touching RECORD.md is silently walked (wrong parent guessed) instead of raising MergeCommitEncountered
+    [check16_merge_commit_stops_the_walk] PASS
+    
+    [check17_superseded_by_vacuous_when_none_declared] expected failure mode if broken: a record with no terminal entry declaring Outcome: superseded is not reported vacuous, or is reported as a failure
+    [check17_superseded_by_vacuous_when_none_declared] PASS
+    
+    [check18_superseded_by_catches_dangling_reference] expected failure mode if broken: a terminal entry's Superseded-by field naming a nonexistent intent ID is accepted
+    [check18_superseded_by_catches_dangling_reference] PASS
+    
+    [check19_all_twelve_kinds_accepted] expected failure mode if broken: a record using every RECORDING.md entry type with minimal fields is rejected
+    [check19_all_twelve_kinds_accepted] PASS
+    
+    [check20_unknown_kind_still_rejected] expected failure mode if broken: a kind outside the twelve is accepted (guard: passes before and after the change by design, so it is not evidence for the change)
+    [check20_unknown_kind_still_rejected] PASS
+    
+    [check21_new_kind_missing_notes_named] expected failure mode if broken: an entry of a new type without its Notes line is accepted
+    [check21_new_kind_missing_notes_named] PASS
+    
+    [check22_continuation_missing_continues_named] expected failure mode if broken: a continuation with no Continues field is accepted
+    [check22_continuation_missing_continues_named] PASS
+    
+    [check23_continuation_of_closed_intent_caught] expected failure mode if broken: a continuation naming an intent already closed earlier in the file is accepted
+    [check23_continuation_of_closed_intent_caught] PASS
+    
+    [check24_continuation_of_non_intent_caught] expected failure mode if broken: a continuation naming an entry that is not an intent is accepted
+    [check24_continuation_of_non_intent_caught] PASS
+    
+    [check25_continuation_forbidden_field_caught] expected failure mode if broken: a continuation carrying a closing field (Outcome) is accepted
+    [check25_continuation_forbidden_field_caught] PASS
+    
+    [check26_outcome_with_closes_closes_intent] expected failure mode if broken: an outcome carrying Closes is rejected, or leaves its intent unterminated
+    [check26_outcome_with_closes_closes_intent] PASS
+    
+    [check27_terminal_and_outcome_double_close_caught] expected failure mode if broken: an intent closed by both a terminal and an outcome passes the closed-once check
+    [check27_terminal_and_outcome_double_close_caught] PASS
+    
+    [check28_outcome_needs_continues_or_closes] expected failure mode if broken: an outcome with neither Continues nor Closes is accepted
+    [check28_outcome_needs_continues_or_closes] PASS
+    
+    [check29_correction_dangling_reference_caught] expected failure mode if broken: a correction whose Corrects names no existing entry is accepted
+    [check29_correction_dangling_reference_caught] PASS
+    
+    [check30_closes_on_other_kind_caught] expected failure mode if broken: a type other than terminal or outcome carrying Closes is accepted
+    [check30_closes_on_other_kind_caught] PASS
+    
+    [check31_unknown_terminal_outcome_caught] expected failure mode if broken: a terminal Outcome outside completed, partial, superseded, abandoned is accepted
+    [check31_unknown_terminal_outcome_caught] PASS
+    
+    [check32_partial_requires_deferred] expected failure mode if broken: a partial terminal without a Deferred field is accepted
+    [check32_partial_requires_deferred] PASS
+    
+    [check33_completed_with_deferred_caught] expected failure mode if broken: a completed terminal carrying Deferred is accepted
+    [check33_completed_with_deferred_caught] PASS
+    
+    [check34_merge_requires_backup] expected failure mode if broken: a merge entry that names no backup is accepted
+    [check34_merge_requires_backup] PASS
+    
+    [check35_dispatch_note_requires_dispatch_reference] expected failure mode if broken: a dispatch-note naming neither Dispatch-file nor Dispatch is accepted
+    [check35_dispatch_note_requires_dispatch_reference] PASS
+    
+    [check36_continues_dangling_on_other_kind_caught] expected failure mode if broken: a Continues on a decision naming no existing entry is accepted
+    [check36_continues_dangling_on_other_kind_caught] PASS
+    
+    [check37_every_new_kind_requires_notes] expected failure mode if broken: some new entry type is accepted without its who-wrote-it Notes line
+    [check37_every_new_kind_requires_notes] PASS
+    
+    [check38_link_fields_required] expected failure mode if broken: a finding without Continues, a correction without Corrects, or a merge without Merge-commit is accepted
+    [check38_link_fields_required] PASS
+    
+    [check39_four_digit_id_number_accepted] expected failure mode if broken: an ID like 2026-09-28-1106 (Forager's running sequence) is rejected as malformed
+    [check39_four_digit_id_number_accepted] PASS
+    
+    [check40_one_digit_id_number_still_rejected] expected failure mode if broken: a one-digit ID number is accepted (guard: passes before and after by design)
+    [check40_one_digit_id_number_still_rejected] PASS
+    
+    [check41_monthly_files_read_as_one_record] expected failure mode if broken: records/YYYY-MM.md files are not read, or not read as one record across months
+    [check41_monthly_files_read_as_one_record] PASS
+    
+    [check42_duplicate_id_across_months_caught] expected failure mode if broken: the same ID in two monthly files is accepted
+    [check42_duplicate_id_across_months_caught] PASS
+    
+    [check43_entry_in_wrong_month_caught] expected failure mode if broken: an entry whose Timestamp month differs from its monthly file's month is accepted
+    [check43_entry_in_wrong_month_caught] PASS
+    
+    [check44_monthly_file_append_only_checked] expected failure mode if broken: an edit to a committed line of a monthly file passes the working-tree check
+    [check44_monthly_file_append_only_checked] PASS
+    
+    [check45_index_record_md_reported_not_checked] expected failure mode if broken: with monthly files and an entry-less RECORD.md, RECORD.md is not reported as the index
+    [check45_index_record_md_reported_not_checked] PASS
+    
+    [check46_monthly_file_history_walked] expected failure mode if broken: a line removed from a monthly file in a committed change passes the history walk
+    [check46_monthly_file_history_walked] PASS
+    
+    [check47_repository_argument_is_the_one_checked] expected failure mode if broken: the checker checks its own folder, not the repository it is given
+    [check47_repository_argument_is_the_one_checked] PASS
+    
+    [check48_records_json_in_repository_is_read] expected failure mode if broken: a records.json in the checked repository is ignored
+    [check48_records_json_in_repository_is_read] PASS
+    
+    [check49_config_sets_the_entry_types] expected failure mode if broken: a config's own entry types and required fields are not applied
+    [check49_config_sets_the_entry_types] PASS
+    
+    [check50_config_sets_the_id_pattern] expected failure mode if broken: a config's ID pattern is not applied
+    [check50_config_sets_the_id_pattern] PASS
+    
+    [check51_invalid_config_refused_by_name] expected failure mode if broken: an unknown key or an uncompilable regex in the config is accepted or not named
+    [check51_invalid_config_refused_by_name] PASS
+    
+    [check52_json_output] expected failure mode if broken: --json does not print one JSON object carrying ok, entries and errors
+    [check52_json_output] PASS
+    
+    [check53_print_config_round_trips] expected failure mode if broken: --print-config does not print the default, or the printed default is not a valid config
+    [check53_print_config_round_trips] PASS
+    
+    [check54_monthly_dir_configurable] expected failure mode if broken: a configured monthly folder is not read, or null does not turn monthly files off
+    [check54_monthly_dir_configurable] PASS
+    
+    [check55_terminal_outcomes_configurable] expected failure mode if broken: a config's terminal outcomes are not applied
+    [check55_terminal_outcomes_configurable] PASS
+    
+    PASS: 0 of 55 checks failed
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_selftest_2026_10_17_05
+
+**Timestamp:** 2026-10-17T08:45:08Z
+
+**Expected failure mode:** After the change: exit 0, 4 of 4 pass (p3 and p4 red at 593bc3e now green).
+
+**Command:** python3 check_prompts.py --render-check
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    check_prompts.py --render-check
+    
+    [p1_single_file_binding_unchanged] expected failure mode if broken: a single RECORD.md claiming its one preserved prompt is reported as a violation
+    [p1_single_file_binding_unchanged] PASS
+    
+    [p2_claims_read_from_monthly_files] expected failure mode if broken: a Dispatch-file claim in records/YYYY-MM.md is not read, so its prompt is reported orphaned
+    [p2_claims_read_from_monthly_files] PASS
+    
+    [p3_repository_and_config] expected failure mode if broken: check_prompts ignores the given repository or its records.json
+    [p3_repository_and_config] PASS
+    
+    [p4_json_output] expected failure mode if broken: --json does not print one JSON object carrying ok and errors
+    [p4_json_output] PASS
+    
+    PASS: 0 of 4 checks failed
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** regression_vs_previous_checker_2026_10_17_05
+
+**Timestamp:** 2026-10-17T08:45:09Z
+
+**Expected failure mode:** The previous checker (HEAD~1 at 593bc3e, as old_cr.py) and this one give the same entries, unterminated intents, sentinel reports and error count on E-GD's record and on Forager's record at origin/records-after-173 45a67ec2; the only differing errors are one reworded message. A difference anywhere else would show as unequal or as other error shapes.
+
+**Command:** python3 /tmp/egd-scripts/regress/compare.py RECORD.md /tmp/egd-scripts/regress/forager_RECORD.md
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    RECORD.md
+      entries 53 53 same entries: True
+      unterminated same: True 1
+      sentinels same: True 23
+      errors 0 0
+      only old: 0  only new: 0
+      old-only shapes: []
+      new-only shapes: []
+      dup terminals same: True
+      superseded same: True
+    /tmp/egd-scripts/regress/forager_RECORD.md
+      entries 1345 1345 same entries: True
+      unterminated same: True 144
+      sentinels same: True 57
+      errors 1331 1331
+      only old: 10  only new: 10
+      old-only shapes: [("merge ID: carries field 'Closes', but only a terminal or an outcome closes an intent", 10)]
+      new-only shapes: [("merge ID: carries field 'Closes', but only terminal or outcome entries close an intent", 10)]
+      dup terminals same: True
+      superseded same: True
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** revert_runs_2026_10_17_05
+
+**Timestamp:** 2026-10-17T08:45:23Z
+
+**Expected failure mode:** Two controls (no edit) fail nothing; each of 18 one-line sabotages on temporary copies of the committed check_record.py and check_prompts.py makes its own check fail (47-55, p3, p4), each failure message specific to its edit; repository files equal the committed copies at start and end. A run without its summary line, or with a Python error outside the checks, is reported NOT RUN and not read.
+
+**Command:** python3 /tmp/egd-scripts/revert_runner5.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repo files equal committed copies at start: True
+    [control_record] CONTROL CLEAN: expected []; failed 0 of 55; others: []
+    [control_prompts] CONTROL CLEAN: expected []; failed 0 of 4; others: []
+    [repo_arg] BITES: expected ['check47_repository_argument_is_the_one_checked']; failed 9 of 55; others: ['check48_records_json_in_repository_is_read', 'check49_config_sets_the_entry_types', 'check50_config_sets_the_id_pattern', 'check51_invalid_config_refused_by_name', 'check52_json_output', 'check53_print_config_round_trips', 'check54_monthly_dir_configurable', 'check55_terminal_outcomes_configurable']
+        check47_repository_argument_is_the_one_checked: AssertionError('the given repository was not the one checked (exit 2): "/tmp/tmpmcizn7bi is not inside a git repository; the append-only checks read the record\
+    [records_json] BITES: expected ['check48_records_json_in_repository_is_read']; failed 6 of 55; others: ['check49_config_sets_the_entry_types', 'check50_config_sets_the_id_pattern', 'check51_invalid_config_refused_by_name', 'check54_monthly_dir_configurable', 'check55_terminal_outcomes_configurable']
+        check48_records_json_in_repository_is_read: AssertionError("records.json in the repository was not read (exit 0): 'repository: /tmp/tmp2ba6icyk\\nconfig: default (RECORDING.md format; no records.json)\\nR
+    [kinds] BITES: expected ['check49_config_sets_the_entry_types']; failed 2 of 55; others: ['check50_config_sets_the_id_pattern']
+        check49_config_sets_the_entry_types: AssertionError('missing Body not named: "repository: /tmp/tmp35q2m3w9\\nconfig: /tmp/tmp35q2m3w9/records.json\\nrecord files: LOG.md\\nentries: 1\\n\\n[working-
+    [id_pattern] BITES: expected ['check50_config_sets_the_id_pattern']; failed 1 of 55; others: []
+        check50_config_sets_the_id_pattern: AssertionError("a config's ID pattern was not applied: 'repository: /tmp/tmp_3w3ikyk\\nconfig: /tmp/tmp_3w3ikyk/records.json\\nrecord files: LOG.md\\nentries: 2
+    [unknown_keys] BITES: expected ['check51_invalid_config_refused_by_name']; failed 1 of 55; others: []
+        check51_invalid_config_refused_by_name: AssertionError("an unknown config key was not refused by name (exit 0): 'repository: /tmp/tmpk5znkl1n\\nconfig: /tmp/tmpk5znkl1n/records.json\\nrecord files: RE
+    [regex_compile] BITES: expected ['check51_invalid_config_refused_by_name']; failed 1 of 55; others: []
+        check51_invalid_config_refused_by_name: PatternError('missing ), unterminated subpattern at position 0')
+    [json_output] BITES: expected ['check52_json_output']; failed 2 of 55; others: ['check54_monthly_dir_configurable']
+        check52_json_output: JSONDecodeError('Expecting value: line 1 column 1 (char 0)')
+    [print_config] BITES: expected ['check53_print_config_round_trips']; failed 1 of 55; others: []
+        check53_print_config_round_trips: AssertionError('--print-config does not print the default config')
+    [monthly_dir_name] BITES: expected ['check54_monthly_dir_configurable']; failed 1 of 55; others: []
+        check54_monthly_dir_configurable: AssertionError('a configured monthly folder was not read: \'{\\n  "ok": true,\\n  "exit": 0,\\n  "repo": "/tmp/tmpmni3c737",\\n  "config": "/tmp/tmpmni3c737/rec
+    [monthly_dir_null] BITES: expected ['check54_monthly_dir_configurable']; failed 1 of 55; others: []
+        check54_monthly_dir_configurable: TypeError("unsupported operand type(s) for /: 'PosixPath' and 'NoneType'")
+    [monthly_dir_null_as_unset] BITES: expected ['check54_monthly_dir_configurable']; failed 3 of 55; others: ['check49_config_sets_the_entry_types', 'check50_config_sets_the_id_pattern']
+        check54_monthly_dir_configurable: AssertionError('monthly_dir null did not turn monthly files off: \'{\\n  "ok": true,\\n  "exit": 0,\\n  "repo": "/tmp/tmpu7og5aqz",\\n  "config": "/tmp/tmpu7og5
+    [terminal_outcomes] BITES: expected ['check55_terminal_outcomes_configurable']; failed 1 of 55; others: []
+        check55_terminal_outcomes_configurable: AssertionError('configured terminal outcomes were not applied: "repository: /tmp/tmp9vd5_s7r\\nconfig: /tmp/tmp9vd5_s7r/records.json\\nrecord files: RECORD.md\\
+    [p_repo_arg] BITES: expected ['p3_repository_and_config']; failed 2 of 4; others: ['p4_json_output']
+        p3_repository_and_config: AssertionError("a renamed record, prompts folder and dispatch field were not applied: 'repository: /tmp/tmp58z_s77j\\nconfig: /tmp/tmp58z_s77j/records.json\\n\\
+    [p_config] BITES: expected ['p3_repository_and_config']; failed 1 of 4; others: []
+        p3_repository_and_config: AssertionError("a renamed record, prompts folder and dispatch field were not applied: 'repository: /tmp/tmp88jdukog\\nconfig: default (no records.json)\\n\\nFAI
+    [p_prompts_dir] BITES: expected ['p3_repository_and_config']; failed 1 of 4; others: []
+        p3_repository_and_config: AssertionError('a renamed record, prompts folder and dispatch field were not applied: "repository: /tmp/tmpa5ic8ry9\\nconfig: /tmp/tmpa5ic8ry9/records.json\\ndi
+    [p_dispatch_field] BITES: expected ['p3_repository_and_config']; failed 1 of 4; others: []
+        p3_repository_and_config: AssertionError('a renamed record, prompts folder and dispatch field were not applied: "repository: /tmp/tmp6klk_o0p\\nconfig: /tmp/tmp6klk_o0p/records.json\\ndi
+    [p_orphan_prefix] BITES: expected ['p3_repository_and_config']; failed 1 of 4; others: []
+        p3_repository_and_config: AssertionError('an unclaimed prompt in the configured folder was not reported: "repository: /tmp/tmpu2yu6rv8\\nconfig: /tmp/tmpu2yu6rv8/records.json\\ndispatch-
+    [p_json] BITES: expected ['p4_json_output']; failed 1 of 4; others: []
+        p4_json_output: JSONDecodeError('Expecting value: line 1 column 1 (char 0)')
+    repo files equal committed copies at end: True
+    runs: 20, not biting, not run or control failed: 0
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
