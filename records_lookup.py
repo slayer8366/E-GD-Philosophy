@@ -457,6 +457,8 @@ def _fixture_forecast(decisions=(), audits_rows=(), dispatches=None, log_rows=()
     audits = "# Audits\n\n| Date | Record | File |\n|---|---|---|\n" + "".join(
         f"| {d} | {s} | `{f}` |\n" for d, s, f in audits_rows)
     start = ("# Start here\n\n## Where things stand\n\nThe prose above the log mentions zebrafish too.\n\n"
+             "| Date | Note | Ref |\n| --- | --- | --- |\n"
+             "| 2026-09-08 | a zebrafish row in the maintained prose | p |\n\n"
              "## Session log\n\n| Date | What was done | What is next |\n| --- | --- | --- |\n" + "".join(
                  f"| {d} | {w} | {n} |\n" for d, w, n in log_rows))
     files = {"docs/planning/DECISIONS.md": dec, "docs/audits/README.md": audits,
@@ -554,7 +556,8 @@ def render_check():
                       "forecast audits", "forecast dispatch", "forecast session log"]:
             assert any(l.startswith("20") and f" {label} " in l for l in out.splitlines()), (
                 f"search found no hit in {label}: {out!r}")
-        assert "The prose above the log" not in out, "search read START_HERE.md's prose, not only the log"
+        assert "maintained prose" not in out, (
+            "search read a dated row from START_HERE.md's prose, not only the session log")
         dated = [l[:10] for l in out.splitlines() if l[:2] == "20"]
         assert dated == sorted(dated, reverse=True), f"hits not newest first: {dated}"
         assert any("superseded by 2026-09-28-02" in l for l in out.splitlines()), (
