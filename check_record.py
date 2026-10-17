@@ -2235,8 +2235,113 @@ def render_check():
           "history of the file prunes that branch)",
           check63)
 
+    # ---- Checks 64-69: accepted past violations (2026-10-17-14) ------------
+    # Written before acceptances were read. An entry's Accepts-violation line
+    # names a commit and its reason; through main(argv).
+    def run_json(tmp):
+        code, out = run_main([str(tmp), "--json"])
+        return code, json.loads(out)
+
+    def commit_all(tmp, msg):
+        git_in(tmp, "add", "-A"); git_in(tmp, "commit", "-qm", msg)
+        return git_in(tmp, "rev-parse", "HEAD").stdout.strip()
+
+    def violation_repo():
+        tmp = repo_with({})
+        (tmp / RECORD_NAME).write_text(BASE)
+        one = commit_all(tmp, "one")
+        (tmp / RECORD_NAME).write_text(BASE.replace("**Title:** t", "**Title:** edited") + A)
+        two = commit_all(tmp, "two")
+        return tmp, one, two
+
+    def accept(tmp, value, id_="2026-01-01-09", field="Accepts-violation"):
+        cur = (tmp / RECORD_NAME).read_text()
+        (tmp / RECORD_NAME).write_text(cur + "\n" + ent("decision", id_, **{field: value}) + "\n\n---\n")
+        return commit_all(tmp, "accept")
+
+    def check64():
+        tmp, one, two = violation_repo()
+        accept(tmp, f"{two[:10]} removed at the owner's instruction")
+        code, data = run_json(tmp)
+        acc = data.get("accepted", [])
+        assert data["ok"] and code == 0, f"an accepted violation still failed the check: {data['errors']}"
+        assert any(a["commit"].startswith(two[:10]) and "owner's instruction" in a["reason"]
+                   and a["entry"] == "2026-01-01-09" for a in acc), f"the accepted violation is not listed: {acc}"
+        code, out = run_main([str(tmp)])
+        assert "accepted:" in out and "owner's instruction" in out, f"text output does not list it: {out!r}"
+
+    check("check64_accepted_violation_listed_not_failed",
+          "a history-walk violation named in an Accepts-violation line still fails, or is not listed as accepted",
+          check64)
+
+    def check65():
+        tmp, one, two = violation_repo()
+        accept(tmp, f"{one[:10]} a commit that broke nothing")
+        code, data = run_json(tmp)
+        assert not data["ok"] and any(one[:10] in e and "no history-walk violation" in e for e in data["errors"]), (
+            f"an acceptance naming a commit with no violation was not reported: {data['errors']}")
+
+    check("check65_acceptance_of_nothing_reported",
+          "an Accepts-violation naming a commit that has no violation passes silently",
+          check65)
+
+    def check66():
+        tmp, one, two = violation_repo()
+        accept(tmp, two[:10])
+        code, data = run_json(tmp)
+        assert not data["ok"] and any("2026-01-01-09" in e and "followed by its reason" in e for e in data["errors"]), (
+            f"an acceptance with no reason was not reported: {data['errors']}")
+
+    check("check66_acceptance_needs_a_reason",
+          "an Accepts-violation line with a commit but no reason is accepted",
+          check66)
+
+    def check67():
+        tmp, one, two = violation_repo()
+        cur = (tmp / RECORD_NAME).read_text()
+        (tmp / RECORD_NAME).write_text(cur.replace("**Baseline:** b", "**Baseline:** changed"))
+        three = commit_all(tmp, "three")
+        accept(tmp, f"{two[:10]} removed at the owner's instruction")
+        code, data = run_json(tmp)
+        assert not data["ok"] and any(three[:10] in e and "diverges at line" in e for e in data["errors"]), (
+            f"a violation nobody accepted did not fail: {data['errors']}")
+        assert any(a["commit"].startswith(two[:10]) for a in data.get("accepted", [])), (
+            f"the one accepted violation is not listed beside the one that fails: {data.get('accepted')}")
+
+    check("check67_unaccepted_violation_still_fails",
+          "accepting one violation lets another, unaccepted, pass too",
+          check67)
+
+    def check68():
+        tmp, m, _ = merge_repo(BASE + A, BASE + B, BASE + A + B + C)
+        accept(tmp, f"{m[:10]} an entry written inside the merge, accepted by the operator", id_="2026-01-01-08")
+        code, data = run_json(tmp)
+        assert data["ok"] and any(a["commit"].startswith(m[:10]) for a in data.get("accepted", [])), (
+            f"an accepted merge violation still failed: {data['errors']}")
+
+    check("check68_merge_violation_accepted",
+          "a merge's violation named in an Accepts-violation line still fails",
+          check68)
+
+    def check69():
+        tmp, one, two = violation_repo()
+        accept(tmp, f"{two[:10]} removed at the owner's instruction", field="Excused")
+        (tmp / "records.json").write_text(json.dumps({"accepts_field": "Excused"}))
+        code, data = run_json(tmp)
+        assert data["ok"], f"a configured accepts_field was not read: {data['errors']}"
+        tmp, one, two = violation_repo()
+        accept(tmp, f"{two[:10]} removed at the owner's instruction")
+        (tmp / "records.json").write_text(json.dumps({"accepts_field": None}))
+        code, data = run_json(tmp)
+        assert not data["ok"] and any(two[:10] in e for e in data["errors"]), (
+            f"accepts_field null did not turn acceptance off: {data['errors']}")
+
+    check("check69_accepts_field_configurable",
+          "a config's accepts_field is not used, or null does not turn acceptance off",
+          check69)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{63} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{69} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
