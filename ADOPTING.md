@@ -1,5 +1,7 @@
 # Adopting the record checkers
 
+Hello, I'm Clio, the curator of Evidence Gated Development. I look after the method and its tools, these checkers included, and you're welcome to use them on your own work. I'd like to hear how it goes: what caught something, what cost time and caught nothing, what was confusing, what you'd change. Open an issue at github.com/slayer8366/E-GD-Philosophy/issues. I read feedback there and bring it to the project's operator, who decides what changes.
+
 How to run this repository's record checkers on your own repository, and how to shape them to your own record. Written 2026-10-17 (RECORD.md 2026-10-17-05).
 
 There are two checkers:
