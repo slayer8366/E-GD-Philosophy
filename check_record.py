@@ -76,6 +76,12 @@ handles merges, by PROTOCOL rule 13. check_history_with_merges is new and
 history_checks uses it; check_history_append_only, which stops at a merge,
 is kept unchanged with its own checks. render_check gains checks 57 to 62.
 
+Extended again 2026-10-17 (RECORD.md 2026-10-17-14): accepted past
+violations. read_acceptances reads each Accepts-violation line (config key
+accepts_field) in the record; apply_acceptances lists a named commit's
+history-walk violations as accepted rather than failed. render_check gains
+checks 64 to 69.
+
 main() and render_check() below are NEW CONSTRUCTION, modeled on
 OSCam's ledger_cli.py (itself new construction there, since the
 original main()/render_check() were never vendored) but not a copy of
@@ -206,6 +212,7 @@ DEFAULT_CONFIG = {
         "supplied_field": SUPPLIED_FIELD,
     },
     "backward_links": {"Continues": "first", "Corrects": "all"},
+    "accepts_field": "Accepts-violation",
     "prompts_dir": "prompts",
     "provenance_dirs": ["preserved", "recovered"],
     "dispatch_field": "Dispatch-file",
@@ -272,6 +279,9 @@ def validate_config(cfg):
     _need(not (cfg["closing_kinds"] or cfg["continuation_kind"]) or cfg["intent_kind"],
           "intent_kind", "is null, but closing_kinds or continuation_kind is set, "
           "and both refer to intents")
+    _need(cfg["accepts_field"] is None or (isinstance(cfg["accepts_field"], str)
+                                           and cfg["accepts_field"]),
+          "accepts_field", "must be a field name, or null to turn acceptance off")
     links = cfg["backward_links"]
     _need(isinstance(links, dict) and all(isinstance(k, str) and k and v in ("first", "all")
                                           for k, v in links.items()),
@@ -1005,6 +1015,86 @@ def check_history_with_merges(repo_dir, record_name=RECORD_NAME):
     return not violations, violations, count, count == 0
 
 
+ACCEPT_LINE_RE = re.compile(r"^([0-9a-fA-F]{7,40})\s+(\S.*)$")
+
+
+def read_acceptances(entries, config=None):
+    """(acceptances, errors). New 2026-10-17 (RECORD.md 2026-10-17-14).
+    Each line of an entry's accepts_field (Accepts-violation by default)
+    names one commit, by 7 or more hex characters, and then the reason its
+    history-walk violation was accepted. Accepting one is the operator's
+    decision (RECORDING.md); the checker only reads what the record says.
+    acceptances is a list of {commit, reason, entry}."""
+    cfg = DEFAULT_CONFIG if config is None else config
+    field = cfg["accepts_field"]
+    if not field:
+        return [], []
+    acceptances, errors = [], []
+    for e in entries:
+        value = e["fields"].get(field)
+        if value is None:
+            continue
+        label = e["id"] or "(no ID)"
+        lines = [l.strip() for l in value.splitlines() if l.strip()]
+        if not lines:
+            errors.append(f"{field}: {label} names no commit")
+        for line in lines:
+            m = ACCEPT_LINE_RE.match(line)
+            if not m:
+                errors.append(f"{field}: {label}: {line!r} is not a commit hash (7 or "
+                              f"more hex characters) followed by its reason")
+                continue
+            acceptances.append({"commit": m.group(1).lower(), "reason": m.group(2).strip(),
+                                "entry": label})
+    return acceptances, errors
+
+
+def apply_acceptances(history_results, acceptances, config=None):
+    """Moves each accepted violation out of its result's violations into
+    that result's 'accepted' list, and passes a result left with none.
+    Returns errors: an acceptance matching no violation (a mistyped or
+    wrong commit), or matching violations in more than one commit, which
+    then accepts nothing."""
+    cfg = DEFAULT_CONFIG if config is None else config
+    field = cfg["accepts_field"]
+    matched = {}
+    for r in history_results:
+        for v in r["violations"]:
+            for i, a in enumerate(acceptances):
+                if v["newer"].lower().startswith(a["commit"]):
+                    matched.setdefault(i, set()).add(v["newer"])
+    errors, usable = [], {}
+    for i, a in enumerate(acceptances):
+        commits = matched.get(i, set())
+        if not commits:
+            errors.append(f"{field}: {a['entry']} names {a['commit']}, which has no "
+                          f"history-walk violation")
+        elif len(commits) > 1:
+            errors.append(f"{field}: {a['entry']} names {a['commit']}, which matches more "
+                          f"than one violating commit ({', '.join(sorted(c[:12] for c in commits))}); "
+                          f"give more of the hash")
+        else:
+            usable.setdefault(next(iter(commits)), a)
+    for r in history_results:
+        r["accepted"], keep = [], []
+        for v in r["violations"]:
+            a = usable.get(v["newer"])
+            if a is None:
+                keep.append(v)
+                continue
+            r["accepted"].append({
+                "file": r["file"], "commit": v["newer"], "entry": a["entry"],
+                "reason": a["reason"],
+                "violation": v.get("detail") or f"diverges at line {v['divergence_line']}"})
+        if r["accepted"]:
+            r["violations"] = keep
+            r["ok"] = not keep
+            r["msg"] = (f"{r['count']} commit(s) checked, {len(r['accepted'])} violation(s) "
+                        f"accepted" if not keep else
+                        f"{len(keep)} violation(s), {len(r['accepted'])} accepted")
+    return errors
+
+
 # --------------------------------------------------------------------------
 # CLI wrapper. New construction -- see module docstring. Modeled on
 # OSCam's ledger_cli.py (also new construction there), not a recovery of
@@ -1131,9 +1221,15 @@ def main(argv=None):
                   f"since the last commit", r)
         if not r["ok"]:
             errors.append(f"working-tree append-only, {r['file']}: {r['msg']}")
-    for r in history_checks(repo, cfg):
+    acceptances, accept_errors = read_acceptances(entries, cfg)
+    history = history_checks(repo, cfg)
+    accept_errors += apply_acceptances(history, acceptances, cfg)
+    result["accepted"] = [a for r in history for a in r.get("accepted", [])]
+    for r in history:
         add_check("history walk", f"history walk: {r['file']} -- every "
                   f"committed version", r)
+        for a in r.get("accepted", []):
+            lines.append(f"    accepted: {a['commit'][:10]} -- {a['reason']} ({a['entry']})")
         for v in r["violations"]:
             msg = v.get("detail") or (
                 f"{v['older'][:10]} ({v['older_subject']!r}) -> "
@@ -1143,6 +1239,8 @@ def main(argv=None):
             errors.append(f"history walk, {r['file']}: {msg}")
         if not r["ok"] and not r["violations"]:
             errors.append(f"history walk, {r['file']}: {r['msg']}")
+    lines += ["    " + e for e in accept_errors]
+    errors += accept_errors
 
     sup_ok, sup_errors, sup_vacuous = check_superseded_by(entries, cfg)
     linked = sorted({f for o in (cfg["terminal_outcomes"] or {}).values()
