@@ -6,7 +6,7 @@
 - Forager `origin/records-after-173` at `efef0e46` and `origin/pre-main` at `462bb8ba`.
 - forager-forecast `origin/main` at `b9127e5`.
 
-All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md`, `-13.md`, `-15.md`. Approved 2026-10-16.
+Read 2026-10-16. Rulings: `prompts/preserved/2026-10-16-11.md`, `-13`, `-15`, `-17`. Approved 2026-10-16.
 
 ## Goal
 
@@ -15,7 +15,7 @@ All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md
 ## Scope
 
 - Reads these sources, and writes nothing:
-  - Forager: `RECORD.md`, `docs/audits/README.md`, `prompts/preserved/`;
+  - Forager: `RECORD.md`, or the monthly `records/` files it indexes once split; `docs/audits/README.md`; `prompts/preserved/`;
   - forager-forecast: `docs/planning/DECISIONS.md`, `docs/audits/README.md`, `docs/dispatch/`, and the session-log table in `docs/planning/START_HERE.md`.
 - Reads each source from a named ref after `git fetch`, with no checkout.
 - Commands: `show`, `links`, `search`, `open`, `next-id`.
@@ -24,7 +24,7 @@ All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md
 
 - Writing, reserving or editing anything, IDs included.
 - One file per entry (option B), or a hosted service (option C).
-- E-GD's own record, which is outside the operator's scope.
+- E-GD's own record (outside the operator's scope).
 - Judging what an entry means: it returns text and links.
 
 ## Decisions
@@ -46,7 +46,7 @@ All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md
 - **R2. `links <ID>`** lists the entries naming it in `Continues`, `Closes`, `Corrects` or `Supersedes`, and the entries it names, each with a citation. *Check:* a fixture with one link of each type; a revert of each link type fails its test.
 - **R3. `search <words>`** searches all seven sources, newest first, each hit cited, with any explicit `Supersedes` or `Corrects` link beside it. *Check:* a fixture term in each source is found in each.
 - **R4. `open`** lists intents with no closing entry, where a closing entry is a terminal, or an outcome carrying `Closes`. *Check:* matches an independent script's count on the same commit (63 at `97f26098`).
-- **R5. `next-id`** fetches, then prints the next free ID with the commit it read, and warns on any duplicate ID. *Check:* a fixture with a duplicate.
+- **R5. `next-id`** fetches, then prints the next free ID across every monthly file with the commit it read, and warns on duplicates. *Check:* fixtures with a duplicate, and with the highest ID in an earlier month.
 - **R6. Cross-repository references resolve:** "Forager RECORD -1054" in forager-forecast's decision log (63 such references) resolves to the Forager entry, cited. *Check:* one real reference resolved and verified.
 - **R7. Unread sources are reported,** never skipped silently. *Check:* a run with a bad ref names it.
 
