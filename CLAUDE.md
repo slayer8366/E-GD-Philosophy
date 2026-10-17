@@ -10,7 +10,7 @@ Then, by headword rather than whole: `ENFORCEMENT.md` holds what to do about eac
 
 Loading everything every session is not diligence. It is context spent on rules that do not bear on the task.
 
-`PROTOCOL.md` holds the working rules still on probation; it was rebuilt on 2026-08-13 (RECORD.md 2026-08-13-13) and is read at session start too. Not yet rebuilt after the store was lost: `OPERATOR_PROFILE.template.md`. When it returns, it is read at session start too.
+`PROTOCOL.md` holds the working rules still on probation; it was rebuilt on 2026-08-13 (RECORD.md 2026-08-13-13) and is read at session start too. `OPERATOR_PROFILE.template.md`, lost with the store, was rebuilt on 2026-10-17 (RECORD.md 2026-10-17-19) as the form each project's operator profile is built from (ONBOARDING.md); it is read at session start too.
 
 A session working as E-GD's curator reads `profiles/curator.md` before its first action: it models how the curator works, from the record (PROTOCOL rule 22). A session in any other role named under that rule reads its own profile in `profiles/`. Where a profile and this file disagree, this file wins.
 
