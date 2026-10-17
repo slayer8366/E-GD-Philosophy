@@ -6990,3 +6990,114 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** check_record_terminal_2026_10_17_10
+
+**Timestamp:** 2026-10-17T09:13:16Z
+
+**Expected failure mode:** Run from /tmp with this repository as the argument: PASS at 58 entries, none unterminated.
+
+**Command:** sh -c cd /tmp && python3 /home/zynergy-labs/Zynergy/E-GD-Philosophy/check_record.py /home/zynergy-labs/Zynergy/E-GD-Philosophy
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repository: /home/zynergy-labs/Zynergy/E-GD-Philosophy
+    config: default (RECORDING.md format; no records.json)
+    record files: RECORD.md
+    entries: 58
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-07: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-09: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-11: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-15: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-17: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-19: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-21: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-23: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-07: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-09: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check: RECORD.md -- changes since the last commit] PASS: current file starts with HEAD's content unchanged
+    [history walk: RECORD.md -- every committed version] PASS: 55 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- terminals whose outcome must name an intent] PASS: no entry declares such an outcome (vacuous)
+    [closed-once check -- no intent closed by more than one closing entry] PASS: 0 intent(s) closed more than once
+    
+    PASS: entries structurally valid across 1 record file(s); working-tree check, history walk, and cross-references all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_terminal_2026_10_17_10
+
+**Timestamp:** 2026-10-17T09:13:16Z
+
+**Expected failure mode:** PASS, 22 dispatch-recording entries, preserved=21.
+
+**Command:** sh -c cd /tmp && python3 /home/zynergy-labs/Zynergy/E-GD-Philosophy/check_prompts.py /home/zynergy-labs/Zynergy/E-GD-Philosophy
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repository: /home/zynergy-labs/Zynergy/E-GD-Philosophy
+    config: default (no records.json)
+    dispatch-recording entries found: 22
+    files under prompts/: preserved=21, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_terminal_2026_10_17_10
+
+**Timestamp:** 2026-10-17T09:13:16Z
+
+**Expected failure mode:** 45/44/45; PASS.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 45
+    enforcement entries:  44
+    glossary rows:        45
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+

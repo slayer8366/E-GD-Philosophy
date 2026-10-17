@@ -2486,3 +2486,49 @@ Out of scope:
 **Abort conditions:** An approved wording that turns out false against the repository, such as the issues link not resolving. Any check failing.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-17-10
+
+**Timestamp:** 2026-10-17T09:13:15Z
+
+**Closes:** 2026-10-17-09
+
+**Outcome:** completed
+
+**Observed:** Clio is written in as the curator's name in every system that runs the method, with the welcome and the feedback path. Built on branch clio-welcome-2026-10-17, stacked on PR #13, after the intent (02e07b8). One commit per place, each pushed:
+
+- 4000df1: profiles/curator.md quotes the operator's words and gains "Welcoming others and their feedback".
+- f5c74de: PROTOCOL rule 22 makes the curator the one exception to naming per project.
+- 949c2a9: ADOPTING.md opens with Clio's welcome.
+- d9b15bf: README.md's "Contributing" says where feedback goes and names the form.
+- The next commit: skills/record-checking ends with a "Feedback" section.
+- 8095bcd: .github/ISSUE_TEMPLATE/feedback-for-clio.yml.
+
+Checked:
+
+- ADOPTING.md and README.md carry the approved wordings word for word, and the profile quotes the operator word for word. Each was checked by a script against prompts/preserved/2026-10-17-09.md.
+- The issues link resolves (HTTP 200). The repository has issues enabled.
+- The form parses as YAML and has GitHub's required keys (name, description, body): six questions, each with a label and a unique id.
+- ADOPTING.md's earlier claims still hold, 15 of 15 and 10 of 10.
+
+Confirmed against inferred: that the form appears in GitHub's new-issue chooser is inferred. GitHub reads issue forms from the default branch, Test-1, and this branch is not merged, so the form was checked only as a file.
+
+Could not determine: whether anyone will file feedback. No issue has ever been filed on this repository.
+
+Premises that were wrong: none.
+
+Decided beyond scope:
+
+- The form is a GitHub issue form (.yml), not the markdown template (.md) the intent named. A form shows fields, as the option the operator chose describes ("New issues offer a short form").
+- The form adds "What was confusing?", taken from the approved ADOPTING.md welcome.
+- Rule 22 reads "The curator is the one exception: it keeps the method itself, so it is Clio in every system that runs it". The approved line follows the lead-in that the proposal described ("would make the curator the exception"), with a lowercase "it" after the colon.
+- The profile adds a fourth practice: the repository's open issues are read at the start of a curation session, so that ADOPTING.md's "I read feedback there" stays true.
+- The README's Contributing names the form.
+
+Observed, not asked: nothing new. Last round's four decisions are still open, as the intent says.
+
+**Deviations:** The issue form's file name, as above. No existing RECORD.md or REGISTER.md entry was edited.
+
+---
