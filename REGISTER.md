@@ -6772,3 +6772,111 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** adopting_lookup_section_claims_rerun_2026_10_17_07
+
+**Timestamp:** 2026-10-17T09:05:22Z
+
+**Expected failure mode:** As adopting_lookup_section_claims_2026_10_17_07, rerun with the verify script resolving its path argument: that run's one WRONG came from the script building the tool's path from a relative '.', then running one claim with the fixture folder as working directory (python3 could not open './records_lookup.py'). All 10 claims hold.
+
+**Command:** python3 /tmp/egd-scripts/verify_lookup_doc.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    [OK] no options, inside a repository: its record at HEAD
+    [OK] --repo and --ref record=REF
+    [OK] an unreadable source: NOT READ, and the answer 'unknown'
+    [OK] open on the default shape answers a count
+    [OK] the example config: hits in its record, table and folder
+    [OK] the example's replaced_by shows 'corrected by'
+    [OK] --print-config prints the config in use
+    [OK] --preset forager loads lookups/forager.json
+    [OK] --no-fetch reads the local copy of origin/main (no -03 yet)
+    [OK] without --no-fetch, origin/main is fetched first (-03 found)
+    10 of 10 claims hold
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** adopting_md_claims_rerun_2026_10_17_07
+
+**Timestamp:** 2026-10-17T09:05:23Z
+
+**Expected failure mode:** ADOPTING.md's earlier claims (adopting_md_claims_2026_10_17_05) still hold at 14fd9bd after the lookup section was added: 15 of 15.
+
+**Command:** python3 /tmp/egd-scripts/verify_adopting.py .
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    code blocks: 8 json configs: 3
+    [OK] example record passes, 2 entries, nothing open 
+    [OK] decision-log config: valid log passes 
+    [OK] decision-log config: missing Why, forward Corrects, bad ID all fail 
+    [OK] renamed config: both files read as one record 
+    [OK] renamed config: prompt claimed under docs/dispatches 
+    [WRONG] check_record JSON keys documented match output doc ['checks', 'config', 'entries', 'errors', 'exit', 'ok', 'open', 'record_files', 'repo', 'sentinels', 'unterminated', 'vacuous'] vs out ['checks', 'config', 'entries', 'errors', 'exit', 'ok', 'record_files', 'repo', 'sentinels', 'unterminated', 'vacuous']
+    [OK] check record entries carry the documented check keys 
+    [OK] check_prompts JSON keys as documented 
+    [OK] no record: exit 0, vacuous with a note 
+    [OK] misspelled heading: exit 0, no entries, vacuous with a note 
+    [OK] refused config in check_prompts: ok, exit 2, repo, errors 
+    [OK] a prompt outside the provenance folders fails 
+    [OK] both branches added entries: the walk fails, naming the merge 
+    [OK] one branch changed the record: the walk passes 
+    [OK] wrong type refused by name, exit 2 
+    14 of 15 claims hold
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** adopting_md_claims_rerun2_2026_10_17_07
+
+**Timestamp:** 2026-10-17T09:05:37Z
+
+**Expected failure mode:** As adopting_md_claims_rerun_2026_10_17_07, with the verifier reading the JSON-output table only up to the next heading: that run's one WRONG came from the lookup section, added between 'JSON output' and 'Known limits', whose command table put 'open' among the keys read. 15 of 15.
+
+**Command:** python3 /tmp/egd-scripts/verify_adopting.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    code blocks: 8 json configs: 3
+    [OK] example record passes, 2 entries, nothing open 
+    [OK] decision-log config: valid log passes 
+    [OK] decision-log config: missing Why, forward Corrects, bad ID all fail 
+    [OK] renamed config: both files read as one record 
+    [OK] renamed config: prompt claimed under docs/dispatches 
+    [OK] check_record JSON keys documented match output 
+    [OK] check record entries carry the documented check keys 
+    [OK] check_prompts JSON keys as documented 
+    [OK] no record: exit 0, vacuous with a note 
+    [OK] misspelled heading: exit 0, no entries, vacuous with a note 
+    [OK] refused config in check_prompts: ok, exit 2, repo, errors 
+    [OK] a prompt outside the provenance folders fails 
+    [OK] both branches added entries: the walk fails, naming the merge 
+    [OK] one branch changed the record: the walk passes 
+    [OK] wrong type refused by name, exit 2 
+    15 of 15 claims hold
+
+**Stderr:**
+
+    (nothing captured)
+
