@@ -194,6 +194,63 @@ With `--json`, check_record.py prints one object:
 
 check_prompts.py's object carries `ok`, `exit`, `repo`, `config`, `counts` (prompts per provenance folder), `errors` and `report`. When the config is refused, both print `ok`, `exit` (2), `repo` and `errors`.
 
+## The lookup tool
+
+`records_lookup.py` answers questions about a record, with a citation on every answer (repository, ref, commit, file and lines), so a claim can be checked with `git show`. It only reads; it never writes, checks out or reserves anything. Written 2026-10-17 (RECORD.md 2026-10-17-03), and made configurable the same day (2026-10-17-07).
+
+| Command | Answer |
+|---|---|
+| `show ID` | the entry, verbatim |
+| `links ID` | what names the entry, and what it names |
+| `search WORDS` | every source, newest first |
+| `open` | intents with no closing entry |
+| `next-id` | the next free ID, with a warning for each duplicate |
+
+Run inside a repository with no options, it reads that repository's record at its last commit, shaped by its `records.json` (or RECORDING.md's format when there is none):
+
+```
+python3 records_lookup.py show 2026-10-17-05
+```
+
+`--repo repo=PATH` points it at another repository, and `--ref record=origin/main` reads another ref. A ref starting `origin/` is fetched first unless `--no-fetch` is given. A source that cannot be read is reported as NOT READ, and an answer that would depend on it says "unknown". A question the record's shape cannot answer, such as `open` on a record with no intent type, says "unsupported".
+
+**More sources, in any repositories,** come from a lookup config given with `--config FILE`. `--print-config` prints the config in use, and `--preset forager` loads `lookups/forager.json`, which reads Forager's and forager-forecast's records. A config names:
+
+- **repos:** each repository's name, with a path or `null`. `--repo NAME=PATH` gives or replaces a path.
+- **record:**
+  - `name`, `repo` and `ref`;
+  - `shape`: check_record's config keys, or `null` to read `records.json` from the repository at that ref;
+  - `links`: each link field, `"first"` or `"all"`, as in `backward_links`, or `null` for the shape's backward links and closes field;
+  - `replaced_by`: the words search shows beside an entry that another entry's field replaces.
+- **tables:** markdown files whose rows are read. Each has:
+  - `name`, `repo`, `ref` and `path`;
+  - `row_pattern`, with two groups: the row's ID (`()` when rows have none) and its date as YYYY-MM-DD.
+  - Optional: `section`, to read only the rows under one heading; `id_pattern`, so `show` finds rows by ID; `supersedes_column`, counted from 0; `record_reference`, a pattern whose group names a record entry, so `show` resolves it.
+- **folders:** folders whose files are searched whole, each with a `name`, `repo`, `ref` and `path`.
+
+`--ref NAME=REF` changes one source's ref by its name, or every source in a repository by the repository's name. A source's own setting wins.
+
+A project with a record, an audit index and a folder of prompts:
+
+```json
+{
+  "repos": {"app": null},
+  "record": {"name": "app record", "repo": "app", "ref": "origin/main", "shape": null,
+             "links": null, "replaced_by": {"Corrects": "corrected by"}},
+  "tables": [
+    {"name": "app audits", "repo": "app", "ref": "origin/main", "path": "docs/audits/README.md",
+     "row_pattern": "^\\| ()(\\d{4}-\\d{2}-\\d{2})"}
+  ],
+  "folders": [
+    {"name": "app prompts", "repo": "app", "ref": "origin/main", "path": "prompts/preserved"}
+  ]
+}
+```
+
+```
+python3 records_lookup.py search login --config lookup.json --repo app=/path/to/app
+```
+
 ## Known limits
 
 - **A merge commit in which both branches had added to the record stops the history walk,** and the check fails, naming the commit. The walk does not guess which parent to compare against. A merge that takes the record unchanged from one branch passes, since git's history of the file skips such a merge. This repository merges by fast-forward. A repository whose record has been merged from two branches that both added entries will fail this check until the walk can handle merges.

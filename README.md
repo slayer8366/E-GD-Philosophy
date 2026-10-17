@@ -31,7 +31,8 @@ None of these require the agent to be smart. They require it to be observed. Tha
 | `GLOSSARY.md` | Machines | The index binding philosophy to enforcement, verified by script. |
 | `check_*.py` | Machines | The boundary checks. |
 | `ADOPTING.md` | Both | How to run the record checkers on any repository, shaped to its own record by a `records.json`. |
-| `records_lookup.py` | Both | Read-only lookup over Forager's and forager-forecast's records (show, links, search, open, next-id), every answer cited by repository, ref, commit, file and line (`specs/2026-10-16-records-lookup.md`). |
+| `records_lookup.py` | Both | Read-only lookup over a project's records, in whatever repositories a config names (show, links, search, open, next-id), every answer cited by repository, ref, commit, file and line (`specs/2026-10-16-records-lookup.md`; `ADOPTING.md`, "The lookup tool"). |
+| `lookups/` | Machines | Lookup configs for `records_lookup.py`, chosen with `--preset`: `forager.json` reads Forager's and forager-forecast's records. |
 | `RECORD.md` | Both | The append-only record store. |
 | `prompts/` | Both | Every prompt dispatched, preserved verbatim. |
 | `PROTOCOL.md` | Both | Working rules on probation: candidates that have not yet earned a place in the philosophy, each with its evidence. |

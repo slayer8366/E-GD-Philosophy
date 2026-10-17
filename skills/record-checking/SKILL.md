@@ -34,6 +34,10 @@ A record is only evidence while it is well formed and has only grown. Entries mi
 3. **Check the checker on a copy.** In a copy of the repository, never the original, break one rule the config sets: drop a required field, or edit a committed line and commit it. The checker must fail and name it. A config you have never seen fail has not been shown to check anything.
 4. Commit `records.json` beside the record, so whoever checks the record next uses the same rules.
 
+## Looking things up
+
+To cite an entry, follow its links, list what is still open or find the next free ID, use `records_lookup.py` from the same folder. Every answer carries the repository, ref, commit, file and lines it was read from. An answer reading "unknown" or "unsupported" says exactly that; report it as such, never as zero. ADOPTING.md's section "The lookup tool" covers its config.
+
 ## What it cannot tell you
 
 Whether an entry is true. The checkers verify shape, links and history. A record that passes can still say something false, in perfect form. Treat a pass as "well formed and only grown", and verify claims inside entries from their sources.

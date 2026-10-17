@@ -6739,3 +6739,36 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** adopting_lookup_section_claims_2026_10_17_07
+
+**Timestamp:** 2026-10-17T09:05:00Z
+
+**Expected failure mode:** Each claim in ADOPTING.md's 'The lookup tool', run against records_lookup.py at 9fdd77e: the no-options default, --repo/--ref, NOT READ with 'unknown', the example config's three sources and its replaced_by, --print-config, --preset forager, and origin/ refs fetched unless --no-fetch (shown with a real remote that advanced). A claim that does not hold prints WRONG.
+
+**Command:** python3 /tmp/egd-scripts/verify_lookup_doc.py .
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    [WRONG] no options, inside a repository: its record at HEAD /usr/bin/python3: can't open file '/tmp/tmpgifqdpl6/records_lookup.py': [Errno 2] No such file or directory
+    
+    [OK] --repo and --ref record=REF
+    [OK] an unreadable source: NOT READ, and the answer 'unknown'
+    [OK] open on the default shape answers a count
+    [OK] the example config: hits in its record, table and folder
+    [OK] the example's replaced_by shows 'corrected by'
+    [OK] --print-config prints the config in use
+    [OK] --preset forager loads lookups/forager.json
+    [OK] --no-fetch reads the local copy of origin/main (no -03 yet)
+    [OK] without --no-fetch, origin/main is fetched first (-03 found)
+    9 of 10 claims hold
+
+**Stderr:**
+
+    (nothing captured)
+
