@@ -2668,3 +2668,49 @@ Observed, not asked:
 **Deviations:** Check 63 was added beyond 57 to 62. No existing RECORD.md or REGISTER.md entry was edited.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-17-14
+
+**Timestamp:** 2026-10-17T10:02:02Z
+
+**Title:** Accepted past violations, written in the record: an Accepts-violation line per commit, each with its reason, lets the history walk pass once a violation is accepted
+
+**Dispatch-file:** preserved/2026-10-17-14.md
+
+**Change:**
+
+1. Any record entry may carry an `Accepts-violation` field, one line per accepted commit: a commit hash (7 or more hex characters), then its reason. The field's name comes from a new config key, `accepts_field`; null turns acceptance off.
+2. check_record.py lists each accepted history-walk violation as accepted, with its commit, its reason and the accepting entry, and does not fail on it. It fails on:
+   - any violation nobody has accepted;
+   - an acceptance naming a commit with no violation;
+   - an acceptance line without a reason.
+   Only history-walk violations can be accepted. An uncommitted edit can still be fixed, so the working-tree check never accepts.
+3. Documented in RECORDING.md (the field, with acceptance being the operator's decision), ADOPTING.md (the config key, the procedure, and that a changed header line counts as an edit, by the operator's "Yes, they should"), and skills/record-checking.
+
+Built tests-first through main(argv), and revert-checked. Real data: a throwaway clone of Forager's record, with an acceptance entry added there and never pushed, passes the history walk.
+
+**Scope boundary:** check_record.py, RECORDING.md, ADOPTING.md, skills/record-checking/SKILL.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-17-14.md, on branch accepted-violations-2026-10-17, cut from Test-1 at 4bfff35.
+
+Out of scope:
+
+- Writing acceptances into Forager's record, which is Forager's and the operator's.
+- check_prompts.py and records_lookup.py.
+- Merging, which waits for the operator's go.
+
+**Baseline:** Test-1 at 4bfff35bb70cc12b266bda4a81937b9a098261a5, after the operator's "Merge 15". check_record.py --render-check 63 of 63. history_checks reports every violation from check_history_with_merges, and main adds each one to the errors. On Forager's records-after-173, at d23daa5d in a throwaway clone, the walk reports 9 violations.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):**
+
+- The new checks fail first by assertion, because acceptances are not read yet.
+- After the change, checks 1 to 63 pass unchanged, and the new ones pass.
+- With the 9 violations accepted in the clone, the history walk passes on Forager's records-after-173 and lists the 9 as accepted.
+
+**Finish line:** Tests-first commit, implementation, docs and the terminal committed and pushed; the revert run, the real-data run and the closing checks through check_register.py; a PR. Not merged until the operator's go.
+
+**Abort conditions:** An existing check failing. A new check not failing first for its stated reason. An acceptance that could be matched to a commit other than the one it names.
+
+---
