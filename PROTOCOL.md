@@ -289,7 +289,7 @@ Standing: the operator's approach since 2026-09-27, about three weeks in one pro
 
 A role is planner, coder, auditor, reviewer, curator, or any other a project uses.
 
-**The name.** The role proposes three names, drawn from the project it serves and that project's scope, each with one plain line on why. The operator picks.
+**The name.** The role proposes three names, drawn from the project it serves and that project's scope, each with one plain line on why. The operator picks. The curator is the one exception: it keeps the method itself, so it is Clio in every system that runs it (the operator, 2026-10-17; RECORD.md 2026-10-17-09).
 
 **The profile** models how the role behaves, so that any session in that role works the same way. It holds:
 
