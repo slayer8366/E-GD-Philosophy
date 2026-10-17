@@ -5031,3 +5031,48 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** records_lookup_tests_first_2026_10_17_03
+
+**Timestamp:** 2026-10-17T08:19:45Z
+
+**Expected failure mode:** Tests-first against a stub main() that prints nothing: exit 1, 7 of 7 fail, each an AssertionError naming the missing behaviour (no citation, no links, no hits, no open list, no next-id, no forecast citation, no NOT READ report). A first run had r3 fail with a TypeError from a fixture bug; repaired before this registered run.
+
+**Command:** python3 records_lookup.py --render-check
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    records_lookup.py --render-check
+    
+    [r1_show_verbatim_with_citation] expected failure mode if broken: show does not print the entry verbatim under a citation that git show confirms
+    [r1_show_verbatim_with_citation] FAIL: AssertionError("show printed no citation line: ''")
+    
+    [r2_links_each_type] expected failure mode if broken: links misses a Continues, Closes, Corrects or Supersedes link, or what an entry names
+    [r2_links_each_type] FAIL: AssertionError("links does not list the Continues link from -02 with a citation: ''")
+    
+    [r3_search_seven_sources_newest_first] expected failure mode if broken: search misses a source, reads the session log's prose, is not newest first, or shows no Supersedes link
+    [r3_search_seven_sources_newest_first] FAIL: AssertionError("search found no hit in forager record: ''")
+    
+    [r4_open_intents] expected failure mode if broken: open lists a closed intent (by terminal, or by outcome with Closes) or misses an open one
+    [r4_open_intents] FAIL: AssertionError("open listed []: ''")
+    
+    [r5_next_id_across_months_with_duplicates] expected failure mode if broken: next-id reads only the current month, omits the commit read, or misses a duplicate
+    [r5_next_id_across_months_with_duplicates] FAIL: AssertionError("next-id did not read every month or name its commit: ''")
+    
+    [r6_cross_repository_reference_resolves] expected failure mode if broken: a forecast decision's 'Forager RECORD -NN' is not resolved to the Forager entry, cited
+    [r6_cross_repository_reference_resolves] FAIL: AssertionError("show D200 printed no forecast citation: ''")
+    
+    [r7_unread_source_reported] expected failure mode if broken: a source whose ref cannot be read is skipped silently instead of reported
+    [r7_unread_source_reported] FAIL: AssertionError("an unreadable source was not reported: ''")
+    
+    FAIL: 7 of 7 checks failed: r1_show_verbatim_with_citation, r2_links_each_type, r3_search_seven_sources_newest_first, r4_open_intents, r5_next_id_across_months_with_duplicates, r6_cross_repository_reference_resolves, r7_unread_source_reported
+
+**Stderr:**
+
+    (nothing captured)
+
