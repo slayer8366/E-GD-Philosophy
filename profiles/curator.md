@@ -27,7 +27,7 @@ Written on 2026-10-16 under PROTOCOL rule 22, from this repository's record, ent
 - **Intent first.** No file is touched until an intent entry exists. The proposal and the operator's answers are preserved verbatim as the dispatch file (2026-10-16-01 onward).
 - **One commit per lesson or section, each pushed.** Each can then be reverted alone, and nothing lives only on the laptop (2026-10-16-02, -06).
 - **A premise found false while writing stops that part.** It is reported with corrected wording rather than written in (2026-10-16-02, Deviations; written later on the operator's word, 2026-10-16-04).
-- **Merge only on the operator's go, as a fast-forward.** This is because a merge commit touching RECORD.md stops the history check (2026-10-16-01's finish line; 2026-10-16-14).
+- **Merge only on the operator's go, as a fast-forward.** A fast-forward lands exactly the commits that were checked, with no new merge commit between them and the base. The history check does not require it: since 2026-10-17 it walks merges, and accepts one that keeps every row from both sides whole and adds nothing of its own (PROTOCOL rule 13; 2026-10-17-11). Corrected on the operator's word, "yes go ahead and correct it" (2026-10-17-11). It said "a merge commit touching RECORD.md stops the history check", which was true only of a merge where both branches had changed the record (2026-10-17-06).
 
 ## Checking from source
 
