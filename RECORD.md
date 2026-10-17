@@ -1561,3 +1561,36 @@ Observed, not asked: "Where things stand" in forager-forecast's START_HERE.md is
 **Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-15
+
+**Timestamp:** 2026-10-17T01:58:43Z
+
+**Title:** The records lookup spec takes forager-forecast's session log as a seventh source, prose excluded
+
+**Dispatch-file:** preserved/2026-10-16-15.md
+
+**Change:** In specs/2026-10-16-records-lookup.md:
+
+- Scope adds the session-log table of forager-forecast's docs/planning/START_HERE.md, without the prose above it.
+- R3 searches seven sources, not six.
+- The pending item becomes a decision.
+- The spec stays under 600 words.
+
+Test-1 is then fast-forwarded, as the third of the three answers the operator's "Approve, merge the spec" said would be folded in before merging.
+
+**Scope boundary:** specs/2026-10-16-records-lookup.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-15.md, on branch records-lookup-spec-log-2026-10-16 cut from Test-1 at 84397ea. Out of scope: any code; Forager and forager-forecast.
+
+**Baseline:** Test-1 at 84397ea3063c3a73519aabbbd0fd84a343a1611a, equal to origin/Test-1 after fetch. The spec is 599 words and carries a pending item for START_HERE.md, read at b9127e5.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** The spec stays under 600 words with seven requirements, each with its check, and no "Pending" section. check_record.py passes at 40 entries after the terminal, none unterminated; --render-check 38 of 38; check_prompts.py at 15 entries, preserved=14; check_glossary.py at 45/44/45. After the fast-forward, Test-1 equals this branch's head, with no merge commit.
+
+**Finish line:** Spec amended, terminal written, checks run through check_register.py, pushed, Test-1 fast-forwarded and confirmed on the remote.
+
+**Abort conditions:** Test-1 has moved off 84397ea. Any check failing.
+
+---
