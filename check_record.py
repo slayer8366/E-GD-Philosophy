@@ -1948,8 +1948,24 @@ def render_check():
           "a config's terminal outcomes are not applied",
           check55)
 
+    # Check 56 was written after 47-55, when verifying ADOPTING.md found that
+    # a record file with no '## Entries' heading reads as zero entries and
+    # passes with nothing marking it vacuous. Committed red before the fix.
+    def check56():
+        tmp = repo_with({RECORD_NAME: "# RECORD.md\n\n## entries\n\n---\n\n" + _minimal_intent() + "\n\n---\n"})
+        code, out = run_main([str(tmp), "--json"])
+        data = json.loads(out)
+        assert data["entries"] == 0 and data["vacuous"] is True and "Entries" in data.get("note", ""), (
+            f"a record read as zero entries is not marked vacuous with a note: {data}")
+        code, out = run_main([str(tmp)])
+        assert "no entries were read" in out, f"the text output does not say no entries were read: {out!r}"
+
+    check("check56_zero_entries_marked_vacuous",
+          "a record file that yields no entries passes without being marked vacuous",
+          check56)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{55} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{56} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
