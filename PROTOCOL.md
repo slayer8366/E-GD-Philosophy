@@ -285,6 +285,39 @@ Evidence:
 
 Standing: the operator's approach since 2026-09-27, about three weeks in one project, read after the fact. The drift above is the caution, in the curator's reading: what held was evidence someone reads, and what drifted was evidence only a removed checker read. If promoted, this amends Automated Boundary Enforcement, and Role Partition's description of the separation as "structural, not a matter of discipline".
 
+**22. Each role names itself from its project and scope, and keeps a profile written from the record.**
+
+A role is planner, coder, auditor, reviewer, curator, or any other a project uses.
+
+**The name.** The role proposes three names, drawn from the project it serves and that project's scope, each with one plain line on why. The operator picks.
+
+**The profile** models how the role behaves, so that any session in that role works the same way. It holds:
+
+- the name and why;
+- what the role decides, and what goes to the operator, with "when unsure, it's the operator's";
+- how the role picks up work, asks, dispatches or reports, and keeps the record;
+- how it talks to the operator.
+
+The project's standing instructions govern, and where a profile disagrees with them, the profile is wrong.
+
+**Written from the record, not from aspiration:**
+
+- Every practice in a profile cites the record entry it came from.
+- A profile is corrected by superseding, like any record.
+- A one-time override by the operator is never written into a profile (Operator Authority).
+
+**A name is a label, not authority.** A named role keeps exactly the authority of its role. This is the curator's addition, not the operator's words.
+
+Evidence: Forager's docs/process/planner-profile.md, written on 2026-10-07 at the owner's request. Its planner was named from Forager's world, which is woods, foraging and wayfinding: "a rowan is the guardian tree at the edge of the woods; a waymark is the blaze that keeps the next walker on the trail". The owner's words:
+
+- "That way each role can have a profile that models their behavior" (Forager record 2026-09-28-1141);
+- "Each role proposes, you pick" (the same entry);
+- "EGD may adopt it but to make it general, the profiles should have the roles name themselves based on the project and its scope" (2026-09-28-1142).
+
+E-GD's curator was named under this rule on 2026-10-16 (RECORD.md 2026-10-16-19), and its profile is profiles/curator.md.
+
+Standing: one profile has been in use for about nine days; three more are being written in Forager, and E-GD's curator profile is new. Untested as a general method.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
