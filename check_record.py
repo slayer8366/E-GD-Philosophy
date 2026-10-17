@@ -975,6 +975,12 @@ def main(argv=None):
     result.update(entries=len(entries), unterminated=unterminated,
                   sentinels=sentinel_reports)
     lines += [f"record files: {', '.join(files)}", f"entries: {len(entries)}"]
+    if not entries:
+        result["vacuous"] = True
+        result["note"] = (f"no entries were read from {', '.join(files)}: the "
+                          f"entry rules checked nothing. Entries follow a line "
+                          f"containing '## Entries', separated by '---' lines.")
+        lines.append(f"NOTE: {result['note']}")
     if unterminated:
         lines.append(f"unterminated intent entries (reported, not a failure): "
                      f"{', '.join(unterminated)}")
