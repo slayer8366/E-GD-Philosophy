@@ -318,6 +318,50 @@ E-GD's curator was named under this rule on 2026-10-16 (RECORD.md 2026-10-16-19)
 
 Standing: one profile has been in use for about nine days; three more are being written in Forager, and E-GD's curator profile is new. Untested as a general method.
 
+**23. A release passes an evidence gate: checks, an independent audit, and the operator's approval.**
+
+Tests show the code does what its builder intended. Nothing in them checks that what ships is fit for the people who use it. A release is therefore promoted through a gate.
+
+**Three branches, three jobs:**
+
+- Production changes only by promotion through the gate. Documents count too.
+- The working branch receives finished work.
+- An experiments branch is production plus developer tools plus running experiments. It is rebased onto production after every release, "to reflect workability" (Forager record 2026-09-28-1087), and never merged anywhere. An experiment chosen to ship is carried onto the working branch without the tools.
+
+**The gate, in order:**
+
+1. Automated checks pass at the exact commit being promoted.
+2. The auditor's report.
+3. The operator's approval for public use.
+
+A device check or field walk is proposed by the planner when a promotion needs one, and the operator decides. It is not a standing step: "Field walks and device checks aren't always necessary" (-1133). An urgent fix takes the same gate, at the front of the queue, and is then carried into the working branch.
+
+**The auditor:**
+
+- **Who.** A fresh session for each promotion. It is never the session that built the work, and it runs on a different model from the one that built it, because "the same model shares blind spots" (-1134).
+- **What it reads.** The evidence, the known bugs, accessibility, the copy, and every changed behaviour walked as a step path.
+- **Its verdict:**
+  - pass;
+  - pass with items, none of which risks a user's data, safety or trust;
+  - fail.
+  - Each item says where it is, what a user would meet, why it matters, and the evidence, or "not seen on a device".
+- **"Advises, you decide"** (-1086). The verdict goes to the operator, who decides; it is not a veto. The auditor writes no product code, fixes and merges nothing, never weakens a test, and never settles a conflict between two of the operator's rulings: it puts both sides to the operator.
+- **Devices.** A real device comes first. An emulator run is labelled "emulator, not a device", and what an emulator cannot stand in for is listed (-1094).
+
+**The QA philosophy it audits against.** If none exists, the auditor's first task is to draft one (-1085):
+
+- each principle is marked as the operator's words, quoted with its source, or as the auditor's proposal;
+- the draft ends with numbered questions, each with a recommendation;
+- an adopted proposal stays marked as adopted from the auditor's proposal, never as the operator's words (-1092, -1097).
+
+**Recording.** Each promotion is an intent, the auditor's report filed unedited, a merge entry with its backup, and one terminal (RECORDING.md).
+
+**Sources.** Forager's planner wrote the framework for this repository: prompts/preserved/2026-10-16-05-auditor-framework-for-egd.md and its addendum, -05b, on Forager's origin/records-after-173 (f09ff09c, 7d6cdd45). They are cited there rather than copied here. Where the addendum changed the original, this rule follows the addendum: the original lists a device check as step 2 of the gate, and the addendum removes it (-1133). The owner's view of the whole: "the rules we have are simply what we already do. Just codified" (-1138).
+
+This is Independent Replication (rule 11) applied at release time. If both hold up, they may become one principle.
+
+Standing: one promotion has run through the gate. It was documents only, and passed with two notes on the planner's own documents, neither blocking (-1131, -1132). No release with code has been audited, and the device path is untested.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
