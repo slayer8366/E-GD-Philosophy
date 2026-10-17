@@ -6277,3 +6277,106 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** revert_runs_with_check56_2026_10_17_05
+
+**Timestamp:** 2026-10-17T08:49:39Z
+
+**Expected failure mode:** As revert_runs_2026_10_17_05, at cc5c7e2, plus one sabotage disabling the zero-entries note, which must fail check56 alone by its assertion. Controls fail nothing; repository files equal the committed copies at start and end.
+
+**Command:** python3 /tmp/egd-scripts/revert_runner6.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repo files equal committed copies at start: True
+    [control_record] CONTROL CLEAN: expected []; failed 0 of 56; others: []
+    [control_prompts] CONTROL CLEAN: expected []; failed 0 of 4; others: []
+    [repo_arg] BITES: expected ['check47_repository_argument_is_the_one_checked']; failed 10 of 56; others: ['check48_records_json_in_repository_is_read', 'check49_config_sets_the_entry_types', 'check50_config_sets_the_id_pattern', 'check51_invalid_config_refused_by_name', 'check52_json_output', 'check53_print_config_round_trips', 'check54_monthly_dir_configurable', 'check55_terminal_outcomes_configurable', 'check56_zero_entries_marked_vacuous']
+        check47_repository_argument_is_the_one_checked: AssertionError('the given repository was not the one checked (exit 2): "/tmp/tmp2_v4dlre is not inside a git repository; the append-only checks read the record\
+    [records_json] BITES: expected ['check48_records_json_in_repository_is_read']; failed 6 of 56; others: ['check49_config_sets_the_entry_types', 'check50_config_sets_the_id_pattern', 'check51_invalid_config_refused_by_name', 'check54_monthly_dir_configurable', 'check55_terminal_outcomes_configurable']
+        check48_records_json_in_repository_is_read: AssertionError("records.json in the repository was not read (exit 0): 'repository: /tmp/tmp3rnwvehi\\nconfig: default (RECORDING.md format; no records.json)\\nR
+    [kinds] BITES: expected ['check49_config_sets_the_entry_types']; failed 2 of 56; others: ['check50_config_sets_the_id_pattern']
+        check49_config_sets_the_entry_types: AssertionError('missing Body not named: "repository: /tmp/tmpeozob2be\\nconfig: /tmp/tmpeozob2be/records.json\\nrecord files: LOG.md\\nentries: 1\\n\\n[working-
+    [id_pattern] BITES: expected ['check50_config_sets_the_id_pattern']; failed 1 of 56; others: []
+        check50_config_sets_the_id_pattern: AssertionError("a config's ID pattern was not applied: 'repository: /tmp/tmpqc_bwle8\\nconfig: /tmp/tmpqc_bwle8/records.json\\nrecord files: LOG.md\\nentries: 2
+    [unknown_keys] BITES: expected ['check51_invalid_config_refused_by_name']; failed 1 of 56; others: []
+        check51_invalid_config_refused_by_name: AssertionError("an unknown config key was not refused by name (exit 0): 'repository: /tmp/tmp3a898z2i\\nconfig: /tmp/tmp3a898z2i/records.json\\nrecord files: RE
+    [regex_compile] BITES: expected ['check51_invalid_config_refused_by_name']; failed 1 of 56; others: []
+        check51_invalid_config_refused_by_name: PatternError('missing ), unterminated subpattern at position 0')
+    [json_output] BITES: expected ['check52_json_output']; failed 3 of 56; others: ['check54_monthly_dir_configurable', 'check56_zero_entries_marked_vacuous']
+        check52_json_output: JSONDecodeError('Expecting value: line 1 column 1 (char 0)')
+    [print_config] BITES: expected ['check53_print_config_round_trips']; failed 1 of 56; others: []
+        check53_print_config_round_trips: AssertionError('--print-config does not print the default config')
+    [monthly_dir_name] BITES: expected ['check54_monthly_dir_configurable']; failed 1 of 56; others: []
+        check54_monthly_dir_configurable: AssertionError('a configured monthly folder was not read: \'{\\n  "ok": true,\\n  "exit": 0,\\n  "repo": "/tmp/tmpexzjxqfe",\\n  "config": "/tmp/tmpexzjxqfe/rec
+    [monthly_dir_null] BITES: expected ['check54_monthly_dir_configurable']; failed 1 of 56; others: []
+        check54_monthly_dir_configurable: TypeError("unsupported operand type(s) for /: 'PosixPath' and 'NoneType'")
+    [monthly_dir_null_as_unset] BITES: expected ['check54_monthly_dir_configurable']; failed 3 of 56; others: ['check49_config_sets_the_entry_types', 'check50_config_sets_the_id_pattern']
+        check54_monthly_dir_configurable: AssertionError('monthly_dir null did not turn monthly files off: \'{\\n  "ok": true,\\n  "exit": 0,\\n  "repo": "/tmp/tmpo53x0c96",\\n  "config": "/tmp/tmpo53x0
+    [terminal_outcomes] BITES: expected ['check55_terminal_outcomes_configurable']; failed 1 of 56; others: []
+        check55_terminal_outcomes_configurable: AssertionError('configured terminal outcomes were not applied: "repository: /tmp/tmpia4abggc\\nconfig: /tmp/tmpia4abggc/records.json\\nrecord files: RECORD.md\\
+    [zero_entries_vacuous] BITES: expected ['check56_zero_entries_marked_vacuous']; failed 1 of 56; others: []
+        check56_zero_entries_marked_vacuous: AssertionError("a record read as zero entries is not marked vacuous with a note: {'ok': True, 'exit': 0, 'repo': '/tmp/tmppc5a_55q', 'config': None, 'record_fil
+    [p_repo_arg] BITES: expected ['p3_repository_and_config']; failed 2 of 4; others: ['p4_json_output']
+        p3_repository_and_config: AssertionError("a renamed record, prompts folder and dispatch field were not applied: 'repository: /tmp/tmpzyrlk6p_\\nconfig: /tmp/tmpzyrlk6p_/records.json\\n\\
+    [p_config] BITES: expected ['p3_repository_and_config']; failed 1 of 4; others: []
+        p3_repository_and_config: AssertionError("a renamed record, prompts folder and dispatch field were not applied: 'repository: /tmp/tmpem_7_nmy\\nconfig: default (no records.json)\\n\\nFAI
+    [p_prompts_dir] BITES: expected ['p3_repository_and_config']; failed 1 of 4; others: []
+        p3_repository_and_config: AssertionError('a renamed record, prompts folder and dispatch field were not applied: "repository: /tmp/tmpb1y7n5i1\\nconfig: /tmp/tmpb1y7n5i1/records.json\\ndi
+    [p_dispatch_field] BITES: expected ['p3_repository_and_config']; failed 1 of 4; others: []
+        p3_repository_and_config: AssertionError('a renamed record, prompts folder and dispatch field were not applied: "repository: /tmp/tmpc62o8ax7\\nconfig: /tmp/tmpc62o8ax7/records.json\\ndi
+    [p_orphan_prefix] BITES: expected ['p3_repository_and_config']; failed 1 of 4; others: []
+        p3_repository_and_config: AssertionError('an unclaimed prompt in the configured folder was not reported: "repository: /tmp/tmpkoa3_knu\\nconfig: /tmp/tmpkoa3_knu/records.json\\ndispatch-
+    [p_json] BITES: expected ['p4_json_output']; failed 1 of 4; others: []
+        p4_json_output: JSONDecodeError('Expecting value: line 1 column 1 (char 0)')
+    repo files equal committed copies at end: True
+    runs: 21, not biting, not run or control failed: 0
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** adopting_md_claims_2026_10_17_05
+
+**Timestamp:** 2026-10-17T08:49:49Z
+
+**Expected failure mode:** Each of ADOPTING.md's examples and key lists, run against the checkers at cc5c7e2: the example record passes; both example configs are accepted and behave as described; the JSON keys documented equal those printed; no-record and no-entries runs are vacuous with a note; the merge limit holds as written (both branches adding entries fails the walk, one branch passes). A claim that does not hold prints WRONG.
+
+**Command:** python3 /tmp/egd-scripts/verify_adopting.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    code blocks: 5 json configs: 2
+    [OK] example record passes, 2 entries, nothing open 
+    [OK] decision-log config: valid log passes 
+    [OK] decision-log config: missing Why, forward Corrects, bad ID all fail 
+    [OK] renamed config: both files read as one record 
+    [OK] renamed config: prompt claimed under docs/dispatches 
+    [OK] check_record JSON keys documented match output 
+    [OK] check record entries carry the documented check keys 
+    [OK] check_prompts JSON keys as documented 
+    [OK] no record: exit 0, vacuous with a note 
+    [OK] misspelled heading: exit 0, no entries, vacuous with a note 
+    [OK] refused config in check_prompts: ok, exit 2, repo, errors 
+    [OK] a prompt outside the provenance folders fails 
+    [OK] both branches added entries: the walk fails, naming the merge 
+    [OK] one branch changed the record: the walk passes 
+    [OK] wrong type refused by name, exit 2 
+    15 of 15 claims hold
+
+**Stderr:**
+
+    (nothing captured)
+
