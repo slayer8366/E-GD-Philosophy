@@ -71,6 +71,11 @@ JSON object; --print-config prints the default to copy and edit.
 main_monthly is folded into main. render_check gains checks 47 to 55.
 ADOPTING.md explains the config to someone adopting this.
 
+Extended again 2026-10-17 (RECORD.md 2026-10-17-11): the history walk
+handles merges, by PROTOCOL rule 13. check_history_with_merges is new and
+history_checks uses it; check_history_append_only, which stops at a merge,
+is kept unchanged with its own checks. render_check gains checks 57 to 62.
+
 main() and render_check() below are NEW CONSTRUCTION, modeled on
 OSCam's ledger_cli.py (itself new construction there, since the
 original main()/render_check() were never vendored) but not a copy of
@@ -670,7 +675,8 @@ def _has_commits(repo_dir):
 def history_checks(repo_dir, config=None):
     """The history walk on each record file. Returns a list of {file, ok,
     msg, count, vacuous, violations}; the index is reported, not walked,
-    and a repository with no commits yet has nothing to walk."""
+    and a repository with no commits yet has nothing to walk. Since
+    2026-10-17-11 the walk is check_history_with_merges."""
     cfg = DEFAULT_CONFIG if config is None else config
     results = []
     has_commits = _has_commits(repo_dir)
@@ -685,7 +691,7 @@ def history_checks(repo_dir, config=None):
                             "count": 0, "vacuous": True, "violations": []})
             continue
         try:
-            ok, violations, count, vacuous = check_history_append_only(
+            ok, violations, count, vacuous = check_history_with_merges(
                 repo_dir, record_name=rel)
             msg = (f"{count} commit(s) checked, each a byte-prefix extension "
                    f"of the one before it" if ok
@@ -876,6 +882,129 @@ def check_history_append_only(repo_dir, record_name=RECORD_NAME):
     return not violations, violations, len(commits), len(commits) <= 1
 
 
+def _blobs(repo_dir, specs):
+    """{'rev:path': blob id or None}, read with one git cat-file process."""
+    if not specs:
+        return {}
+    r = subprocess.run(
+        ["git", "-C", str(repo_dir), "cat-file", "--batch-check=%(objectname) %(objecttype)"],
+        input="\n".join(specs) + "\n", capture_output=True, text=True, check=True)
+    out = {}
+    for spec, line in zip(specs, r.stdout.splitlines()):
+        parts = line.split()
+        out[spec] = parts[0] if len(parts) == 2 and parts[1] == "blob" else None
+    return out
+
+
+def _file_at(repo_dir, commit, record_name):
+    """The file's bytes at commit, or None where it does not exist."""
+    r = subprocess.run(["git", "-C", str(repo_dir), "show", f"{commit}:{record_name}"],
+                       capture_output=True)
+    return r.stdout if r.returncode == 0 else None
+
+
+def _subject(repo_dir, commit):
+    return subprocess.run(["git", "-C", str(repo_dir), "log", "-1", "--format=%s", commit],
+                          capture_output=True, text=True).stdout.strip()
+
+
+def check_history_with_merges(repo_dir, record_name=RECORD_NAME):
+    """(ok, violations, commit_count, vacuous). New 2026-10-17 (RECORD.md
+    2026-10-17-11); history_checks uses it in place of
+    check_history_append_only, which is kept unchanged.
+
+    Every non-merge commit that changed record_name, on every branch in
+    HEAD's history (git log --full-history, so a branch whose changes a
+    merge dropped is still walked), is compared with its own parent's
+    version: it must begin with it, byte for byte.
+
+    Every merge whose record differs from a parent's must hold the merge
+    base's record followed by each branch's additions, whole, in any order:
+    nothing removed or changed, and nothing written in the merge itself.
+    This is PROTOCOL rule 13: "every row from both sides is kept", and "No
+    record entry is written inside a merge commit". A merge that takes one
+    branch's record, while every other branch left it as the base had it,
+    passes without reading the file. A violation names its commit and the
+    walk goes on. vacuous is True when no comparison was made."""
+    import itertools
+    repo_dir = Path(repo_dir)
+    violations, count = [], 0
+    log = subprocess.run(
+        ["git", "-C", str(repo_dir), "log", "--full-history", "--no-merges", "--reverse",
+         "--format=%H%x00%P%x00%s", "--", record_name],
+        capture_output=True, text=True, check=True)
+    for line in log.stdout.splitlines():
+        h, parents, subject = line.split("\x00")
+        parent = parents.split()[0] if parents else None
+        older = _file_at(repo_dir, parent, record_name) if parent else None
+        if older is None:
+            continue  # the file's first version on this line of history
+        count += 1
+        newer = _file_at(repo_dir, h, record_name)
+        if newer is None or not newer.startswith(older):
+            violations.append({
+                "older": parent, "older_subject": _subject(repo_dir, parent),
+                "newer": h, "newer_subject": subject,
+                "divergence_line": _first_divergent_line(older, newer or b"")})
+
+    merges = [l.split() for l in subprocess.run(
+        ["git", "-C", str(repo_dir), "rev-list", "--reverse", "--merges", "--parents", "HEAD"],
+        capture_output=True, text=True, check=True).stdout.splitlines()]
+    bases = {}
+    for m, *ps in merges:
+        r = subprocess.run(["git", "-C", str(repo_dir), "merge-base", "--octopus", *ps],
+                           capture_output=True, text=True)
+        bases[m] = r.stdout.strip() if r.returncode == 0 else None
+    blobs = _blobs(repo_dir, [f"{c}:{record_name}" for m, *ps in merges
+                              for c in [m, *ps] + ([bases[m]] if bases[m] else [])])
+    for m, *ps in merges:
+        bm = blobs[f"{m}:{record_name}"]
+        bps = [blobs[f"{p}:{record_name}"] for p in ps]
+        if all(bp == bm for bp in bps):
+            continue  # the record is the same on every side: nothing merged
+        count += 1
+        base = bases[m]
+        bbase = blobs[f"{base}:{record_name}"] if base else None
+        if bm is not None and bm in bps and all(bp in (bm, bbase) for bp in bps):
+            continue  # one branch's record taken; the others left it as the base had it
+        subject = _subject(repo_dir, m)
+        base_text = (_file_at(repo_dir, base, record_name) if base else None) or b""
+        merged = _file_at(repo_dir, m, record_name)
+        where = f"merge {m[:10]} ({subject!r})"
+        adds, stale = [], []
+        for p in ps:
+            pv = _file_at(repo_dir, p, record_name) or b""
+            if pv.startswith(base_text):
+                adds.append(pv[len(base_text):])
+            else:
+                stale.append(p[:10])
+        expected = base_text + b"".join(adds)
+        if merged is None:
+            detail = f"{where}: the record was removed by the merge"
+            line_no = 1
+        elif stale:
+            detail = (f"{where}: the record on parent(s) {', '.join(stale)} does not begin "
+                      f"with the merge base's ({(base or '')[:10]}), so each branch's additions "
+                      f"cannot be read; that branch's own commits are reported separately")
+            line_no = _first_divergent_line(base_text, merged)
+        else:
+            rest = merged[len(base_text):] if merged.startswith(base_text) else None
+            distinct = [a for a in dict.fromkeys(adds) if a]
+            if rest is not None and any(rest == b"".join(order)
+                                        for order in itertools.permutations(distinct)):
+                continue
+            line_no = _first_divergent_line(expected, merged)
+            detail = (f"{where}: the record is not the merge base's ({(base or '')[:10]}) "
+                      f"followed by each branch's additions, whole, in any order; something "
+                      f"was removed or changed, or the merge wrote an entry of its own "
+                      f"(PROTOCOL rule 13). First difference from the base and the additions "
+                      f"in parent order: line {line_no}")
+        violations.append({"older": base or "", "older_subject": "merge base",
+                           "newer": m, "newer_subject": subject,
+                           "divergence_line": line_no, "detail": detail})
+    return not violations, violations, count, count == 0
+
+
 # --------------------------------------------------------------------------
 # CLI wrapper. New construction -- see module docstring. Modeled on
 # OSCam's ledger_cli.py (also new construction there), not a recovery of
@@ -1006,9 +1135,10 @@ def main(argv=None):
         add_check("history walk", f"history walk: {r['file']} -- every "
                   f"committed version", r)
         for v in r["violations"]:
-            msg = (f"{v['older'][:10]} ({v['older_subject']!r}) -> "
-                   f"{v['newer'][:10]} ({v['newer_subject']!r}): diverges at "
-                   f"line {v['divergence_line']}")
+            msg = v.get("detail") or (
+                f"{v['older'][:10]} ({v['older_subject']!r}) -> "
+                f"{v['newer'][:10]} ({v['newer_subject']!r}): diverges at "
+                f"line {v['divergence_line']}")
             lines.append("    " + msg)
             errors.append(f"history walk, {r['file']}: {msg}")
         if not r["ok"] and not r["violations"]:
