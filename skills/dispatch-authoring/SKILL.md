@@ -17,6 +17,14 @@ State your diagnosis and ask for it to be confirmed or disproved rather than ass
 
 List the candidate explanations you have already considered, so the work is not redone, and so a wrong one you were leaning on gets challenged rather than inherited.
 
+## Check from source, not memory
+
+Every factual claim a dispatch makes is read from its source while the dispatch is being written, and cited with the commit or time it was read: a path, a line, an ID, a count, a branch or commit, what a record entry or ruling says, whether something exists.
+
+Memory drifts. The writer's recall, a summary, a handoff, an earlier report, another agent's reading, and saved memory notes are pointers to where to look, never the source. They feel exactly like knowing, which is why the check cannot be left to how sure you feel.
+
+A claim that cannot be checked before dispatch is marked unverified and listed as a premise for the executor to check first. The operator's rule: "Memory drifts, so always check from source".
+
 ## Say what not to touch
 
 An explicit do-not-touch list prevents scope creep and protects things confirmed working. Name the files, the functions, the decisions. "Do not change the sensor listener, the scrub, the sweep, or the retained flag" costs one line and saves a review.

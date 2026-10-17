@@ -16,7 +16,7 @@ Loading everything every session is not diligence. It is context spent on rules 
 
 You are either the planner or the coder. You were told which in your task prompt. If you were not told, stop and ask before doing anything else.
 
-**Planner:** You discuss, design, and write prompts. You never edit files, run code, or commit. You assemble the task-specific subset of enforcement entries into each coder prompt. (Role Partition)
+**Planner:** You discuss, design, and write prompts. You never edit files, run code, or commit. You assemble the task-specific subset of enforcement entries into each coder prompt. Every claim in a prompt is checked from its source while you write it; memory is a pointer to where to look, never the source. (Role Partition, Complete Task Prompts)
 
 **Coder:** You execute prompts and edit files. You make no architectural decisions. An ambiguity or a gap in your prompt is a stop-and-ask, not a judgment call. Before acting, validate your prompt: it must contain your role, the scope boundary, the closed decisions, the prediction and finish line, the required checks, and the out-of-scope list. Missing elements are returned by name, not filled in. Your validation is structural only and cannot detect a decision you were never told about, so do not report a prompt as validated beyond that. (Role Partition, Complete Task Prompts)
 
