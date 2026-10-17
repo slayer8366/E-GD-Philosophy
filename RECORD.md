@@ -1327,3 +1327,58 @@ Observed, not asked:
 **Deviations:** Two checks more than predicted (37 and 38), as above. No existing RECORD.md or REGISTER.md entry was edited. check_prompts.py, check_glossary.py and check_register.py were not changed.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-09
+
+**Timestamp:** 2026-10-17T00:12:26Z
+
+**Title:** Check from source, not memory: a rule for writing dispatches, in E-GD's dispatch rules, the bootstrap and the dispatch-authoring skill copy
+
+**Dispatch-file:** preserved/2026-10-16-09.md
+
+**Change:** Three edits, as the operator's answer "E-GD + text for Forager" sets out:
+
+- ENFORCEMENT.md's Complete Task Prompts entry gains the rule, worded as the proposal quotes it in the dispatch file, with the operator's words and a pointer to this entry.
+- BOOTSTRAP.md's planner line gains its short form.
+- skills/dispatch-authoring/SKILL.md gains a section of the same name, logged in skills/README.md's list of edits made after copying.
+
+The text of a matching line for Forager's planner profile is written here and handed to the operator, who passes it to the Forager planner. This session writes nothing in Forager.
+
+**Scope boundary:** ENFORCEMENT.md, BOOTSTRAP.md, skills/dispatch-authoring/SKILL.md, skills/README.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-09.md, on branch check-from-source-2026-10-16 cut from Test-1 at f120944.
+
+Out of scope:
+
+- PHILOSOPHY.md: the principle is already Sourced Claims, as amended at 2026-10-16-01, which says an agent cannot tell its memory of a read from the read itself.
+- GLOSSARY.md and every check script.
+- The operator's account copy of the skill, which this session cannot reach.
+- Forager's repository.
+- Merging, which waits for the operator's go.
+
+**Baseline:** Branch check-from-source-2026-10-16 at f12094401c253ba8d7c55d52d95396b6748f312a, equal to origin/Test-1 after git fetch; tree clean. check_record.py PASS at 32 entries, none unterminated, a 30-commit walk, --render-check 38 of 38; check_prompts.py PASS at 11, preserved=10; check_glossary.py PASS at 45/44/45.
+
+Evidence behind the rule, read from this repository's record and history rather than recalled: claims written from memory or relay, found wrong only when checked against their source.
+
+- 2026-10-16-02, Deviations:
+  - BUILD_TASKS.md's Task 1 called built;
+  - five data-pipeline principles called never exercised in Forager;
+  - an authorization count of 10 that was 9;
+  - a reader's audit-index line numbers that did not match the index;
+  - three reader claims that could not be verified.
+- 2026-10-16-06, Premises that were wrong:
+  - outcome entries called closing like terminals;
+  - the kit's count of entry types;
+  - 9b398a6's account of the fifth report section.
+- Commit 57af78f's message: a sentence claiming three commit messages carried wording none did, corrected before commit.
+- This entry's own first draft also cited 2026-10-16-04 and -08 as instances, which neither records. That was found by reading both entries before this one was committed, and removed: one more instance.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** check_glossary.py stays at 45/44/45, PASS: no headword is added, and the new enforcement line is a bullet, not a line of bold. check_record.py passes at 34 entries after the terminal, none unterminated, with a 31-commit walk before the terminal's commit; --render-check stays at 38 of 38. check_prompts.py passes at 12 entries, preserved=11. A scope diff against f120944 lists only paths inside this entry's scope. skills/dispatch-authoring/SKILL.md differs from the operator's account copy only by the new section; the other ten account-synced skills stay byte-identical to their sources.
+
+**Finish line:** The edits committed and pushed; checks run after the terminal is written and before its commit, through check_register.py; a pull request into Test-1; the Forager line given to the operator. Not merged.
+
+**Abort conditions:** A check failing in a way not predicted. A claim in the rule's evidence that does not match the entry it cites.
+
+---
