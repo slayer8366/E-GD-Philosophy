@@ -1,19 +1,377 @@
 #!/usr/bin/env python3
 """records_lookup.py -- read-only lookup over Forager's and forager-forecast's
-records, as specs/2026-10-16-records-lookup.md sets out (RECORD.md
-2026-10-17-03). STUB: the tests below are written first; main() answers
-nothing yet.
+records: specs/2026-10-16-records-lookup.md, built under RECORD.md
+2026-10-17-03.
+
+  records_lookup.py COMMAND [ARGS] --forager PATH --forecast PATH [options]
+
+  show ID       an entry verbatim, with its citation (ID: a full Forager ID,
+                a short form -NNNN, or a forager-forecast D-number)
+  links ID      what names this entry, and what it names
+  search WORDS  every source, newest first, each hit cited
+  open          Forager intents with no closing entry
+  next-id       the next free Forager ID across every record file
+
+Every answer carries repository, ref, commit, file and line. Sources are
+read with git show and git ls-tree at a resolved commit, after git fetch
+for origin/ refs, and never checked out or written. A source that cannot
+be read is reported as NOT READ, never skipped.
+
+Default refs (the spec's per-source decision, each overridable):
+  Forager record and prompts  origin/records-after-173
+  Forager audit index         origin/pre-main
+  forager-forecast            origin/main
+
+A Continues or Closes value is read by the ID it starts with, since
+Forager's practice sometimes follows the ID with a parenthesis; Corrects
+and Supersedes are read for every ID they carry.
 """
+import argparse
 import io
+import re
 import subprocess
 import sys
 import tempfile
+from collections import Counter
 from contextlib import redirect_stdout
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import check_record as cr  # noqa: E402
+
+ID_TOKEN = cr.ENTRY_ID_TOKEN_RE
+LEADING_ONLY = ("Continues", "Closes")
+LINK_FIELDS = ("Continues", "Closes", "Corrects", "Supersedes")
+FORAGER_REF_RE = re.compile(r"Forager RECORD (-\d+)")
+D_ID_RE = re.compile(r"^D\d+$")
+SHORT_RE = re.compile(r"^-\d+$")
+DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})")
+MONTH_NAME_RE = re.compile(r"^\d{4}-\d{2}\.md$")
+
+
+def _run_git(repo, *args):
+    return subprocess.run(["git", "-C", str(repo), *args], capture_output=True, text=True)
+
+
+class Source:
+    """One repository at one ref, resolved to a commit."""
+
+    def __init__(self, repo_label, repo, ref, fetch):
+        self.repo_label, self.repo, self.ref = repo_label, repo, ref
+        self.commit, self.note, self.error = None, "", ""
+        if repo is None:
+            self.error = f"no --{repo_label} path given"
+            return
+        if not Path(repo).is_dir():
+            self.error = f"{repo} is not a directory"
+            return
+        if fetch and ref.startswith("origin/"):
+            r = _run_git(repo, "fetch", "-q", "origin", ref.split("/", 1)[1])
+            if r.returncode != 0:
+                self.note = f"; fetch failed, the local copy of {ref} was read"
+        r = _run_git(repo, "rev-parse", "--verify", "-q", f"{ref}^{{commit}}")
+        if r.returncode != 0:
+            self.error = f"ref {ref} not found in {repo}"
+            return
+        self.commit = r.stdout.strip()
+
+    def show(self, path):
+        r = _run_git(self.repo, "show", f"{self.commit}:{path}")
+        return r.stdout if r.returncode == 0 else None
+
+    def ls(self, directory):
+        r = _run_git(self.repo, "ls-tree", "--name-only", f"{self.commit}", f"{directory}/")
+        return [Path(p).name for p in r.stdout.split()] if r.returncode == 0 else []
+
+    def cite(self, path, start, end=None):
+        end = start if end is None else end
+        return f"{self.repo_label} {self.ref}@{self.commit[:8]} {path}:{start}-{end}"
+
+
+def _entries_with_lines(text):
+    """Entries of a record file as (start, end, block): 1-based line
+    numbers of the first and last non-blank line, and the block text,
+    found the same way check_record.split_entries finds them."""
+    marker = text.find("## Entries")
+    if marker == -1:
+        return []
+    lines = text.split("\n")
+    first = text[:marker].count("\n") + 1  # the heading's own line
+    out, group = [], []
+    for n in range(first + 1, len(lines) + 1):
+        line = lines[n - 1]
+        if line == "---":
+            if group:
+                out.append(group)
+            group = []
+        else:
+            group.append((n, line))
+    if group:
+        out.append(group)
+    result = []
+    for g in out:
+        body = [(n, l) for n, l in g if l.strip()]
+        if not body:
+            continue
+        start, end = body[0][0], body[-1][0]
+        result.append((start, end, "\n".join(lines[start - 1:end])))
+    assert len(result) == len(cr.split_entries(text)), "entry split disagrees with check_record"
+    return result
+
+
+class Records:
+    def __init__(self, args):
+        fetch = not args.no_fetch
+        self.sources = {
+            "forager record": Source("forager", args.forager, args.forager_record_ref, fetch),
+            "forager prompts": Source("forager", args.forager, args.forager_prompts_ref, fetch),
+            "forager audits": Source("forager", args.forager, args.forager_audits_ref, fetch),
+            "forecast": Source("forecast", args.forecast, args.forecast_ref, fetch),
+        }
+        self.entries, self.read_errors = [], []
+        rec = self.sources["forager record"]
+        if rec.commit:
+            files = []
+            if rec.show(cr.RECORD_NAME) is not None:
+                files.append(cr.RECORD_NAME)
+            files += sorted(f"records/{n}" for n in rec.ls("records") if MONTH_NAME_RE.match(n))
+            if not files:
+                rec.error = f"no RECORD.md or records/YYYY-MM.md at {rec.ref}"
+            for path in files:
+                for start, end, block in _entries_with_lines(rec.show(path)):
+                    f = cr.parse_fields(block)
+                    eid = f.get("ID", "").strip()
+                    ts = f.get("Timestamp", "").strip()
+                    self.entries.append({
+                        "id": eid, "kind": f.get("Kind", "").strip(), "fields": f,
+                        "path": path, "start": start, "end": end, "text": block,
+                        "date": (ts or eid)[:10], "cite": rec.cite(path, start, end)})
+        self.by_id = {}
+        for e in self.entries:
+            self.by_id.setdefault(e["id"], e)
+        self.decisions = self._rows("forecast", "docs/planning/DECISIONS.md",
+                                    r"^\| (D\d+) \| (\d{4}-\d{2}-\d{2})", "forecast decisions")
+        self.forecast_audits = self._rows("forecast", "docs/audits/README.md",
+                                          r"^\| ()(\d{4}-\d{2}-\d{2})", "forecast audits")
+        self.forager_audits = self._rows("forager audits", "docs/audits/README.md",
+                                         r"^\| ()(\d{4}-\d{2}-\d{2})", "forager audits")
+        self.session_log = self._rows("forecast", "docs/planning/START_HERE.md",
+                                      r"^\| ()(\d{4}-\d{2}-\d{2})", "forecast session log",
+                                      section="## Session log")
+
+    def _rows(self, source_name, path, pattern, label, section=None):
+        src = self.sources[source_name]
+        if not src.commit:
+            return []
+        text = src.show(path)
+        if text is None:
+            self.read_errors.append(f"{label}: {path} not found at {src.ref}")
+            return []
+        rows, inside = [], section is None
+        for n, line in enumerate(text.split("\n"), 1):
+            if section is not None and line.startswith("## "):
+                inside = line.strip() == section
+                continue
+            m = re.match(pattern, line) if inside else None
+            if m:
+                cells = [c.strip() for c in line.strip().strip("|").split("|")]
+                rows.append({"id": m.group(1), "date": m.group(2), "text": line, "cells": cells,
+                             "label": label, "cite": src.cite(path, n)})
+        return rows
+
+    def header(self):
+        for name, src in self.sources.items():
+            if src.commit:
+                print(f"source {name}: {src.repo_label} {src.ref}@{src.commit[:8]}{src.note}")
+            else:
+                print(f"source {name}: NOT READ ({src.error})")
+        for err in self.read_errors:
+            print(f"source {err}: NOT READ")
+        print()
+
+    def resolve(self, key):
+        """A full ID, or a short form -NNNN; returns (entry or None, message)."""
+        if SHORT_RE.match(key):
+            cands = [e for e in self.entries if e["id"].endswith(key)
+                     and re.fullmatch(r"\d{4}-\d{2}-\d{2}" + re.escape(key), e["id"])]
+            ids = sorted({e["id"] for e in cands})
+            if len(ids) == 1:
+                return self.by_id[ids[0]], ""
+            if len(ids) > 1:
+                return None, f"ambiguous: {key} matches {', '.join(ids)}"
+            return None, f"not found: {key}"
+        e = self.by_id.get(key)
+        return (e, "") if e else (None, f"not found: {key}")
+
+    def links_from(self, e):
+        """(field, target ID) pairs this entry names."""
+        out = []
+        for label, value in e["fields"].items():
+            base = re.split(r"[,(]", label)[0].strip()
+            if base not in LINK_FIELDS:
+                continue
+            toks = ID_TOKEN.findall(value)
+            if base in LEADING_ONLY:
+                m = ID_TOKEN.match(value.strip())
+                toks = [m.group(0)] if m else []
+            out += [(base, t) for t in toks]
+        return out
+
+
+def cmd_show(r, key):
+    if D_ID_RE.match(key):
+        rows = [d for d in r.decisions if d["id"] == key]
+        if not rows:
+            print(f"not found: {key} in forecast decisions")
+            return 1
+        d = rows[0]
+        print(f"citation: {d['cite']}")
+        print(d["text"])
+        for ref in FORAGER_REF_RE.findall(d["text"]):
+            e, msg = r.resolve(ref)
+            print(f"references: Forager RECORD {ref} -> {e['id']} — {e['cite']}" if e
+                  else f"references: Forager RECORD {ref} -> {msg}")
+        return 0
+    e, msg = r.resolve(key)
+    if not e:
+        print(msg)
+        return 1
+    print(f"citation: {e['cite']}")
+    print(e["text"])
+    num = "-" + e["id"].rsplit("-", 1)[1]
+    for d in r.decisions:
+        if num in FORAGER_REF_RE.findall(d["text"]):
+            print(f"referenced by: forecast {d['id']} — {d['cite']}")
+    return 0
+
+
+def cmd_links(r, key):
+    e, msg = r.resolve(key)
+    if not e:
+        print(msg)
+        return 1
+    print(f"links of {e['id']} — {e['cite']}")
+    for other in r.entries:
+        for field, target in r.links_from(other):
+            if target == e["id"] and other is not e:
+                print(f"named by: {field} {other['id']} — {other['cite']}")
+    for field, target in r.links_from(e):
+        t = r.by_id.get(target)
+        print(f"names: {field} {target} — {t['cite'] if t else 'not in the record'}")
+    return 0
+
+
+def _hits_text(units, words):
+    return [u for u in units if all(w in u["text"].lower() for w in words)]
+
+
+def cmd_search(r, words):
+    words = [w.lower() for w in words]
+    hits = []
+    for e in _hits_text(r.entries, words):
+        title = e["fields"].get("Title") or e["fields"].get("Subject") or e["text"].split("\n")[0]
+        extra = []
+        for other in r.entries:
+            for field, target in r.links_from(other):
+                if target == e["id"] and field in ("Supersedes", "Corrects"):
+                    verb = "superseded by" if field == "Supersedes" else "corrected by"
+                    extra.append(f"    {verb} {other['id']} — {other['cite']}")
+        for field, target in r.links_from(e):
+            if field in ("Supersedes", "Corrects"):
+                extra.append(f"    {field.lower()} {target}")
+        hits.append((e["date"], "forager record", e["cite"], f"{e['id']} {title[:120]}", extra))
+    for rows in (r.forager_audits, r.decisions, r.forecast_audits, r.session_log):
+        for row in _hits_text(rows, words):
+            extra = []
+            if row["label"] == "forecast decisions":
+                sup = row["cells"][5] if len(row["cells"]) > 5 else ""
+                if sup and sup.lower() not in ("none", "-", ""):
+                    extra.append(f"    supersedes {sup[:120]}")
+                for other in r.decisions:
+                    sup_o = other["cells"][5] if len(other["cells"]) > 5 else ""
+                    if other is not row and re.search(rf"\b{re.escape(row['id'])}\b", sup_o):
+                        extra.append(f"    superseded by {other['id']} — {other['cite']}")
+            hits.append((row["date"], row["label"], row["cite"], row["text"][:140], extra))
+    for name, directory, label in (("forager prompts", "prompts/preserved", "forager prompts"),
+                                   ("forecast", "docs/dispatch", "forecast dispatch")):
+        src = r.sources[name]
+        if not src.commit:
+            continue
+        for fname in src.ls(directory):
+            text = src.show(f"{directory}/{fname}") or ""
+            if all(w in text.lower() for w in words):
+                lines = text.split("\n")
+                n = next((i for i, l in enumerate(lines, 1) if any(w in l.lower() for w in words)), 1)
+                m = DATE_RE.match(fname)
+                hits.append((m.group(1) if m else "", label, src.cite(f"{directory}/{fname}", n),
+                             lines[n - 1][:140], []))
+    hits.sort(key=lambda h: h[0], reverse=True)
+    for date, label, cite, excerpt, extra in hits:
+        print(f"{date or '(undated)'}  {label}  {cite}  {excerpt}")
+        for x in extra:
+            print(x)
+    print(f"hits: {len(hits)}")
+    return 0
+
+
+def cmd_open(r):
+    closed = set()
+    for e in r.entries:
+        if e["kind"] in ("terminal", "outcome"):
+            m = ID_TOKEN.match(e["fields"].get("Closes", "").strip())
+            if m:
+                closed.add(m.group(0))
+    opened = [e for e in r.entries if e["kind"] == "intent" and e["id"] not in closed]
+    for e in opened:
+        print(f"open intent: {e['id']} — {e['cite']}")
+    print(f"open intents: {len(opened)}")
+    return 0
+
+
+def cmd_next_id(r):
+    src = r.sources["forager record"]
+    if not r.entries:
+        print("next free ID: unknown, the Forager record was not read")
+        return 1
+    counts = Counter(e["id"] for e in r.entries)
+    for eid, n in sorted(counts.items()):
+        if n > 1:
+            where = ", ".join(e["cite"] for e in r.entries if e["id"] == eid)
+            print(f"warning: duplicate ID {eid} ({n} times): {where}")
+    prefix = r.entries[-1]["id"][:10]
+    nums = [e["id"][11:] for e in r.entries if e["id"][:10] == prefix and e["id"][11:].isdigit()]
+    top = max(nums, key=int)
+    print(f"next free ID: {prefix}-{int(top) + 1:0{max(2, len(top))}d} "
+          f"(read at {src.ref}@{src.commit[:8]})")
+    return 0
+
 
 def main(argv=None):
-    return 2
+    p = argparse.ArgumentParser(prog="records_lookup.py", description=__doc__.split("\n")[0])
+    p.add_argument("command", choices=["show", "links", "search", "open", "next-id"])
+    p.add_argument("args", nargs="*")
+    p.add_argument("--forager")
+    p.add_argument("--forecast")
+    p.add_argument("--forager-record-ref", default="origin/records-after-173")
+    p.add_argument("--forager-prompts-ref", default="origin/records-after-173")
+    p.add_argument("--forager-audits-ref", default="origin/pre-main")
+    p.add_argument("--forecast-ref", default="origin/main")
+    p.add_argument("--no-fetch", action="store_true")
+    args = p.parse_intermixed_args(argv)
+    r = Records(args)
+    r.header()
+    if args.command in ("show", "links") and len(args.args) != 1:
+        print(f"{args.command} takes one ID")
+        return 2
+    if args.command == "show":
+        return cmd_show(r, args.args[0])
+    if args.command == "links":
+        return cmd_links(r, args.args[0])
+    if args.command == "search":
+        return cmd_search(r, args.args)
+    if args.command == "open":
+        return cmd_open(r)
+    return cmd_next_id(r)
 
 
 # --------------------------------------------------------------------------
