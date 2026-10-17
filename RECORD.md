@@ -2383,3 +2383,66 @@ Out of scope:
 **Abort conditions:** An r1 to r7 body would need to change to pass. A real-data answer differs between the old and new tool in a way the change does not explain. The config cannot express one of today's Forager sources.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-17-08
+
+**Timestamp:** 2026-10-17T09:06:09Z
+
+**Closes:** 2026-10-17-07
+
+**Outcome:** completed
+
+**Observed:** records_lookup.py now reads its sources from a JSON config, for any set of repositories. Forager and forager-forecast are the preset lookups/forager.json. Built on branch lookup-config-2026-10-17, stacked on PR #12, after the intent (b730fbc):
+
+- 5d5e3fa: self-checks c1 to c8, committed failing. r1 to r7 now run through the preset. All 15 failed, each by assertion on argparse's usage, since the new flags did not exist.
+- 0589f2d: the implementation and lookups/forager.json.
+- 9fdd77e: c9 and c10, written after their rules.
+- 78f151e and 5584e45: the register.
+- 14fd9bd: ADOPTING.md's section "The lookup tool", the README rows, and the skill's pointer.
+
+Results, each registered in REGISTER.md:
+
+- --render-check passes 17 of 17.
+- Real data: the tool as merged at 7dc4a25 and this one with --preset forager ran 17 commands, all with --no-fetch, on the same commits: Forager origin/records-after-173 b0abbfa3 and origin/pre-main b221e85b, and forager-forecast origin/main b9127e58. Every answer line and exit code was the same; only the source header lines differ. The paths that changed did run on that data: 3 "referenced by" lines, a resolved "Forager RECORD" reference, and 14 replacement lines in search.
+- The revert run: a control with no edit failed nothing. Each of 19 one-line sabotages, on temporary copies of the committed files, failed its own check from c1 to c10. The repository files equalled the committed copies at the start and the end.
+- ADOPTING.md: the lookup section's 10 claims hold, including the fetch of origin/ refs, shown with a real remote that had advanced. The guide's earlier 15 claims still hold.
+- check_record.py passes; check_glossary.py: 45/44/45.
+
+Confirmed against inferred:
+
+- As in Part 1, the tests-first red shows the flags were missing; it does not show that each rule was. The per-rule evidence is the revert run.
+- c9 and c10 never had a red, since their rules existed first. Their evidence is the revert run alone.
+- One change has no self-check. A ref that resolves but holds no record file is now reported as NOT READ; the merged tool showed that source as read, with no line saying why. It was checked by hand against both tools.
+
+Could not determine:
+
+- Whether the config is enough for someone else's records. Its only real-data run is the Forager preset.
+- The lookup spec (specs/2026-10-16-records-lookup.md) still describes the tool wired to Forager. The preset implements exactly that. Whether the spec should say the tool is now configurable is the operator's call; the spec is unchanged.
+
+Premises that were wrong:
+
+- None in the intent once committed. Its draft cited main's flags at :364-376; they are at :366-374, and that was corrected before the commit.
+
+Decided beyond scope:
+
+- One Source per repository and ref, so each ref is fetched once.
+- --print-config prints the config in use, where check_record's prints the default. The command is optional, so --print-config runs alone.
+- Source names must be unique, and must differ from repository names, since --ref takes either.
+- A table's row_pattern needs two groups and its record_reference one.
+- next-id zero-pads only when the top number has a leading zero. The merged tool padded to at least two digits. The answers are the same on Forager's and E-GD's IDs, and differ only for an unpadded single-digit top number.
+- show's "referenced by" now resolves each reference, where the merged tool compared the number's text. It is the same on Forager's data, where every ID shares one date.
+- A records.json at the ref that is not a usable config leaves the record unread and reported (c9).
+
+Observed, not asked:
+
+- I committed 14fd9bd while a register entry I had not read reported 9 of 10. Two later runs failed on bugs in my verify scripts, not in the tool or the guide:
+  - the tool's path was built from a relative ".", so a run from inside a fixture folder could not find it;
+  - the JSON-output table was read up to "Known limits", so the new lookup section's command table was read as keys.
+  Both scripts were fixed and the reruns registered. The failed entries stay in the register.
+- The lookup tool has no --json. It was not asked for.
+
+**Deviations:** c9 and c10 were added beyond c1 to c8, after their rules. 14fd9bd was committed before its register entry was read, as above. No existing RECORD.md or REGISTER.md entry was edited. check_record.py and check_prompts.py are unchanged on this branch.
+
+---
