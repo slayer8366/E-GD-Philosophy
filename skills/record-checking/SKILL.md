@@ -41,3 +41,7 @@ To cite an entry, follow its links, list what is still open or find the next fre
 ## What it cannot tell you
 
 Whether an entry is true. The checkers verify shape, links and history. A record that passes can still say something false, in perfect form. Treat a pass as "well formed and only grown", and verify claims inside entries from their sources.
+
+## Feedback
+
+This skill and the checkers are looked after by Clio, E-GD's curator. If something here is wrong, unclear, or got in the way, say so: open an issue at github.com/slayer8366/E-GD-Philosophy/issues (the "Feedback for Clio" form), or tell your operator. Clio brings each piece of feedback, quoted as written, with a recommendation, to E-GD's operator, who decides what changes.
