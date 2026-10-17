@@ -2766,3 +2766,41 @@ Observed, not asked:
 **Deviations:** Check 70 was added beyond 64 to 69. No existing RECORD.md or REGISTER.md entry was edited.
 
 ---
+
+**Kind:** dispatch-note
+
+**ID:** 2026-10-17-16
+
+**Timestamp:** 2026-10-17T10:39:37Z
+
+**Dispatch-file:** preserved/2026-10-17-16.md
+
+**Type:** Text handed to Forager's planner through the operator. The curator writes nothing in Forager's repository (profiles/curator.md, "The role").
+
+**Outcome:** Approved and sent by the operator: "Good to go as written. Sending now".
+
+**Report:** The text tells Forager's planner what E-GD's checker now does:
+- merges are walked by PROTOCOL rule 13;
+- header lines count as edits;
+- a past violation is accepted with an Accepts-violation line.
+It proposes a decision entry accepting the nine violations the history walk reports on Forager's origin/records-after-173 at 8ef027ca, each with a reason taken from its own commit, for the planner to write on the owner's word in its own window. The violations, the commit messages quoted, and the count of 1,334 entry-format errors (895 intents missing required fields) were read at 8ef027ca, in a shared throwaway clone that was deleted afterwards. dc4ef1c1 is left out, being on pre-main only, with a note to add it after pre-main is merged into records-after-173.
+
+**Notes:** Written by the curator, Clio, on branch planner-handoff-2026-10-17.
+
+---
+
+**Kind:** observation
+
+**ID:** 2026-10-17-17
+
+**Timestamp:** 2026-10-17T10:39:37Z
+
+**Observed:** The operator, 2026-10-17, verbatim: "Yes the Nes Issue does show Feedback for Clio". The operator was answering whether GitHub's New issue page offers the "Feedback for Clio" form (.github/ISSUE_TEMPLATE/feedback-for-clio.yml, on Test-1 since 2212af2).
+
+**Inferred:** Nothing. This is the operator's own observation, and settles what 2026-10-17-10 listed as inferred and 2026-10-17-13 as could not determine.
+
+**Not checked:** The page itself; the curator could not see it without logging in.
+
+**Notes:** Written by the curator, Clio, on branch planner-handoff-2026-10-17.
+
+---
