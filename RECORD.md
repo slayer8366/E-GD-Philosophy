@@ -1970,3 +1970,38 @@ Quotes the rule will use, each found verbatim in its entry:
 **Abort conditions:** A quote not found verbatim in its cited entry. A check failing.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-24
+
+**Timestamp:** 2026-10-17T05:15:55Z
+
+**Closes:** 2026-10-16-23
+
+**Outcome:** completed
+
+**Observed:** Done on branch release-gate-2026-10-16, pushed, after the intent (4cecd8a):
+
+- PROTOCOL.md gains rule 23 (84393cf); the protocol holds 23 numbered rules.
+- trials/forager-2026-10-16.md gains a section on Forager's production gate and a row in its lessons table (ad85fd1).
+
+The two framework documents are cited at their Forager source, not copied.
+
+Confirmed against inferred:
+
+- Each of rule 23's five quotes was found verbatim in the Forager record entry it cites, by script, before commit.
+- The rest of the rule follows the framework document and its addendum, read at Forager's 830638c3, and follows the addendum where the two differ.
+- That rule 23 is rule 11 applied at release time is the curator's reading, and is stated as such in the rule.
+
+Could not determine: none.
+
+Premises that were wrong. The proposal said the first audit "caught two gaps in the planner's documents", in the addendum's word. The record entry it cites, -1132, calls them "two notes on the documents, neither blocking". The rule and the trial section use -1132's words.
+
+Decided beyond scope: the ordering and headings inside rule 23, and leaving out a product name the owner used when quoting -1085.
+
+Observed, not asked: the framework documents sit in Forager's prompts/preserved/, named as dispatches, though they are documents written for E-GD. Where they belong is Forager's to decide.
+
+**Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
+
+---
