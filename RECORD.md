@@ -1664,3 +1664,126 @@ Out of scope:
 **Abort conditions:** A check failing. A figure that does not match its source when re-read before commit.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-18
+
+**Timestamp:** 2026-10-17T02:10:28Z
+
+**Closes:** 2026-10-16-17
+
+**Outcome:** completed
+
+**Observed:** Done on branch monthly-layout-2026-10-16, pushed, after the intent (3735a0f):
+
+- RECORDING.md gains "Layout: one file per month".
+- specs/2026-10-16-records-lookup.md reads Forager's RECORD.md or its monthly files, and next-id reads across every month. 598 words.
+
+For the Forager planner, handed to the operator; nothing was written in Forager. The revised RECORD.md index text supersedes the header text handed over at 2026-10-16-08, if that text has not yet been placed:
+
+    # RECORD.md
+    
+    Forager's record of dispatched work, decisions and what happened, kept in one
+    file per month under records/: records/YYYY-MM.md, by the month of each
+    entry's Timestamp in UTC. This file is the index. IDs carry on as one running
+    sequence across the months, so the next free ID is read from every monthly
+    file, not only the current one.
+    
+    Each piece of work opens with an intent entry, written before anything is
+    built, stating what will change, where the change stops, what it is expected
+    to do, and when it counts as finished or abandoned. It closes with exactly one
+    closing entry: a terminal, or an outcome that carries Closes. Twelve entry
+    types are in use: intent, terminal, continuation, decision, outcome,
+    observation, finding, device-note, correction, merge, dispatch-note and
+    handoff. Every entry carries its Kind, its ID and a Timestamp read from the
+    clock, and ends by saying who wrote it and on which branch. A decision quotes
+    the owner verbatim and is recorded once, after any clarifying, not once for
+    every re-ask.
+    
+    The monthly files are append-only. Nothing already committed is edited or
+    removed; a correction is a new entry that points at the one it corrects. New
+    entries go in the file for their Timestamp's month. On <date>, at the owner's
+    word, the single RECORD.md was split into the monthly files below and this
+    header rewritten; entry <ID> records the split, the commit before it and the
+    counts, and quotes the header it replaced. That is the one exception to
+    append-only.
+    
+    What makes an entry well formed is defined in E-GD's RECORDING.md
+    (github.com/slayer8366/E-GD-Philosophy, branch Test-1), which was written
+    from this record's own practice. The check_record.py and check_prompts.py
+    this header used to name were removed from this repository on 2026-09-27,
+    with the hooks (docs/audits/2026-09-27-kit-hooks-disabled.md). E-GD's
+    check_record.py does not yet read monthly files or this record's IDs, so
+    entries here are checked by reading. The existing records in docs/audits/
+    stay where they are and are not migrated into this store;
+    docs/audits/README.md indexes them.
+    
+    Design: docs/process/accountability-design.md. Method: RECORDING.md in E-GD.
+    
+    ## Monthly files
+    
+    | File | First entry | Last entry |
+    |---|---|---|
+    | records/2026-09.md | <first ID> | <last ID> |
+    | records/2026-10.md | <first ID> | (current) |
+
+The monthly file header, shown here for October:
+
+    # Forager record, 2026-10
+    
+    Entries whose Timestamp falls in October 2026 (UTC). Part of the record
+    indexed by RECORD.md. Append-only.
+    
+    ## Entries
+    
+    ---
+
+The split steps:
+
+    1. Fetch. Merge origin/pre-main into records-after-173 (a merge, never a
+       rebase; keep every row). pre-main's dc4ef1c1 replaced 2 lines of
+       RECORD.md that the records branch does not have; reconcile them before
+       anything else, so the split starts from one file.
+    2. Note the commit and RECORD.md's entry count before the split.
+    3. Cut RECORD.md at the first entry whose Timestamp falls in October 2026.
+       Entries before it go to records/2026-09.md, it and the rest to
+       records/2026-10.md, each under the monthly header (month name changed
+       for September). The 43 undated early dispatch notes all lie before the
+       cut, in September.
+    4. Replace RECORD.md with the index text, filling <date>, <ID> and the
+       first and last IDs.
+    5. Verify, and say how in the entry: the two files' entry counts sum to
+       the count in step 2; the two files' entries, joined in order, equal the
+       entries of RECORD.md at the step-2 commit byte for byte; no ID appears
+       twice.
+    6. Write the entry recording the split in records/2026-10.md: the owner's
+       words, the commit before the split, the counts, the old header quoted
+       in full, and that append-only for the single RECORD.md is lifted this
+       once, at the owner's word, as no precedent. Take its ID after
+       fetching, as the next free across both files.
+    7. From then on, each new entry goes in the file for its Timestamp's month.
+
+Confirmed against inferred. These were all read from Forager at f09ff09c, 462bb8ba and 84804be3, by script:
+
+- the month counts, the 43 undated entries, the ID prefixes and the monotonic file order;
+- the 10 cross-month links;
+- the two branches' divergence: dc4ef1c1 on pre-main; 0bda73e8 and fe3f3ae3 on the records branch.
+
+That merging pre-main into the records branch will conflict exactly on dc4ef1c1's 2 lines is inferred, not run.
+
+Could not determine. Whether the header text handed over at 2026-10-16-08 has already been placed in Forager. This entry's index text supersedes it either way.
+
+Premises that were wrong: none.
+
+Decided beyond scope:
+
+- The monthly header's wording.
+- That the split's own entry goes in records/2026-10.md.
+- That the 43 undated entries stay in September by position. They lie before the cut, as file order shows.
+
+Observed, not asked: the records branch's RECORD.md has not been append-only since its fork from pre-main (0bda73e8, fe3f3ae3). Both were owner-directed removals, recorded in Forager.
+
+**Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
+
+---
