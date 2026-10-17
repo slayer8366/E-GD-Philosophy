@@ -48,6 +48,7 @@ These parts are fixed, and no config changes them:
 - Entries are separated by lines that are exactly `---`.
 - Each field is a line starting `**Label:**`. Its value runs to the next such line, so a value can span several lines. Prose inside an entry must not start a line with `**Something:**`.
 - Every entry has a `Kind` and an `ID`. When monthly files are used, an entry's `Timestamp` must start with the month of the file it is in.
+- The header above `## Entries` is part of the file. The append-only checks cover it, so a changed header line is reported like any other edit.
 
 A two-entry record in the default format:
 
@@ -113,6 +114,24 @@ Each rule, with the config key that shapes it:
 - **Append-only, uncommitted changes.** The record file in the working tree must begin with exactly what is committed, so only additions are allowed.
 - **Append-only, history.** Every commit that changed a record file, on every branch merged into the one checked, must begin with its parent's version, byte for byte. At a merge, the record must be the merge base's record followed by each branch's additions, whole, in any order. Nothing may be removed or changed, and no entry may be written in the merge itself (PROTOCOL rule 13). A violation names its commit, and the walk goes on to report the rest.
 - **Monthly files** (`monthly_dir`). Monthly files named `YYYY-MM.md` in that folder are read after the record file, as one record. When they exist and the record file holds no entries, the record file is treated as the index and is not append-checked.
+- **Accepted violations** (`accepts_field`). A history-walk violation whose commit an entry names in an `Accepts-violation` line, with a reason, is listed as accepted and does not fail. See "Accepting a past violation" below.
+
+## Accepting a past violation
+
+History is never rewritten, so a committed edit, a removal or a bad merge fails the history walk on every run. When the record's owner decides to accept one:
+
+1. Take the commit from the checker's message. Each violation names its commit.
+2. Append an entry, a decision for example, quoting the owner's words, with one line per accepted commit: the hash (7 or more hex characters), then the reason.
+
+```
+**Accepts-violation:**
+    0bda73e8 an entry removed at the owner's instruction
+    bebeb573 an entry written inside a merge, kept as it was
+```
+
+3. Commit it. The checker then lists those violations as accepted, with the reason and the entry, and passes the history walk if nothing else is wrong.
+
+The checker still fails on any violation nobody accepted. It also fails on an acceptance naming a commit with no violation (a mistyped hash, usually), on one matching more than one violating commit, and on a line with no reason. Only the history walk accepts; an uncommitted change is fixed before it is committed. Accepting a violation is the owner's decision, never an agent's (RECORDING.md, "Accepting a past violation").
 
 ## Config reference
 
@@ -135,6 +154,7 @@ Each rule, with the config key that shapes it:
 | `terminal_outcomes` | completed, partial, superseded, abandoned | Each outcome's `required`, `forbidden` and `names_intent` fields, or `null` to leave outcomes unchecked. |
 | `sentinels` | `withheld` (pending), `not authored` (permanent) | An object with `values`, `fields`, `outcome_field` and `supplied_field`, or `null` for no sentinels. |
 | `backward_links` | `{"Continues": "first", "Corrects": "all"}` | Link fields that must point backwards, and how. |
+| `accepts_field` | `"Accepts-violation"` | The field that accepts a past history-walk violation, or `null` to turn acceptance off. |
 | `prompts_dir` | `"prompts"` | check_prompts.py: the folder of stored prompts. |
 | `provenance_dirs` | `["preserved", "recovered"]` | check_prompts.py: the folders inside it, one per way a prompt was stored. A file outside them fails. |
 | `dispatch_field` | `"Dispatch-file"` | check_prompts.py: the field naming an entry's prompt, relative to `prompts_dir`. |
@@ -193,6 +213,7 @@ With `--json`, check_record.py prints one object:
 | `sentinels` | Each intent holding a sentinel: `id`, `field`, `sentinel`, `status` (pending or resolved). |
 | `checks` | One object per check: `check`, `file`, `ok`, `vacuous`, `message`. |
 | `vacuous` | True when no record file was found, or no entries were read from one, so the entry rules checked nothing. A `note` then says why. |
+| `accepted` | Each accepted history-walk violation: `file`, `commit`, `entry`, `reason` and `violation`. |
 
 check_prompts.py's object carries `ok`, `exit`, `repo`, `config`, `counts` (prompts per provenance folder), `errors` and `report`. When the config is refused, both print `ok`, `exit` (2), `repo` and `errors`.
 
@@ -255,7 +276,7 @@ python3 records_lookup.py search login --config lookup.json --repo app=/path/to/
 
 ## Known limits
 
-- **A past violation keeps failing.** History is never rewritten, so a committed edit, a removal or a bad merge is reported on every run from then on. There is no list of acknowledged violations yet.
+- **A past violation keeps failing until it is accepted.** History is never rewritten, so a committed edit, a removal or a bad merge is reported on every run until an entry accepts it (see "Accepting a past violation").
 - **At a merge, each branch's additions must stay whole.** Entries from two branches shuffled together are reported, even when every row was kept.
 - **`## Entries` is found by plain text search,** so prose naming the heading above the real one produces a false entry.
 - **The `Kind`, `ID` and `Timestamp` names are fixed.**
