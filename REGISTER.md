@@ -7630,3 +7630,48 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** revert_runs_merge_walk_2026_10_17_11
+
+**Timestamp:** 2026-10-17T09:42:02Z
+
+**Expected failure mode:** A control (no edit) fails nothing; each of 7 one-line sabotages on a temporary copy of the committed check_record.py fails its own checks among 57-63, each message specific to its edit; the repository file equals the committed copy at start and end.
+
+**Command:** python3 /tmp/egd-scripts/revert_runner8.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repo file equals committed copy at start: True
+    [control] CONTROL CLEAN: expected []; failed 0 of 63; others: []
+    [walk_uses_merges] BITES: expected ['check57_merge_keeping_both_branches_passes', 'check58_merge_editing_an_entry_fails', 'check59_entry_written_inside_a_merge_fails', 'check60_merge_dropping_a_branch_entry_fails', 'check61_side_branch_edit_reported']; failed 6 of 63; others: ['check63_branch_dropped_by_a_merge_still_walked']
+        check57_merge_keeping_both_branches_passes: AssertionError('a merge keeping both branches\' entries whole failed the walk: ["history walk, RECORD.md: commit 642b1396daeba502aad3c5c449215e1e44b6c098 (\'merge side\') touching RECORD.md has 2 pare
+        check58_merge_editing_an_entry_fails: AssertionError('a merge that edited a branch\'s entry was not reported against the merge: ["history walk, RECORD.md: commit 32e63fbf8968a3d7a60483d9e891d2140573dee3 (\'merge side\') touching RECORD.md
+        check59_entry_written_inside_a_merge_fails: AssertionError('an entry written inside the merge was not reported (rule 13): ["history walk, RECORD.md: commit ad937508086216d504b11d357428da425a261c2b (\'merge side\') touching RECORD.md has 2 paren
+        check60_merge_dropping_a_branch_entry_fails: AssertionError("a merge that kept one branch's record and dropped the other's entry was not reported: []")
+        check61_side_branch_edit_reported: AssertionError('an edit committed on a side branch, then left out by the merge, was not reported: ["history walk, RECORD.md: commit f6ede6bac9c2fe3ce92f74f3b398e3f2b59b4dfc (\'merge side\') touching R
+    [full_history] BITES: expected ['check63_branch_dropped_by_a_merge_still_walked']; failed 1 of 63; others: []
+        check63_branch_dropped_by_a_merge_still_walked: AssertionError('a side branch\'s committed edit went unwalked because the merge kept the other branch\'s record: ["history walk, RECORD.md: merge 0ee1bf544e (\'merge side\'): the record on parent(s) d
+    [merge_adds_nothing] BITES: expected ['check59_entry_written_inside_a_merge_fails']; failed 1 of 63; others: []
+        check59_entry_written_inside_a_merge_fails: AssertionError('an entry written inside the merge was not reported (rule 13): []')
+    [any_order] BITES: expected ['check57_merge_keeping_both_branches_passes']; failed 1 of 63; others: []
+        check57_merge_keeping_both_branches_passes: AssertionError('a merge keeping both branches\' entries whole failed the walk: ["history walk, RECORD.md: merge 581c5fb4d6 (\'merge side\'): the record is not the merge base\'s (d8e2153b56) followed b
+    [fast_path_needs_base] BITES: expected ['check60_merge_dropping_a_branch_entry_fails']; failed 1 of 63; others: []
+        check60_merge_dropping_a_branch_entry_fails: AssertionError("a merge that kept one branch's record and dropped the other's entry was not reported: []")
+    [same_on_every_side] BITES: expected ['check60_merge_dropping_a_branch_entry_fails']; failed 1 of 63; others: []
+        check60_merge_dropping_a_branch_entry_fails: AssertionError("a merge that kept one branch's record and dropped the other's entry was not reported: []")
+    [prefix_of_parent] BITES: expected ['check61_side_branch_edit_reported', 'check62_linear_edit_still_reported']; failed 4 of 63; others: ['check46_monthly_file_history_walked', 'check63_branch_dropped_by_a_merge_still_walked']
+        check61_side_branch_edit_reported: AssertionError('an edit committed on a side branch, then left out by the merge, was not reported: ["history walk, RECORD.md: merge acd41eb8d5 (\'merge side\'): the record on parent(s) 75050359f8 does 
+        check62_linear_edit_still_reported: AssertionError('a linear edit of a committed line was not reported: []')
+    repo file equals committed copy at end: True
+    runs: 8, not biting, not run or control failed: 0
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+

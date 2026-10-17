@@ -2586,3 +2586,22 @@ On Forager, one merge's record differs from both of its parents: bebeb573, on or
 **Abort conditions:** An existing check failing. A new check not failing first for its stated reason. Rule 13's two lines cannot both be enforced by one walk without rejecting a merge they allow.
 
 ---
+
+**Kind:** correction
+
+**ID:** 2026-10-17-12
+
+**Timestamp:** 2026-10-17T09:42:10Z
+
+**Corrects:** 2026-10-16-01 and 2026-10-16-02, on what stops the history walk
+
+**What was wrong:** Both state the walk's limit more broadly than it behaved:
+
+    2026-10-16-01, Finish line: "a pull request opened into Test-1 that tells the operator a merge commit would trip check_record.py's history walk, so the merge should be a fast-forward"
+    2026-10-16-02: "A merge commit into Test-1 touching RECORD.md would stop check_record.py's history walk (MergeCommitEncountered), so the pull request asks for a fast-forward."
+
+**What it corrects:** At the time, only a merge whose record differed from every parent stopped the walk. In practice that was a merge where both branches had changed the record. Git's history of a file skips a merge that takes the file unchanged from one parent, so such a merge passed (tested with real two-parent merges, 2026-10-17-06). Since 2026-10-17-11 the walk handles merges by PROTOCOL rule 13. For the merge practice, cite profiles/curator.md, "Merge only on the operator's go", as corrected on the operator's word.
+
+**Notes:** Written by the curator, Clio, on branch merge-walk-2026-10-17, on the operator's "yes go ahead and correct it" (prompts/preserved/2026-10-17-11.md). The profile line that carried the same claim is corrected in this branch.
+
+---
