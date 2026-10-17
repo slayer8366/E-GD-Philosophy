@@ -1495,3 +1495,43 @@ Observed, not asked: no Forager branch holds all of its record sources at their 
 **Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-13
+
+**Timestamp:** 2026-10-17T01:54:45Z
+
+**Title:** Fold the operator's answers into the records lookup spec, record the reading of forager-forecast's START_HERE.md, and merge the approved spec
+
+**Dispatch-file:** preserved/2026-10-16-13.md
+
+**Change:** specs/2026-10-16-records-lookup.md changes as follows:
+
+- Open questions 1 and 2 become decisions: the tool lives in E-GD and is run against each repository; next-id only reports, with no reservation.
+- Open question 3 becomes a pending item. It states the curator's reading of forager-forecast's START_HERE.md and the recommendation, and awaits the operator's decision.
+- The spec stays under 600 words.
+
+On the operator's "Approve, merge the spec", Test-1 is then fast-forwarded to this branch. Building waits for a separate go.
+
+**Scope boundary:** specs/2026-10-16-records-lookup.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-13.md, on branch records-lookup-spec-2026-10-16. Out of scope: any code; any change in Forager or forager-forecast.
+
+**Baseline:** Branch records-lookup-spec-2026-10-16 at 44865cf; Test-1 at 6ceefbf.
+
+forager-forecast's docs/planning/START_HERE.md at b9127e5, read for this entry: 101 lines, in five sections:
+
+- "Where things stand": maintained prose. Its first line reads "As of 2026-09-18; date and next-up line corrected 2026-10-09", and the section still says "Planning is complete enough to start".
+- "Fixed terms", "Working rules" and "How we work": maintained prose.
+- "Session log": a table of Date, What was done and What is next, with 29 dated rows from 2026-09-18 to 2026-10-15.
+
+forager-forecast's docs/audits/README.md tells every session to append a session-log row and never rewrite the table. 29 commits have touched the file.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** The spec stays under 600 words with seven requirements, each with its check. check_record.py passes at 38 entries after the terminal, none unterminated; --render-check 38 of 38; check_prompts.py at 14 entries, preserved=13; check_glossary.py 45/44/45. After the fast-forward, Test-1 equals this branch's head, with no merge commit since 35e39d1.
+
+**Finish line:** The spec amended, the terminal written and checks run through check_register.py, the branch pushed, Test-1 fast-forwarded and confirmed on the remote, PR #5 shown as merged.
+
+**Abort conditions:** Test-1 has moved off 6ceefbf, so a fast-forward is impossible: stop and report. Any check failing.
+
+---
