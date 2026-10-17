@@ -7101,3 +7101,213 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** merge_walk_tests_first_2026_10_17_11
+
+**Timestamp:** 2026-10-17T09:31:53Z
+
+**Expected failure mode:** Tests-first: exit 1; checks 57, 58, 59 and 61 fail because the walk stops at the merge (MergeCommitEncountered message), check 60 fails because the walk never sees the merge that dropped an entry (no history error at all); check 62, a guard, passes; 1-56 pass.
+
+**Command:** python3 check_record.py --render-check
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    check_record.py --render-check
+    
+    [check1_well_formed_record_passes] expected failure mode if broken: N/A -- positive case, validated by the negative checks below catching sabotages of the same fixture
+    [check1_well_formed_record_passes] PASS
+    
+    [check2_missing_field_names_fault] expected failure mode if broken: an entry missing a required field is accepted, or the error does not name both the entry and the missing field
+    [check2_missing_field_names_fault] PASS
+    
+    [check3_missing_restored_prediction_field_caught] expected failure mode if broken: an intent entry missing the restored 'Prediction (outcome — planner)' field is accepted, or the error does not name it
+    [check3_missing_restored_prediction_field_caught] PASS
+    
+    [check4_closes_resolution_catches_dangling_reference] expected failure mode if broken: a terminal entry's Closes field naming a nonexistent intent ID is accepted silently
+    [check4_closes_resolution_catches_dangling_reference] PASS
+    
+    [check5_duplicate_id_caught] expected failure mode if broken: two entries sharing the same ID are accepted, or the error does not name the colliding ID
+    [check5_duplicate_id_caught] PASS
+    
+    [check6_duplicate_terminal_names_both_closers] expected failure mode if broken: one intent closed by two terminal entries is accepted, or the error does not name both closing entries
+    [check6_duplicate_terminal_names_both_closers] PASS
+    
+    [check7_withheld_sentinel_reported_pending] expected failure mode if broken: a 'withheld' outcome-prediction sentinel is either treated as an error or not surfaced in sentinel_reports as pending
+    [check7_withheld_sentinel_reported_pending] PASS
+    
+    [check8_withheld_sentinel_resolved_by_terminal] expected failure mode if broken: a terminal entry supplying the outcome for an intent whose prediction was legitimately 'withheld' is not recognized as a resolution
+    [check8_withheld_sentinel_resolved_by_terminal] PASS
+    
+    [check9_not_authored_plus_supplied_is_fabrication] expected failure mode if broken: an intent whose outcome prediction is permanently 'not authored' is not flagged when a terminal entry later supplies a value anyway
+    [check9_not_authored_plus_supplied_is_fabrication] PASS
+    
+    [check10_sentinel_forbidden_in_terminal_entry] expected failure mode if broken: a terminal entry carrying a sentinel value in any field is accepted, or the error does not name the field and value
+    [check10_sentinel_forbidden_in_terminal_entry] PASS
+    
+    [check11_working_tree_append_only_catches_modified_line] expected failure mode if broken: modifying an existing, already-committed line in RECORD.md is not caught, or the failure does not name the changed line
+    [check11_working_tree_append_only_catches_modified_line] PASS
+    
+    [check12_working_tree_append_only_vacuous_before_first_commit] expected failure mode if broken: a RECORD.md that exists in the working tree but has never been committed is reported as a violation, or the vacuous case is not flagged as vacuous
+    [check12_working_tree_append_only_vacuous_before_first_commit] PASS
+    
+    [check13_history_walk_real_repo] expected failure mode if broken: a genuinely append-only two-commit history is reported as violating, or the wrong commit count is walked
+    [check13_history_walk_real_repo] PASS
+    
+    [check14_history_walk_vacuous_single_commit] expected failure mode if broken: a RECORD.md history with only one committed version performs a comparison anyway, or is not reported vacuous
+    [check14_history_walk_vacuous_single_commit] PASS
+    
+    [check15_history_walk_catches_removed_line] expected failure mode if broken: a commit that removed an existing line from RECORD.md's history is accepted by the walk
+    [check15_history_walk_catches_removed_line] PASS
+    
+    [check16_merge_commit_stops_the_walk] expected failure mode if broken: a merge commit touching RECORD.md is silently walked (wrong parent guessed) instead of raising MergeCommitEncountered
+    [check16_merge_commit_stops_the_walk] PASS
+    
+    [check17_superseded_by_vacuous_when_none_declared] expected failure mode if broken: a record with no terminal entry declaring Outcome: superseded is not reported vacuous, or is reported as a failure
+    [check17_superseded_by_vacuous_when_none_declared] PASS
+    
+    [check18_superseded_by_catches_dangling_reference] expected failure mode if broken: a terminal entry's Superseded-by field naming a nonexistent intent ID is accepted
+    [check18_superseded_by_catches_dangling_reference] PASS
+    
+    [check19_all_twelve_kinds_accepted] expected failure mode if broken: a record using every RECORDING.md entry type with minimal fields is rejected
+    [check19_all_twelve_kinds_accepted] PASS
+    
+    [check20_unknown_kind_still_rejected] expected failure mode if broken: a kind outside the twelve is accepted (guard: passes before and after the change by design, so it is not evidence for the change)
+    [check20_unknown_kind_still_rejected] PASS
+    
+    [check21_new_kind_missing_notes_named] expected failure mode if broken: an entry of a new type without its Notes line is accepted
+    [check21_new_kind_missing_notes_named] PASS
+    
+    [check22_continuation_missing_continues_named] expected failure mode if broken: a continuation with no Continues field is accepted
+    [check22_continuation_missing_continues_named] PASS
+    
+    [check23_continuation_of_closed_intent_caught] expected failure mode if broken: a continuation naming an intent already closed earlier in the file is accepted
+    [check23_continuation_of_closed_intent_caught] PASS
+    
+    [check24_continuation_of_non_intent_caught] expected failure mode if broken: a continuation naming an entry that is not an intent is accepted
+    [check24_continuation_of_non_intent_caught] PASS
+    
+    [check25_continuation_forbidden_field_caught] expected failure mode if broken: a continuation carrying a closing field (Outcome) is accepted
+    [check25_continuation_forbidden_field_caught] PASS
+    
+    [check26_outcome_with_closes_closes_intent] expected failure mode if broken: an outcome carrying Closes is rejected, or leaves its intent unterminated
+    [check26_outcome_with_closes_closes_intent] PASS
+    
+    [check27_terminal_and_outcome_double_close_caught] expected failure mode if broken: an intent closed by both a terminal and an outcome passes the closed-once check
+    [check27_terminal_and_outcome_double_close_caught] PASS
+    
+    [check28_outcome_needs_continues_or_closes] expected failure mode if broken: an outcome with neither Continues nor Closes is accepted
+    [check28_outcome_needs_continues_or_closes] PASS
+    
+    [check29_correction_dangling_reference_caught] expected failure mode if broken: a correction whose Corrects names no existing entry is accepted
+    [check29_correction_dangling_reference_caught] PASS
+    
+    [check30_closes_on_other_kind_caught] expected failure mode if broken: a type other than terminal or outcome carrying Closes is accepted
+    [check30_closes_on_other_kind_caught] PASS
+    
+    [check31_unknown_terminal_outcome_caught] expected failure mode if broken: a terminal Outcome outside completed, partial, superseded, abandoned is accepted
+    [check31_unknown_terminal_outcome_caught] PASS
+    
+    [check32_partial_requires_deferred] expected failure mode if broken: a partial terminal without a Deferred field is accepted
+    [check32_partial_requires_deferred] PASS
+    
+    [check33_completed_with_deferred_caught] expected failure mode if broken: a completed terminal carrying Deferred is accepted
+    [check33_completed_with_deferred_caught] PASS
+    
+    [check34_merge_requires_backup] expected failure mode if broken: a merge entry that names no backup is accepted
+    [check34_merge_requires_backup] PASS
+    
+    [check35_dispatch_note_requires_dispatch_reference] expected failure mode if broken: a dispatch-note naming neither Dispatch-file nor Dispatch is accepted
+    [check35_dispatch_note_requires_dispatch_reference] PASS
+    
+    [check36_continues_dangling_on_other_kind_caught] expected failure mode if broken: a Continues on a decision naming no existing entry is accepted
+    [check36_continues_dangling_on_other_kind_caught] PASS
+    
+    [check37_every_new_kind_requires_notes] expected failure mode if broken: some new entry type is accepted without its who-wrote-it Notes line
+    [check37_every_new_kind_requires_notes] PASS
+    
+    [check38_link_fields_required] expected failure mode if broken: a finding without Continues, a correction without Corrects, or a merge without Merge-commit is accepted
+    [check38_link_fields_required] PASS
+    
+    [check39_four_digit_id_number_accepted] expected failure mode if broken: an ID like 2026-09-28-1106 (Forager's running sequence) is rejected as malformed
+    [check39_four_digit_id_number_accepted] PASS
+    
+    [check40_one_digit_id_number_still_rejected] expected failure mode if broken: a one-digit ID number is accepted (guard: passes before and after by design)
+    [check40_one_digit_id_number_still_rejected] PASS
+    
+    [check41_monthly_files_read_as_one_record] expected failure mode if broken: records/YYYY-MM.md files are not read, or not read as one record across months
+    [check41_monthly_files_read_as_one_record] PASS
+    
+    [check42_duplicate_id_across_months_caught] expected failure mode if broken: the same ID in two monthly files is accepted
+    [check42_duplicate_id_across_months_caught] PASS
+    
+    [check43_entry_in_wrong_month_caught] expected failure mode if broken: an entry whose Timestamp month differs from its monthly file's month is accepted
+    [check43_entry_in_wrong_month_caught] PASS
+    
+    [check44_monthly_file_append_only_checked] expected failure mode if broken: an edit to a committed line of a monthly file passes the working-tree check
+    [check44_monthly_file_append_only_checked] PASS
+    
+    [check45_index_record_md_reported_not_checked] expected failure mode if broken: with monthly files and an entry-less RECORD.md, RECORD.md is not reported as the index
+    [check45_index_record_md_reported_not_checked] PASS
+    
+    [check46_monthly_file_history_walked] expected failure mode if broken: a line removed from a monthly file in a committed change passes the history walk
+    [check46_monthly_file_history_walked] PASS
+    
+    [check47_repository_argument_is_the_one_checked] expected failure mode if broken: the checker checks its own folder, not the repository it is given
+    [check47_repository_argument_is_the_one_checked] PASS
+    
+    [check48_records_json_in_repository_is_read] expected failure mode if broken: a records.json in the checked repository is ignored
+    [check48_records_json_in_repository_is_read] PASS
+    
+    [check49_config_sets_the_entry_types] expected failure mode if broken: a config's own entry types and required fields are not applied
+    [check49_config_sets_the_entry_types] PASS
+    
+    [check50_config_sets_the_id_pattern] expected failure mode if broken: a config's ID pattern is not applied
+    [check50_config_sets_the_id_pattern] PASS
+    
+    [check51_invalid_config_refused_by_name] expected failure mode if broken: an unknown key or an uncompilable regex in the config is accepted or not named
+    [check51_invalid_config_refused_by_name] PASS
+    
+    [check52_json_output] expected failure mode if broken: --json does not print one JSON object carrying ok, entries and errors
+    [check52_json_output] PASS
+    
+    [check53_print_config_round_trips] expected failure mode if broken: --print-config does not print the default, or the printed default is not a valid config
+    [check53_print_config_round_trips] PASS
+    
+    [check54_monthly_dir_configurable] expected failure mode if broken: a configured monthly folder is not read, or null does not turn monthly files off
+    [check54_monthly_dir_configurable] PASS
+    
+    [check55_terminal_outcomes_configurable] expected failure mode if broken: a config's terminal outcomes are not applied
+    [check55_terminal_outcomes_configurable] PASS
+    
+    [check56_zero_entries_marked_vacuous] expected failure mode if broken: a record file that yields no entries passes without being marked vacuous
+    [check56_zero_entries_marked_vacuous] PASS
+    
+    [check57_merge_keeping_both_branches_passes] expected failure mode if broken: a merge whose record is the base followed by each branch's additions, in either order, fails
+    [check57_merge_keeping_both_branches_passes] FAIL: AssertionError('a merge keeping both branches\' entries whole failed the walk: ["history walk, RECORD.md: commit f9f8a4b78de823f66b698e02de05891a17dec02b (\'merge side\') touching RECORD.md has 2 parents; merge commits are out of scope for this walk"]')
+    
+    [check58_merge_editing_an_entry_fails] expected failure mode if broken: a merge that changes a line one branch committed passes, or fails without naming the merge
+    [check58_merge_editing_an_entry_fails] FAIL: AssertionError('a merge that edited a branch\'s entry was not reported against the merge: ["history walk, RECORD.md: commit 5d08bad0100563a33d5131867b5c0db1f84c0417 (\'merge side\') touching RECORD.md has 2 parents; merge commits are out of scope for this walk"]')
+    
+    [check59_entry_written_inside_a_merge_fails] expected failure mode if broken: a merge that adds an entry of its own passes, against PROTOCOL rule 13
+    [check59_entry_written_inside_a_merge_fails] FAIL: AssertionError('an entry written inside the merge was not reported (rule 13): ["history walk, RECORD.md: commit e79b2845ede977633f349d08a19d1894df814495 (\'merge side\') touching RECORD.md has 2 parents; merge commits are out of scope for this walk"]')
+    
+    [check60_merge_dropping_a_branch_entry_fails] expected failure mode if broken: a merge that discards an entry committed on the other branch passes (git's default history of the file hides such a merge)
+    [check60_merge_dropping_a_branch_entry_fails] FAIL: AssertionError("a merge that kept one branch's record and dropped the other's entry was not reported: []")
+    
+    [check61_side_branch_edit_reported] expected failure mode if broken: a committed edit on a merged-in branch goes unreported because the walk follows one parent
+    [check61_side_branch_edit_reported] FAIL: AssertionError('an edit committed on a side branch, then left out by the merge, was not reported: ["history walk, RECORD.md: commit fd28b17e026e1ab466909d1b61e849ef5a94d93b (\'merge side\') touching RECORD.md has 2 parents; merge commits are out of scope for this walk"]')
+    
+    [check62_linear_edit_still_reported] expected failure mode if broken: a committed line edited in linear history passes (guard: passes before and after by design)
+    [check62_linear_edit_still_reported] PASS
+    
+    FAIL: 5 of 62 checks failed: check57_merge_keeping_both_branches_passes, check58_merge_editing_an_entry_fails, check59_entry_written_inside_a_merge_fails, check60_merge_dropping_a_branch_entry_fails, check61_side_branch_edit_reported
+
+**Stderr:**
+
+    (nothing captured)
+

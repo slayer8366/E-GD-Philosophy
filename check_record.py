@@ -1970,8 +1970,127 @@ def render_check():
           "a record file that yields no entries passes without being marked vacuous",
           check56)
 
+    # ---- Checks 57-62: the history walk across merges (2026-10-17-11) ----
+    # Written before the walk handled merges. Each fixture holds a real
+    # two-parent merge, and each check runs through main(argv). PROTOCOL rule
+    # 13: "every row from both sides is kept"; "No record entry is written
+    # inside a merge commit".
+    MERGE_MSG = "each branch's additions"
+
+    def git_in(tmp, *a):
+        return subprocess.run(["git", "-C", str(tmp), "-c", "user.name=t", "-c",
+                               "user.email=t@example.invalid", *a], capture_output=True, text=True)
+
+    def block(id_):
+        return "\n" + ent("observation", id_) + "\n\n---\n"
+
+    BASE = _minimal_record(_minimal_intent("2026-01-01-01"))
+    A, B, C = block("2026-01-01-02"), block("2026-01-01-03"), block("2026-01-01-04")
+
+    def merge_repo(main_text, side_text, merged_text, side_first_edit=None):
+        """base on main; side branch writes side_text (optionally first a
+        commit with side_first_edit); main writes main_text (or an unrelated
+        file); a real --no-ff merge of side into main, resolved to merged_text.
+        Returns (repo, merge hash, side commit hashes)."""
+        tmp = Path(tempfile.mkdtemp())
+        git_in(tmp, "init", "-q", "-b", "main")
+        (tmp / RECORD_NAME).write_text(BASE)
+        git_in(tmp, "add", "-A"); git_in(tmp, "commit", "-qm", "base")
+        git_in(tmp, "checkout", "-qb", "side")
+        side_commits = []
+        for text in ([side_first_edit] if side_first_edit else []) + [side_text]:
+            (tmp / RECORD_NAME).write_text(text)
+            git_in(tmp, "commit", "-qam", "side")
+            side_commits.append(git_in(tmp, "rev-parse", "HEAD").stdout.strip())
+        git_in(tmp, "checkout", "-q", "main")
+        if main_text is not None:
+            (tmp / RECORD_NAME).write_text(main_text)
+            git_in(tmp, "commit", "-qam", "main adds")
+        else:
+            (tmp / "other.txt").write_text("o\n")
+            git_in(tmp, "add", "-A"); git_in(tmp, "commit", "-qm", "main other")
+        git_in(tmp, "merge", "-q", "--no-ff", "--no-commit", "side")
+        (tmp / RECORD_NAME).write_text(merged_text)
+        git_in(tmp, "add", "-A"); git_in(tmp, "commit", "-qm", "merge side")
+        parents = git_in(tmp, "log", "-1", "--format=%P").stdout.split()
+        assert len(parents) == 2, f"fixture is not a two-parent merge: {parents}"
+        return tmp, git_in(tmp, "rev-parse", "HEAD").stdout.strip(), side_commits
+
+    def walk_errors(tmp):
+        code, out = run_main([str(tmp), "--json"])
+        data = json.loads(out)
+        return data["ok"], [e for e in data["errors"] if e.startswith("history walk")]
+
+    def check57():
+        for merged in (BASE + A + B, BASE + B + A):
+            tmp, m, _ = merge_repo(BASE + A, BASE + B, merged)
+            ok, errs = walk_errors(tmp)
+            assert ok and not errs, f"a merge keeping both branches' entries whole failed the walk: {errs}"
+
+    check("check57_merge_keeping_both_branches_passes",
+          "a merge whose record is the base followed by each branch's additions, in either order, fails",
+          check57)
+
+    def check58():
+        edited = B.replace("Written by the test.", "Written by someone else.")
+        tmp, m, _ = merge_repo(BASE + A, BASE + B, BASE + A + edited)
+        ok, errs = walk_errors(tmp)
+        assert not ok and any(m[:10] in e and MERGE_MSG in e for e in errs), (
+            f"a merge that edited a branch's entry was not reported against the merge: {errs}")
+
+    check("check58_merge_editing_an_entry_fails",
+          "a merge that changes a line one branch committed passes, or fails without naming the merge",
+          check58)
+
+    def check59():
+        tmp, m, _ = merge_repo(BASE + A, BASE + B, BASE + A + B + C)
+        ok, errs = walk_errors(tmp)
+        assert not ok and any(m[:10] in e and MERGE_MSG in e for e in errs), (
+            f"an entry written inside the merge was not reported (rule 13): {errs}")
+
+    check("check59_entry_written_inside_a_merge_fails",
+          "a merge that adds an entry of its own passes, against PROTOCOL rule 13",
+          check59)
+
+    def check60():
+        tmp, m, _ = merge_repo(BASE + A, BASE + B, BASE + A)
+        ok, errs = walk_errors(tmp)
+        assert not ok and any(m[:10] in e and MERGE_MSG in e for e in errs), (
+            f"a merge that kept one branch's record and dropped the other's entry was not reported: {errs}")
+
+    check("check60_merge_dropping_a_branch_entry_fails",
+          "a merge that discards an entry committed on the other branch passes (git's default "
+          "history of the file hides such a merge)",
+          check60)
+
+    def check61():
+        edit = BASE.replace("**Title:** t", "**Title:** edited on the side branch")
+        tmp, m, side = merge_repo(BASE + A, edit + B, BASE + A + B, side_first_edit=edit)
+        ok, errs = walk_errors(tmp)
+        assert not ok and any(side[0][:10] in e and "diverges at line" in e for e in errs), (
+            f"an edit committed on a side branch, then left out by the merge, was not reported: {errs}")
+
+    check("check61_side_branch_edit_reported",
+          "a committed edit on a merged-in branch goes unreported because the walk follows one parent",
+          check61)
+
+    def check62():
+        tmp = repo_with({})
+        (tmp / RECORD_NAME).write_text(BASE)
+        git_in(tmp, "add", "-A"); git_in(tmp, "commit", "-qm", "one")
+        (tmp / RECORD_NAME).write_text(BASE.replace("**Title:** t", "**Title:** edited") + A)
+        git_in(tmp, "commit", "-qam", "two")
+        two = git_in(tmp, "rev-parse", "HEAD").stdout.strip()
+        ok, errs = walk_errors(tmp)
+        assert not ok and any(two[:10] in e and "diverges at line" in e for e in errs), (
+            f"a linear edit of a committed line was not reported: {errs}")
+
+    check("check62_linear_edit_still_reported",
+          "a committed line edited in linear history passes (guard: passes before and after by design)",
+          check62)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{56} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{62} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
