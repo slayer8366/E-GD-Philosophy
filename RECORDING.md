@@ -198,6 +198,16 @@ A record that grows large is kept as one file per month, `records/YYYY-MM.md`. `
 
 This repository's own record stays one file at its present size. Its checker reads only `RECORD.md` until it is updated to read monthly files, which is code, on its own go.
 
+## Accepting a past violation
+
+History is never rewritten, so a committed edit, removal or bad merge stays in the record's history, and the history check reports it on every run. Once the operator has accepted one, an entry says so, and the record can pass again. Added 2026-10-17 (RECORD.md 2026-10-17-14), on the operator's "Yes, build that" and the answer "In the record" (prompts/preserved/2026-10-17-14.md).
+
+- **The field.** `Accepts-violation`, with one line per commit: the commit's hash, 7 or more hex characters, then the reason. For example: `0bda73e8 RECORD -638 removed at the owner's instruction`.
+- **Who decides.** Accepting a violation is the operator's decision, and the entry quotes the operator's words, as any decision does. An agent never accepts one on its own.
+- **Why in the record.** The record is append-only, so an acceptance can never be quietly changed or removed later, and it sits beside the history it excuses.
+- **Headers count.** The header above `## Entries` is part of the file, so a changed header line is a violation like any other, accepted the same way. The operator, 2026-10-17, on whether header changes count as edits: "Yes, they should".
+- **Only committed history.** A change not yet committed is fixed before it is committed, never accepted.
+
 ## This repository's own record
 
 Since 2026-10-16 (RECORD.md 2026-10-16-07), this repository's check_record.py accepts all twelve types, with the minimal required fields the operator chose. Everything beyond these is checked by reading.
