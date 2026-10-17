@@ -32,6 +32,14 @@ The plan-forge plugin (`plan-forge/`) holds three more, which hand off to the sk
 | `breakdown` | splitting a spec into ordered, verifiable tasks | Intent-Driven Engineering; Complete Task Prompts |
 | `plan-review` | auditing a plan for unmade decisions, stale claims, untestable items, hidden scope | Early Flagging of Ambiguities; Sourced Claims; Complete Task Prompts |
 
+## Written here
+
+Unlike the skills above, these were written in this repository, not copied from the operator's account. Each names the record entry it came from.
+
+| Skill | Use it when | Carries out |
+|---|---|---|
+| `record-checking` | checking an append-only record on any repository, before citing it, committing to it or merging it; setting one up (RECORD.md 2026-10-17-05, with ADOPTING.md) | Immutable Append-Only History; Automated Boundary Enforcement; Severity of Checks (checking the checker on a copy); Explicit Failure Reporting (vacuous is not a pass) |
+
 **Flagged: `prior-art-before-interface` binds to no headword.** GLOSSARY.md's rule is that an action with no principle behind it is unjustified and must be flagged rather than forced into a row. This skill's premise is that an established convention is accumulated evidence from use, and departing from it is a decision to record with its reason. That is close to Document the Reasoning and Evidence-Based Feature Addition, and it is neither. It is kept, flagged, until the evidence for a principle of its own exists or the operator binds it.
 
 ## Example: a project-specific skill

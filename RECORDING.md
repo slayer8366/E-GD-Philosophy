@@ -229,6 +229,8 @@ Since 2026-10-17 (RECORD.md 2026-10-17-01), the checkers also read a record kept
 
 One limit remains: check_prompts.py accepts one prompt claimed by an intent and its terminal, but not by an intent and an outcome that closes it.
 
-Each rule above has a self-check in `--render-check`: checks 19 to 38 for the entry types, 39 to 46 for monthly files and IDs, and check_prompts.py's own p1 and p2. Revert runs disabling each rule in turn made its own check fail (REGISTER.md, 2026-10-16 and 2026-10-17).
+Since 2026-10-17 (RECORD.md 2026-10-17-05), the checkers run on any repository they are given, and a `records.json` there can reshape every rule in this section: the record's file names, its ID format, its entry types and their fields, and the closing, linking, outcome and sentinel rules. The rules above are the defaults, used when a repository has no config. ADOPTING.md explains how to adopt them.
+
+Each rule above has a self-check in `--render-check`: checks 19 to 38 for the entry types, 39 to 46 for monthly files and IDs, 47 to 56 for any-repository use and the config, and check_prompts.py's own p1 to p4. Revert runs disabling each rule in turn made its own check fail (REGISTER.md, 2026-10-16 and 2026-10-17).
 
 Forager kept all twelve types without a checker after 2026-09-27. Run later from copies, its old checkers reported 1,646 entry errors (Forager record 2026-09-28-544). Much of that figure is types the old checkers did not know, so it measures the gap between practice and checker, not only mistakes.
