@@ -229,5 +229,74 @@ def main():
     return 1
 
 
+def render_check():
+    """Self-tests, added 2026-10-17 (RECORD.md 2026-10-17-01); written
+    before monthly reading existed. Every fixture lives under
+    tempfile.mkdtemp()."""
+    import tempfile
+    print("check_prompts.py --render-check")
+    failures = []
+
+    def check(name, expect_fail_msg, fn):
+        print(f"\n[{name}] expected failure mode if broken: {expect_fail_msg}")
+        try:
+            fn()
+            print(f"[{name}] PASS")
+        except Exception as e:
+            print(f"[{name}] FAIL: {e!r}")
+            failures.append(name)
+
+    def intent(id_, dispatch, ts="2026-10-02T00:00:00Z"):
+        return "\n".join([
+            "**Kind:** intent", f"**ID:** {id_}", f"**Timestamp:** {ts}",
+            "**Title:** t", "**Change:** c", "**Scope boundary:** s",
+            "**Baseline:** b", "**Prediction (outcome — planner):** po",
+            "**Prediction (mechanism — coder):** pm", "**Finish line:** f",
+            "**Abort conditions:** a", f"**Dispatch-file:** {dispatch}"])
+
+    def record(title, *entries):
+        parts = [f"# {title}", "", "## Entries", "", "---", ""]
+        for e in entries:
+            parts += [e, "", "---", ""]
+        return "\n".join(parts)
+
+    def prompt(tmp, name):
+        d = Path(tmp) / PROMPTS_DIR / "preserved"
+        d.mkdir(parents=True, exist_ok=True)
+        (d / name).write_text("a dispatch\n")
+
+    def p1():
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / RECORD_NAME).write_text(record("RECORD.md", intent("2026-10-02-01", "preserved/x.md")))
+        prompt(tmp, "x.md")
+        ok, errors, _, _ = check_binding(tmp)
+        assert ok, f"a single-file record binding its prompt failed: {errors}"
+
+    check("p1_single_file_binding_unchanged",
+          "a single RECORD.md claiming its one preserved prompt is reported as a violation",
+          p1)
+
+    def p2():
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / RECORD_NAME).write_text("# RECORD.md\n\nThe index; entries are in records/.\n")
+        (tmp / "records").mkdir()
+        (tmp / "records" / "2026-10.md").write_text(
+            record("Record, 2026-10", intent("2026-10-02-01", "preserved/y.md")))
+        prompt(tmp, "y.md")
+        ok, errors, _, _ = check_binding(tmp)
+        assert ok, (f"a claim in a monthly file was not read; the prompt it "
+                    f"claims reads as an orphan: {errors}")
+
+    check("p2_claims_read_from_monthly_files",
+          "a Dispatch-file claim in records/YYYY-MM.md is not read, so its prompt is reported orphaned",
+          p2)
+
+    print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
+          f"{2} checks failed{': ' + ', '.join(failures) if failures else ''}")
+    return 1 if failures else 0
+
+
 if __name__ == "__main__":
+    if "--render-check" in sys.argv:
+        sys.exit(render_check())
     sys.exit(main())

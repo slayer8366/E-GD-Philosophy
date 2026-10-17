@@ -1247,8 +1247,155 @@ def render_check():
           "without Merge-commit is accepted",
           check38)
 
+    # ---- Checks 39-46: monthly record files and longer IDs (2026-10-17-01) --
+    # Written before the rules existed. Functions are looked up, not called
+    # directly, so a missing rule fails as an assertion naming it rather
+    # than as a NameError that never ran the test.
+
+    def need(name):
+        fn = globals().get(name)
+        assert fn is not None, f"{name} does not exist: the monthly-file rule is missing"
+        return fn
+
+    def month_record(month, *entries):
+        parts = [f"# Record, {month}", "", "## Entries", "", "---", ""]
+        for e in entries:
+            parts += [e, "", "---", ""]
+        return "\n".join(parts)
+
+    def write_monthly(tmp, months, index=True):
+        tmp = Path(tmp)
+        if index:
+            (tmp / RECORD_NAME).write_text("# RECORD.md\n\nThe index; entries are in records/.\n")
+        (tmp / "records").mkdir(exist_ok=True)
+        for m, entries in months.items():
+            (tmp / "records" / f"{m}.md").write_text(month_record(m, *entries))
+
+    def check39():
+        errors, _ = errs_of(_minimal_intent("2026-09-28-1106"))
+        assert not any("malformed ID" in e for e in errors), (
+            f"a four-digit ID number is rejected: {errors}")
+
+    check("check39_four_digit_id_number_accepted",
+          "an ID like 2026-09-28-1106 (Forager's running sequence) is rejected as malformed",
+          check39)
+
+    def check40():
+        errors, _ = errs_of(_minimal_intent("2026-09-28-1"))
+        assert any("malformed ID" in e for e in errors), (
+            f"a one-digit ID number is accepted: {errors}")
+
+    check("check40_one_digit_id_number_still_rejected",
+          "a one-digit ID number is accepted (guard: passes before and after by design)",
+          check40)
+
+    def months_fixture(tmp, ts_intent="2026-09-30T00:00:00Z"):
+        write_monthly(tmp, {
+            "2026-09": [_minimal_intent("2026-09-28-01", Timestamp=ts_intent)],
+            "2026-10": [ent("continuation", "2026-09-28-02", Continues="2026-09-28-01",
+                            Timestamp="2026-10-02T00:00:00Z"),
+                        _minimal_terminal("2026-09-28-03", closes="2026-09-28-01",
+                                          Timestamp="2026-10-03T00:00:00Z")],
+        })
+
+    def check41():
+        validate_repo = need("validate_repo")
+        tmp = Path(tempfile.mkdtemp())
+        months_fixture(tmp)
+        entries, errors, unterminated, _ = validate_repo(tmp)
+        assert not errors, f"a valid two-month record produced errors: {errors}"
+        assert len(entries) == 3 and not unterminated, (
+            f"monthly files not read as one record: {len(entries)} entries, "
+            f"unterminated {unterminated}")
+
+    check("check41_monthly_files_read_as_one_record",
+          "records/YYYY-MM.md files are not read, or not read as one record across months",
+          check41)
+
+    def check42():
+        validate_repo = need("validate_repo")
+        tmp = Path(tempfile.mkdtemp())
+        write_monthly(tmp, {
+            "2026-09": [_minimal_intent("2026-09-28-01", Timestamp="2026-09-30T00:00:00Z")],
+            "2026-10": [ent("decision", "2026-09-28-01", Timestamp="2026-10-01T00:00:00Z")],
+        })
+        _, errors, _, _ = validate_repo(tmp)
+        assert any("duplicate ID 2026-09-28-01" in e for e in errors), (
+            f"an ID used in two monthly files not caught: {errors}")
+
+    check("check42_duplicate_id_across_months_caught",
+          "the same ID in two monthly files is accepted",
+          check42)
+
+    def check43():
+        validate_repo = need("validate_repo")
+        tmp = Path(tempfile.mkdtemp())
+        write_monthly(tmp, {
+            "2026-09": [_minimal_intent("2026-09-28-01", Timestamp="2026-10-05T00:00:00Z")],
+        })
+        _, errors, _, _ = validate_repo(tmp)
+        assert any("2026-09-28-01" in e and "records/2026-09.md" in e and "2026-10" in e
+                   for e in errors), f"an entry filed in the wrong month not caught: {errors}"
+
+    check("check43_entry_in_wrong_month_caught",
+          "an entry whose Timestamp month differs from its monthly file's month is accepted",
+          check43)
+
+    def check44():
+        append_only_checks = need("append_only_checks")
+        tmp = Path(tempfile.mkdtemp())
+        _init_repo(tmp)
+        months_fixture(tmp)
+        subprocess.run(["git", "-C", str(tmp), "add", "-A"], check=True)
+        subprocess.run(["git", "-C", str(tmp), "-c", "user.name=t", "-c",
+                        "user.email=t@example.invalid", "commit", "-q", "-m", "m"], check=True)
+        p = tmp / "records" / "2026-09.md"
+        p.write_text(p.read_text().replace("**Title:** t", "**Title:** edited"))
+        results = append_only_checks(tmp)
+        bad = [r for r in results if r["file"] == "records/2026-09.md" and not r["ok"]]
+        assert bad, f"an edited committed line in a monthly file not caught: {results}"
+
+    check("check44_monthly_file_append_only_checked",
+          "an edit to a committed line of a monthly file passes the working-tree check",
+          check44)
+
+    def check45():
+        append_only_checks = need("append_only_checks")
+        tmp = Path(tempfile.mkdtemp())
+        _init_repo(tmp)
+        months_fixture(tmp)
+        results = append_only_checks(tmp)
+        idx = [r for r in results if r["file"] == RECORD_NAME]
+        assert idx and idx[0]["ok"] and "index" in idx[0]["msg"], (
+            f"RECORD.md as the index is not reported as such: {results}")
+
+    check("check45_index_record_md_reported_not_checked",
+          "with monthly files and an entry-less RECORD.md, RECORD.md is not reported as the index",
+          check45)
+
+    def check46():
+        history_checks = need("history_checks")
+        tmp = Path(tempfile.mkdtemp())
+        _init_repo(tmp)
+        months_fixture(tmp)
+        def commit(msg):
+            subprocess.run(["git", "-C", str(tmp), "add", "-A"], check=True)
+            subprocess.run(["git", "-C", str(tmp), "-c", "user.name=t", "-c",
+                            "user.email=t@example.invalid", "commit", "-q", "-m", msg], check=True)
+        commit("one")
+        p = tmp / "records" / "2026-10.md"
+        p.write_text(p.read_text().replace("**Observed:** o\n", ""))
+        commit("two")
+        results = history_checks(tmp)
+        bad = [r for r in results if r["file"] == "records/2026-10.md" and not r["ok"]]
+        assert bad, f"a committed line removed from a monthly file not caught by the walk: {results}"
+
+    check("check46_monthly_file_history_walked",
+          "a line removed from a monthly file in a committed change passes the history walk",
+          check46)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{38} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{46} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
