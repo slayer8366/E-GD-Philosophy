@@ -60,6 +60,17 @@ monthly file; record_files, validate_repo, append_only_checks,
 history_checks and main_monthly read RECORD.md and records/YYYY-MM.md as
 one record. render_check gains checks 39 to 46.
 
+Extended again 2026-10-17 (RECORD.md 2026-10-17-05) so any repository
+can use it: main(argv) checks the repository it is given (default: the
+current directory, never this file's own folder), shaped by that
+repository's records.json or the file --config names. DEFAULT_CONFIG,
+built from the constants below, is RECORDING.md's format; validate_entries
+and the functions around it read the config instead of the constants,
+and with the default every earlier result is unchanged. --json prints one
+JSON object; --print-config prints the default to copy and edit.
+main_monthly is folded into main. render_check gains checks 47 to 55.
+ADOPTING.md explains the config to someone adopting this.
+
 main() and render_check() below are NEW CONSTRUCTION, modeled on
 OSCam's ledger_cli.py (itself new construction there, since the
 original main()/render_check() were never vendored) but not a copy of
@@ -130,22 +141,191 @@ ONE_OF_REQUIRED = {
     "outcome": ("Continues", "Closes"),
     "dispatch-note": ("Dispatch-file", "Dispatch"),
 }
-KINDS = ("intent", "terminal") + tuple(OTHER_REQUIRED)
 # Only these close an intent; an outcome closes one only when it carries Closes.
 CLOSING_KINDS = ("terminal", "outcome")
 # A continuation opens and closes nothing (Claude-kit v0.2's rule).
 CONT_FORBIDDEN = ["Closes", "Outcome", "Superseded-by", "Finish line",
                   "Prediction (outcome — planner)",
                   "Prediction (mechanism — coder)"]
-TERMINAL_OUTCOMES = {"completed", "partial", "superseded", "abandoned"}
+# The terminal outcomes (completed, partial, superseded, abandoned) and the
+# fields each requires or forbids are in DEFAULT_CONFIG["terminal_outcomes"].
 DEFERRED_FIELD = "Deferred"
 ENTRY_ID_TOKEN_RE = re.compile(r"\d{4}-\d{2}-\d{2}-\d+")
 
 # Monthly record files, added 2026-10-17 (RECORD.md 2026-10-17-01):
 # records/YYYY-MM.md, read with RECORD.md as one record (RECORDING.md,
-# "Layout: one file per month").
+# "Layout: one file per month"). _month_file_re builds the pattern from
+# the configured folder.
 MONTHLY_DIR = "records"
-MONTH_FILE_RE = re.compile(r"^records/(\d{4}-\d{2})\.md$")
+
+# Config, added 2026-10-17 (RECORD.md 2026-10-17-05): any repository's
+# record, shaped by an optional records.json. DEFAULT_CONFIG is built from
+# the constants above, so with no config the checker applies RECORDING.md's
+# format exactly as before. The functions below read the config, not the
+# constants; a top-level key in a config replaces the default's value whole.
+def _default_kinds():
+    kinds = {"intent": {"required": list(INTENT_REQUIRED)},
+             "terminal": {"required": list(TERMINAL_REQUIRED)}}
+    for k, required in OTHER_REQUIRED.items():
+        kinds[k] = {"required": list(required)}
+        if k in ONE_OF_REQUIRED:
+            kinds[k]["one_of"] = [list(ONE_OF_REQUIRED[k])]
+        if k == "continuation":
+            kinds[k]["forbidden"] = list(CONT_FORBIDDEN)
+    return kinds
+
+
+DEFAULT_CONFIG = {
+    "record_file": RECORD_NAME,
+    "monthly_dir": MONTHLY_DIR,
+    "id_pattern": ID_RE.pattern,
+    "id_token_pattern": ENTRY_ID_TOKEN_RE.pattern,
+    "kinds": _default_kinds(),
+    "intent_kind": "intent",
+    "terminal_kind": "terminal",
+    "continuation_kind": "continuation",
+    "closing_kinds": list(CLOSING_KINDS),
+    "closes_field": "Closes",
+    "continues_field": "Continues",
+    "outcome_field": "Outcome",
+    "terminal_outcomes": {
+        "completed": {"forbidden": [DEFERRED_FIELD]},
+        "partial": {"required": [DEFERRED_FIELD]},
+        "superseded": {"required": ["Superseded-by"], "names_intent": ["Superseded-by"]},
+        "abandoned": {"required": ["Working-state"]},
+    },
+    "sentinels": {
+        "values": {"withheld": "pending", "not authored": "permanent"},
+        "fields": sorted(SENTINEL_PREDICTION_FIELDS),
+        "outcome_field": OUTCOME_FIELD,
+        "supplied_field": SUPPLIED_FIELD,
+    },
+    "backward_links": {"Continues": "first", "Corrects": "all"},
+    "prompts_dir": "prompts",
+    "provenance_dirs": ["preserved", "recovered"],
+    "dispatch_field": "Dispatch-file",
+}
+CONFIG_NAME = "records.json"
+
+
+class ConfigError(Exception):
+    """A config that cannot be used: unreadable, not JSON, an unknown key,
+    a wrong type, or a regex that does not compile. The message names the
+    key. main() reports it and exits 2; nothing is checked with a config
+    that was refused."""
+
+
+def _need(cond, key, msg):
+    if not cond:
+        raise ConfigError(f"{key}: {msg}")
+
+
+def _names(v):
+    return isinstance(v, list) and all(isinstance(x, str) and x for x in v)
+
+
+def _check_spec(spec, key, allowed):
+    _need(isinstance(spec, dict), key, "must be an object")
+    unknown = sorted(set(spec) - set(allowed))
+    _need(not unknown, key, f"unknown key(s) {unknown}; allowed: {', '.join(allowed)}")
+    for sub in allowed:
+        if sub == "one_of" and sub in spec:
+            _need(isinstance(spec[sub], list)
+                  and all(_names(g) and len(g) >= 2 for g in spec[sub]),
+                  f"{key}.one_of", "must be a list of lists of two or more field names")
+        elif sub in spec:
+            _need(_names(spec[sub]), f"{key}.{sub}", "must be a list of field names")
+
+
+def validate_config(cfg):
+    """Raises ConfigError naming the first key that is wrong; returns cfg."""
+    unknown = sorted(set(cfg) - set(DEFAULT_CONFIG))
+    _need(not unknown, "config", f"unknown key(s) {unknown}; known keys: "
+          f"{', '.join(DEFAULT_CONFIG)}")
+    for key in ("record_file", "id_pattern", "id_token_pattern", "closes_field",
+                "continues_field", "outcome_field", "prompts_dir", "dispatch_field"):
+        _need(isinstance(cfg[key], str) and cfg[key], key, "must be a non-empty string")
+    _need(cfg["monthly_dir"] is None or (isinstance(cfg["monthly_dir"], str)
+                                         and cfg["monthly_dir"]),
+          "monthly_dir", "must be a folder name, or null for no monthly files")
+    for key in ("id_pattern", "id_token_pattern"):
+        try:
+            re.compile(cfg[key])
+        except re.error as e:
+            raise ConfigError(f"{key}: does not compile as a regular "
+                              f"expression ({e})") from e
+    kinds = cfg["kinds"]
+    _need(isinstance(kinds, dict) and kinds, "kinds", "must be a non-empty object")
+    for name, spec in kinds.items():
+        _check_spec(spec, f"kinds.{name}", ("required", "one_of", "forbidden"))
+    for key in ("intent_kind", "terminal_kind", "continuation_kind"):
+        v = cfg[key]
+        _need(v is None or (isinstance(v, str) and v in kinds), key,
+              f"must be null or one of the kinds ({', '.join(kinds)}); got {v!r}")
+    _need(_names(cfg["closing_kinds"]) and all(k in kinds for k in cfg["closing_kinds"]),
+          "closing_kinds", f"must be a list of kinds ({', '.join(kinds)})")
+    _need(not (cfg["closing_kinds"] or cfg["continuation_kind"]) or cfg["intent_kind"],
+          "intent_kind", "is null, but closing_kinds or continuation_kind is set, "
+          "and both refer to intents")
+    links = cfg["backward_links"]
+    _need(isinstance(links, dict) and all(isinstance(k, str) and k and v in ("first", "all")
+                                          for k, v in links.items()),
+          "backward_links", 'must map field names to "first" or "all"')
+    _need(not cfg["continuation_kind"] or links.get(cfg["continues_field"]) == "first",
+          "backward_links", f"must map continues_field ({cfg['continues_field']!r}) "
+          f'to "first" while continuation_kind is set')
+    outcomes = cfg["terminal_outcomes"]
+    _need(outcomes is None or (isinstance(outcomes, dict) and outcomes),
+          "terminal_outcomes", "must be a non-empty object, or null for outcomes not checked")
+    for name, spec in (outcomes or {}).items():
+        _check_spec(spec, f"terminal_outcomes.{name}", ("required", "forbidden", "names_intent"))
+    sent = cfg["sentinels"]
+    if sent is not None:
+        keys = ("values", "fields", "outcome_field", "supplied_field")
+        _need(isinstance(sent, dict) and set(sent) == set(keys), "sentinels",
+              f"must be null or an object with exactly the keys {', '.join(keys)}")
+        _need(isinstance(sent["values"], dict) and all(
+            isinstance(k, str) and k and v in ("pending", "permanent")
+            for k, v in sent["values"].items()),
+              "sentinels.values", 'must map sentinel text to "pending" or "permanent"')
+        _need(_names(sent["fields"]), "sentinels.fields", "must be a list of field names")
+        for sub in ("outcome_field", "supplied_field"):
+            _need(sent[sub] is None or (isinstance(sent[sub], str) and sent[sub]),
+                  f"sentinels.{sub}", "must be a field name or null")
+    _need(_names(cfg["provenance_dirs"]) and cfg["provenance_dirs"], "provenance_dirs",
+          "must be a non-empty list of folder names")
+    return cfg
+
+
+def load_config(repo_dir, path=None):
+    """(config, source). source is the config file read, or None for the
+    default. path, when given, is used and must exist; otherwise the
+    repository's records.json is read if present. A config's top-level
+    keys replace the default's whole; everything is validated before use."""
+    import copy
+    import json
+    if path is not None:
+        cfg_path = Path(path)
+        _need(cfg_path.is_file(), "--config", f"{path} does not exist")
+    else:
+        cfg_path = Path(repo_dir) / CONFIG_NAME
+        if not cfg_path.is_file():
+            return copy.deepcopy(DEFAULT_CONFIG), None
+    try:
+        user = json.loads(cfg_path.read_text())
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as e:
+        raise ConfigError(f"{cfg_path}: not readable as JSON ({e})") from e
+    _need(isinstance(user, dict), str(cfg_path), "must hold one JSON object")
+    merged = copy.deepcopy(DEFAULT_CONFIG)
+    merged.update(user)
+    return validate_config(merged), str(cfg_path)
+
+
+def _month_file_re(cfg):
+    """records/YYYY-MM.md under the configured monthly folder, or None."""
+    if cfg["monthly_dir"] is None:
+        return None
+    return re.compile(rf"^{re.escape(cfg['monthly_dir'])}/(\d{{4}}-\d{{2}})\.md$")
 
 
 def split_entries(text):
@@ -184,7 +364,7 @@ def parse_fields(block):
     return fields
 
 
-def validate_entries(text, labelled_blocks=None):
+def validate_entries(text, labelled_blocks=None, config=None):
     """Returns (entries, errors, unterminated_ids, sentinel_reports).
     errors is a list of human-readable violation strings. unterminated_ids
     and sentinel_reports are both reported, never on their own a cause of
@@ -197,7 +377,31 @@ def validate_entries(text, labelled_blocks=None):
 
     labelled_blocks, when given, is a list of (source file, block) pairs
     read from several record files (validate_repo); text is then unused.
-    An entry with a Timestamp in a monthly file must carry its month."""
+    An entry with a Timestamp in a monthly file must carry its month.
+
+    config (2026-10-17-05) sets the entry types, ID pattern, closing and
+    link rules, outcomes and sentinels; None means DEFAULT_CONFIG, which
+    is RECORDING.md's format. The rules below are those of the 2026-10-16
+    and 2026-10-17-01 extensions, read from the config."""
+    cfg = DEFAULT_CONFIG if config is None else config
+    kinds = cfg["kinds"]
+    id_re = re.compile(cfg["id_pattern"])
+    token_re = re.compile(cfg["id_token_pattern"])
+    month_re = _month_file_re(cfg)
+    intent_kind = cfg["intent_kind"]
+    terminal_kind = cfg["terminal_kind"]
+    cont_kind = cfg["continuation_kind"]
+    closing_kinds = cfg["closing_kinds"]
+    closes_f = cfg["closes_field"]
+    continues_f = cfg["continues_field"]
+    outcome_f = cfg["outcome_field"]
+    outcomes = cfg["terminal_outcomes"]
+    sent = cfg["sentinels"] or {}
+    sentinel_values = sent.get("values", {})
+    sentinel_fields = set(sent.get("fields", []))
+    pred_outcome_f = sent.get("outcome_field")
+    supplied_f = sent.get("supplied_field")
+
     errors = []
     entries = []
     seen_ids = {}
@@ -211,87 +415,77 @@ def validate_entries(text, labelled_blocks=None):
         entry_id = fields.get("ID", "").strip()
         label_for_errors = entry_id or f"entry #{i + 1} (no ID)"
 
-        if kind not in KINDS:
+        if kind not in kinds:
             errors.append(f"{label_for_errors}: missing or invalid Kind "
                           f"(got {kind!r})")
             continue
+        spec = kinds[kind]
 
         if not entry_id:
             errors.append(f"{kind} {label_for_errors}: missing required "
                           f"field 'ID'")
-        elif not ID_RE.match(entry_id):
-            errors.append(f"{kind} {entry_id}: malformed ID (expected "
-                          f"YYYY-MM-DD-NN, two or more digits after the date)")
+        elif not id_re.fullmatch(entry_id):
+            errors.append(f"{kind} {entry_id}: malformed ID (does not match "
+                          f"the ID pattern {id_re.pattern})")
 
-        month_match = MONTH_FILE_RE.match(source or "")
+        month_match = month_re.match(source or "") if month_re else None
         timestamp = fields.get("Timestamp", "").strip()
         if month_match and timestamp and timestamp[:7] != month_match.group(1):
             errors.append(f"{kind} {label_for_errors}: Timestamp month "
                           f"{timestamp[:7]} but filed in {source}")
 
-        if kind == "intent":
-            required = INTENT_REQUIRED
-        elif kind == "terminal":
-            required = TERMINAL_REQUIRED
-        else:
-            required = OTHER_REQUIRED[kind]
-        for req_label in required:
+        for req_label in spec.get("required", []):
             value = fields.get(req_label, "").strip()
             if not value:
                 errors.append(f"{kind} {label_for_errors}: missing required "
                               f"field {req_label!r}")
-            elif (kind == "intent" and req_label in SENTINEL_PREDICTION_FIELDS
-                  and value in SENTINELS):
+            elif (kind == intent_kind and req_label in sentinel_fields
+                  and value in sentinel_values):
                 sentinel_reports.append({
                     "id": entry_id, "field": req_label, "sentinel": value,
                     "status": "pending",
                 })
 
-        if kind == "terminal":
+        if kind == terminal_kind:
             for field_name, field_value in fields.items():
-                if field_value.strip() in SENTINELS:
+                if field_value.strip() in sentinel_values:
                     errors.append(
-                        f"terminal {label_for_errors}: field {field_name!r} "
+                        f"{kind} {label_for_errors}: field {field_name!r} "
                         f"carries sentinel {field_value.strip()!r} -- "
                         f"sentinels are not permitted in terminal entries, "
                         f"since nothing there can legitimately be "
                         f"outstanding or absent")
-            outcome = fields.get("Outcome", "").strip()
-            if outcome == "superseded" and not fields.get("Superseded-by", "").strip():
-                errors.append(f"terminal {label_for_errors}: outcome "
-                              f"'superseded' requires field 'Superseded-by'")
-            if outcome == "abandoned" and not fields.get("Working-state", "").strip():
-                errors.append(f"terminal {label_for_errors}: outcome "
-                              f"'abandoned' requires field 'Working-state'")
-            if outcome and outcome not in TERMINAL_OUTCOMES:
-                errors.append(f"terminal {label_for_errors}: outcome "
-                              f"{outcome!r} is not one of "
-                              f"{sorted(TERMINAL_OUTCOMES)}")
-            if outcome == "partial" and not fields.get(DEFERRED_FIELD, "").strip():
-                errors.append(f"terminal {label_for_errors}: outcome "
-                              f"'partial' requires field 'Deferred'")
-            if outcome == "completed" and DEFERRED_FIELD in fields:
-                errors.append(f"terminal {label_for_errors}: outcome "
-                              f"'completed' may not carry field 'Deferred'; "
-                              f"work with parts held back is 'partial'")
+            outcome = fields.get(outcome_f, "").strip()
+            if outcome and outcomes is not None:
+                if outcome not in outcomes:
+                    errors.append(f"{kind} {label_for_errors}: outcome "
+                                  f"{outcome!r} is not one of "
+                                  f"{sorted(outcomes)}")
+                else:
+                    for f in outcomes[outcome].get("required", []):
+                        if not fields.get(f, "").strip():
+                            errors.append(f"{kind} {label_for_errors}: outcome "
+                                          f"{outcome!r} requires field {f!r}")
+                    for f in outcomes[outcome].get("forbidden", []):
+                        if f in fields:
+                            errors.append(f"{kind} {label_for_errors}: outcome "
+                                          f"{outcome!r} may not carry field {f!r}")
 
-        if kind in ONE_OF_REQUIRED:
-            one, other = ONE_OF_REQUIRED[kind]
-            if not fields.get(one, "").strip() and not fields.get(other, "").strip():
-                errors.append(f"{kind} {label_for_errors}: needs field "
-                              f"{one!r} or field {other!r}")
+        for group in spec.get("one_of", []):
+            if not any(fields.get(f, "").strip() for f in group):
+                errors.append(f"{kind} {label_for_errors}: needs "
+                              + " or ".join(f"field {f!r}" for f in group))
 
-        if kind not in CLOSING_KINDS and "Closes" in fields:
+        if kind not in closing_kinds and closes_f in fields:
+            closers = (" or ".join(closing_kinds) + " entries"
+                       if closing_kinds else "no entry type")
             errors.append(f"{kind} {label_for_errors}: carries field "
-                          f"'Closes', but only a terminal or an outcome "
-                          f"closes an intent")
+                          f"{closes_f!r}, but only {closers} close an intent")
 
-        if kind == "continuation":
-            for label in CONT_FORBIDDEN:
-                if label in fields:
-                    errors.append(f"continuation {label_for_errors}: carries "
-                                  f"field {label!r}, but a continuation opens "
-                                  f"and closes nothing")
+        for label in spec.get("forbidden", []):
+            if label in fields:
+                errors.append(f"{kind} {label_for_errors}: carries field "
+                              f"{label!r}, which a {kind} entry may not carry")
 
         if entry_id:
             if entry_id in seen_ids:
@@ -302,146 +496,164 @@ def validate_entries(text, labelled_blocks=None):
 
         entries.append({"kind": kind, "id": entry_id, "fields": fields})
 
-    intent_ids = {e["id"] for e in entries if e["kind"] == "intent" and e["id"]}
+    intent_ids = {e["id"] for e in entries
+                  if intent_kind and e["kind"] == intent_kind and e["id"]}
     closed_ids = set()
     for e in entries:
-        if e["kind"] not in CLOSING_KINDS:
+        if e["kind"] not in closing_kinds:
             continue
-        closes = e["fields"].get("Closes", "").strip()
+        closes = e["fields"].get(closes_f, "").strip()
         if not closes:
             continue
         if closes not in intent_ids:
-            errors.append(f"{e['kind']} {e['id']}: Closes names no existing "
-                          f"intent ID (closes={closes!r})")
+            errors.append(f"{e['kind']} {e['id']}: {closes_f} names no existing "
+                          f"intent ID ({closes_f.lower()}={closes!r})")
         else:
             closed_ids.add(closes)
 
-    # Continues and Corrects point backwards at entries that exist. A
-    # continuation's Continues names an intent still open at that point
-    # (Claude-kit v0.2's rule); any other type's names any earlier entry.
-    # The ID is the token the value starts with, since Forager's practice
-    # sometimes follows it with a parenthesis. Corrects names one or more
-    # earlier entries by ID.
+    # Backward links point at entries that exist earlier in the record. A
+    # "first" link names one entry by the ID token its value starts with,
+    # since Forager's practice sometimes follows it with a parenthesis; an
+    # "all" link names every ID token in its value. A continuation's link
+    # names an intent still open at that point (Claude-kit v0.2's rule).
     first_pos = {}
     for pos, e in enumerate(entries):
         if e["id"] and e["id"] not in first_pos:
             first_pos[e["id"]] = pos
     for pos, e in enumerate(entries):
         label = e["id"] or "(no ID)"
-        target_text = e["fields"].get("Continues", "").strip()
-        if target_text:
-            m = ENTRY_ID_TOKEN_RE.match(target_text)
-            target = m.group(0) if m else target_text
-            tpos = first_pos.get(target)
-            if tpos is None or tpos >= pos:
-                errors.append(f"{e['kind']} {label}: Continues {target!r} "
-                              f"names no earlier entry")
-            elif e["kind"] == "continuation":
-                if entries[tpos]["kind"] != "intent":
-                    errors.append(f"continuation {label}: Continues "
-                                  f"{target!r} names a "
-                                  f"{entries[tpos]['kind']}, not an intent")
-                else:
-                    closers = [c["id"] for c in entries[:pos]
-                               if c["kind"] in CLOSING_KINDS
-                               and c["fields"].get("Closes", "").strip() == target]
-                    if closers:
-                        errors.append(f"continuation {label}: Continues "
-                                      f"{target!r}, an intent already closed "
-                                      f"by {', '.join(closers)}")
-        corrects = e["fields"].get("Corrects", "").strip()
-        if corrects:
-            cids = ENTRY_ID_TOKEN_RE.findall(corrects)
-            if not cids:
-                errors.append(f"{e['kind']} {label}: Corrects names no "
-                              f"entry ID")
-            for cid in cids:
-                cpos = first_pos.get(cid)
-                if cpos is None or cpos >= pos:
-                    errors.append(f"{e['kind']} {label}: Corrects {cid!r}, "
-                                  f"which names no earlier entry")
+        for field, mode in cfg["backward_links"].items():
+            target_text = e["fields"].get(field, "").strip()
+            if not target_text:
+                continue
+            if mode == "first":
+                m = token_re.match(target_text)
+                target = m.group(0) if m else target_text
+                tpos = first_pos.get(target)
+                if tpos is None or tpos >= pos:
+                    errors.append(f"{e['kind']} {label}: {field} {target!r} "
+                                  f"names no earlier entry")
+                elif e["kind"] == cont_kind and field == continues_f:
+                    if entries[tpos]["kind"] != intent_kind:
+                        errors.append(f"{e['kind']} {label}: {field} "
+                                      f"{target!r} names a "
+                                      f"{entries[tpos]['kind']}, not an intent")
+                    else:
+                        closers = [c["id"] for c in entries[:pos]
+                                   if c["kind"] in closing_kinds
+                                   and c["fields"].get(closes_f, "").strip() == target]
+                        if closers:
+                            errors.append(f"{e['kind']} {label}: {field} "
+                                          f"{target!r}, an intent already closed "
+                                          f"by {', '.join(closers)}")
+            else:
+                cids = token_re.findall(target_text)
+                if not cids:
+                    errors.append(f"{e['kind']} {label}: {field} names no "
+                                  f"entry ID")
+                for cid in cids:
+                    cpos = first_pos.get(cid)
+                    if cpos is None or cpos >= pos:
+                        errors.append(f"{e['kind']} {label}: {field} {cid!r}, "
+                                      f"which names no earlier entry")
 
     # A later-supplied outcome prediction cannot be written into the
     # sentinel's own intent entry -- that entry is already committed, and
     # append-only is enforced by byte-prefix, so nothing can be inserted
     # into an already-committed block; only new blocks may be appended.
-    # Prediction-outcome-supplied therefore lives in the TERMINAL entry
-    # that closes the intent, cross-referenced via Closes, the same way
-    # Closes itself already links a terminal entry back to an intent one.
-    intents_by_id = {e["id"]: e for e in entries if e["kind"] == "intent" and e["id"]}
+    # The supplied field therefore lives in the TERMINAL entry that closes
+    # the intent, cross-referenced via Closes, the same way Closes itself
+    # already links a terminal entry back to an intent one.
+    intents_by_id = {e["id"]: e for e in entries
+                     if intent_kind and e["kind"] == intent_kind and e["id"]}
     for e in entries:
-        if e["kind"] != "terminal":
+        if not (terminal_kind and supplied_f and pred_outcome_f):
+            break
+        if e["kind"] != terminal_kind:
             continue
-        supplied_value = e["fields"].get(SUPPLIED_FIELD, "").strip()
+        supplied_value = e["fields"].get(supplied_f, "").strip()
         if not supplied_value:
             continue
-        closes = e["fields"].get("Closes", "").strip()
+        closes = e["fields"].get(closes_f, "").strip()
         intent = intents_by_id.get(closes)
         if intent is None:
             continue  # already reported above as a bad Closes reference
-        outcome_value = intent["fields"].get(OUTCOME_FIELD, "").strip()
-        if outcome_value not in SENTINELS:
+        outcome_value = intent["fields"].get(pred_outcome_f, "").strip()
+        state = sentinel_values.get(outcome_value)
+        if state is None:
             continue  # nothing to resolve; not validated further, see report
-        if outcome_value == "not authored":
+        if state == "permanent":
             errors.append(
-                f"terminal {e['id']}: closes intent {closes} whose "
-                f"{OUTCOME_FIELD!r} is 'not authored' (permanent), but "
-                f"carries a {SUPPLIED_FIELD!r} field -- a permanent "
+                f"{e['kind']} {e['id']}: closes intent {closes} whose "
+                f"{pred_outcome_f!r} is {outcome_value!r} (permanent), but "
+                f"carries a {supplied_f!r} field -- a permanent "
                 f"sentinel is never resolved; that combination means the "
                 f"prediction was fabricated after the outcome")
-        else:  # withheld, legitimately resolved
+        else:  # a pending sentinel, legitimately resolved
             for report in sentinel_reports:
-                if report["id"] == closes and report["field"] == OUTCOME_FIELD:
+                if report["id"] == closes and report["field"] == pred_outcome_f:
                     report["status"] = "resolved"
 
     unterminated = sorted(intent_ids - closed_ids)
     return entries, errors, unterminated, sentinel_reports
 
 
-def record_files(repo_dir):
-    """Relative names of the record's files: RECORD.md if present, then
-    records/YYYY-MM.md in month order. Their entries form one record."""
+def record_files(repo_dir, config=None):
+    """Relative names of the record's files: the record file if present,
+    then the monthly folder's YYYY-MM.md files in month order. Their
+    entries form one record."""
+    cfg = DEFAULT_CONFIG if config is None else config
     repo_dir = Path(repo_dir)
-    files = [RECORD_NAME] if (repo_dir / RECORD_NAME).is_file() else []
-    mdir = repo_dir / MONTHLY_DIR
-    if mdir.is_dir():
-        files += sorted(f"{MONTHLY_DIR}/{p.name}" for p in mdir.iterdir()
-                        if MONTH_FILE_RE.match(f"{MONTHLY_DIR}/{p.name}"))
+    record = cfg["record_file"]
+    files = [record] if (repo_dir / record).is_file() else []
+    month_re = _month_file_re(cfg)
+    mdir = repo_dir / cfg["monthly_dir"] if month_re else None
+    if mdir is not None and mdir.is_dir():
+        files += sorted(f"{cfg['monthly_dir']}/{p.name}" for p in mdir.iterdir()
+                        if month_re.match(f"{cfg['monthly_dir']}/{p.name}"))
     return files
 
 
-def monthly_mode(repo_dir):
-    return any(MONTH_FILE_RE.match(f) for f in record_files(repo_dir))
+def monthly_mode(repo_dir, config=None):
+    cfg = DEFAULT_CONFIG if config is None else config
+    month_re = _month_file_re(cfg)
+    return bool(month_re) and any(month_re.match(f) for f in record_files(repo_dir, cfg))
 
 
-def _is_index(repo_dir, rel):
-    """RECORD.md is the index when monthly files exist and it holds no
-    entries of its own."""
-    return (rel == RECORD_NAME and monthly_mode(repo_dir)
+def _is_index(repo_dir, rel, config=None):
+    """The record file is the index when monthly files exist and it holds
+    no entries of its own."""
+    cfg = DEFAULT_CONFIG if config is None else config
+    return (rel == cfg["record_file"] and monthly_mode(repo_dir, cfg)
             and not split_entries((Path(repo_dir) / rel).read_text()))
 
 
-INDEX_NOTE = ("the index (no entries; they are in records/): append-only "
-              "checks not applied, since its rewrite into the index at a "
-              "split is the recorded one-time exception (RECORDING.md)")
+def _index_note(cfg):
+    return (f"the index (no entries; they are in {cfg['monthly_dir']}/): "
+            f"append-only checks not applied, since its rewrite into the index "
+            f"at a split is the recorded one-time exception (RECORDING.md)")
 
 
-def validate_repo(repo_dir):
+INDEX_NOTE = _index_note(DEFAULT_CONFIG)
+
+
+def validate_repo(repo_dir, config=None):
     """validate_entries over every record file, in order, as one record."""
     labelled = []
-    for rel in record_files(repo_dir):
+    for rel in record_files(repo_dir, config):
         text = (Path(repo_dir) / rel).read_text()
         labelled += [(rel, b) for b in split_entries(text)]
-    return validate_entries("", labelled)
+    return validate_entries("", labelled, config)
 
 
-def append_only_checks(repo_dir):
+def append_only_checks(repo_dir, config=None):
     """The working-tree append-only check on each record file. Returns a
     list of {file, ok, msg, vacuous}; the index is reported, not checked."""
+    cfg = DEFAULT_CONFIG if config is None else config
     results = []
-    for rel in record_files(repo_dir):
-        if _is_index(repo_dir, rel):
-            results.append({"file": rel, "ok": True, "msg": INDEX_NOTE,
+    for rel in record_files(repo_dir, cfg):
+        if _is_index(repo_dir, rel, cfg):
+            results.append({"file": rel, "ok": True, "msg": _index_note(cfg),
                             "vacuous": True})
             continue
         ok, msg, vacuous = check_append_only(repo_dir, record_name=rel)
@@ -449,19 +661,34 @@ def append_only_checks(repo_dir):
     return results
 
 
-def history_checks(repo_dir):
+def _has_commits(repo_dir):
+    return subprocess.run(
+        ["git", "-C", str(repo_dir), "rev-parse", "--verify", "-q", "HEAD"],
+        capture_output=True).returncode == 0
+
+
+def history_checks(repo_dir, config=None):
     """The history walk on each record file. Returns a list of {file, ok,
-    msg, count, vacuous, violations}; the index is reported, not walked."""
+    msg, count, vacuous, violations}; the index is reported, not walked,
+    and a repository with no commits yet has nothing to walk."""
+    cfg = DEFAULT_CONFIG if config is None else config
     results = []
-    for rel in record_files(repo_dir):
-        if _is_index(repo_dir, rel):
-            results.append({"file": rel, "ok": True, "msg": INDEX_NOTE,
+    has_commits = _has_commits(repo_dir)
+    for rel in record_files(repo_dir, cfg):
+        if _is_index(repo_dir, rel, cfg):
+            results.append({"file": rel, "ok": True, "msg": _index_note(cfg),
+                            "count": 0, "vacuous": True, "violations": []})
+            continue
+        if not has_commits:
+            results.append({"file": rel, "ok": True,
+                            "msg": "no commits yet; nothing to walk",
                             "count": 0, "vacuous": True, "violations": []})
             continue
         try:
             ok, violations, count, vacuous = check_history_append_only(
                 repo_dir, record_name=rel)
-            msg = (f"{count} commit(s) checked" if ok
+            msg = (f"{count} commit(s) checked, each a byte-prefix extension "
+                   f"of the one before it" if ok
                    else f"{len(violations)} violation(s)")
         except MergeCommitEncountered as e:
             ok, violations, count, vacuous, msg = False, [], 0, False, str(e)
@@ -470,81 +697,51 @@ def history_checks(repo_dir):
     return results
 
 
-def main_monthly():
-    """main() for a record kept in monthly files."""
-    entries, errors, unterminated, sentinel_reports = validate_repo(HERE)
-    files = record_files(HERE)
-    print(f"record files: {', '.join(files)}")
-    print(f"entries: {len(entries)}")
-    if unterminated:
-        print(f"unterminated intent entries (reported, not a failure): "
-              f"{', '.join(unterminated)}")
-    print()
-    for r in append_only_checks(HERE):
-        print(f"[working-tree check: {r['file']}] "
-              f"{'PASS' if r['ok'] else 'FAIL'}: {r['msg']}")
-        if not r["ok"]:
-            errors.append(f"working-tree append-only, {r['file']}: {r['msg']}")
-    for r in history_checks(HERE):
-        print(f"[history walk: {r['file']}] "
-              f"{'PASS' if r['ok'] else 'FAIL'}: {r['msg']}")
-        for v in r["violations"]:
-            msg = (f"{v['older'][:10]} -> {v['newer'][:10]}: diverges at "
-                   f"line {v['divergence_line']}")
-            print("    " + msg)
-            errors.append(f"history walk, {r['file']}: {msg}")
-        if not r["ok"] and not r["violations"]:
-            errors.append(f"history walk, {r['file']}: {r['msg']}")
-    sup_ok, sup_errors, _ = check_superseded_by(entries)
-    errors += [f"Superseded-by: {e}" for e in sup_errors]
-    dup_ok, dup_errors = check_duplicate_terminals(entries)
-    errors += [f"duplicate terminal: {e}" for e in dup_errors]
-    print(f"[Superseded-by and closed-once checks] "
-          f"{'PASS' if sup_ok and dup_ok else 'FAIL'}")
-    if errors:
-        print("\nFAIL")
-        for e in errors:
-            print("  " + e)
-        return 1
-    print("\nPASS: entries structurally valid across all record files; "
-          "each monthly file's working-tree check and history walk clean")
-    return 0
-
-
-def check_superseded_by(entries):
+def check_superseded_by(entries, config=None):
     """(ok, errors, vacuous). Cross-references every terminal entry's
     Superseded-by value (present when Outcome is 'superseded') against
     the set of existing intent entry IDs. Vacuous when no terminal entry
     in the store declares Outcome: superseded at all -- there is
     nothing to cross-reference, not a check that ran and found nothing
-    wrong."""
-    intent_ids = {e["id"] for e in entries if e["kind"] == "intent" and e["id"]}
-    declared = [e for e in entries if e["kind"] == "terminal"
-               and e["fields"].get("Outcome", "").strip() == "superseded"]
+    wrong. Since 2026-10-17-05 the fields cross-referenced are each
+    configured outcome's names_intent fields; by default, superseded's
+    Superseded-by, as before."""
+    cfg = DEFAULT_CONFIG if config is None else config
+    intent_kind, terminal_kind = cfg["intent_kind"], cfg["terminal_kind"]
+    outcomes = cfg["terminal_outcomes"] or {}
+    intent_ids = {e["id"] for e in entries
+                  if intent_kind and e["kind"] == intent_kind and e["id"]}
+    declared = []
+    for e in entries:
+        if not terminal_kind or e["kind"] != terminal_kind:
+            continue
+        outcome = e["fields"].get(cfg["outcome_field"], "").strip()
+        declared += [(e, f) for f in outcomes.get(outcome, {}).get("names_intent", [])]
     if not declared:
         return True, [], True
 
     errs = []
-    for e in declared:
-        sup = e["fields"].get("Superseded-by", "").strip()
+    for e, field in declared:
+        sup = e["fields"].get(field, "").strip()
         if sup and sup not in intent_ids:
-            errs.append(f"terminal {e['id']}: Superseded-by names no "
-                       f"existing intent ID (superseded-by={sup!r})")
+            errs.append(f"{e['kind']} {e['id']}: {field} names no "
+                       f"existing intent ID ({field.lower()}={sup!r})")
     return not errs, errs, False
 
 
-def check_duplicate_terminals(entries):
+def check_duplicate_terminals(entries, config=None):
     """(ok, errors). More than one terminal entry closing the same
     intent ID is an error, not a report -- unlike unterminated (a
     normal in-progress state), multiply-terminated is not a state any
     correct process produces. Names every colliding entry ID, not just
     the second one, so an operator seeing a duplicate knows whether
     there are two or five."""
+    cfg = DEFAULT_CONFIG if config is None else config
     by_closes = {}
     for e in entries:
-        if e["kind"] not in CLOSING_KINDS:
+        if e["kind"] not in cfg["closing_kinds"]:
             continue
-        closes = e["fields"].get("Closes", "").strip()
+        closes = e["fields"].get(cfg["closes_field"], "").strip()
         if not closes:
             continue
         by_closes.setdefault(closes, []).append((e["id"], e["kind"]))
@@ -553,8 +750,9 @@ def check_duplicate_terminals(entries):
     for closes, closers in sorted(by_closes.items()):
         if len(closers) > 1:
             ids = [i for i, _ in closers]
-            noun = ("terminal entries" if all(k == "terminal" for _, k in closers)
-                    else "closing entries (terminal or outcome)")
+            noun = ("terminal entries"
+                    if all(k == cfg["terminal_kind"] for _, k in closers)
+                    else f"closing entries ({' or '.join(cfg['closing_kinds'])})")
             errs.append(f"intent {closes} is closed by {len(closers)} {noun}, "
                        f"not one: {', '.join(ids)}")
     return not errs, errs
@@ -681,94 +879,160 @@ def check_history_append_only(repo_dir, record_name=RECORD_NAME):
 # --------------------------------------------------------------------------
 # CLI wrapper. New construction -- see module docstring. Modeled on
 # OSCam's ledger_cli.py (also new construction there), not a recovery of
-# check_record.py's original main()/render_check().
+# check_record.py's original main()/render_check(). Since 2026-10-17-05 it
+# checks the repository it is given (default: the current directory), with
+# that repository's records.json or the file --config names.
 # --------------------------------------------------------------------------
 
-HERE = Path(__file__).resolve().parent
+
+def _git_top_error(repo):
+    """None when repo is the top folder of a git work tree, else why not.
+    The append-only checks read HEAD:<path>, which git resolves from the
+    top folder, so a subfolder would silently compare the wrong file."""
+    top = subprocess.run(["git", "-C", str(repo), "rev-parse", "--show-toplevel"],
+                         capture_output=True, text=True)
+    if top.returncode != 0:
+        return (f"{repo} is not inside a git repository; the append-only "
+                f"checks read the record's committed history")
+    top_path = Path(top.stdout.strip()).resolve()
+    if top_path != repo:
+        return (f"{repo} is inside the git repository {top_path}; give that "
+                f"top folder, with record_file and monthly_dir set to paths "
+                f"inside it")
+    return None
 
 
-def main():
-    if monthly_mode(HERE):
-        return main_monthly()
-    record_path = HERE / RECORD_NAME
-    if not record_path.is_file():
-        print(f"{RECORD_NAME} does not exist yet in {HERE} -- nothing to "
-              f"validate. This is not a failure: the record store has no "
-              f"content until a first entry is committed.")
+def _parse_args(argv):
+    import argparse
+    parser = argparse.ArgumentParser(
+        prog="check_record.py",
+        description="Check a repository's append-only record against its "
+                    "records.json (or RECORDING.md's format when it has none). "
+                    "Exit 0 pass, 1 fail, 2 unusable config or repository.")
+    parser.add_argument("repo", nargs="?", default=".",
+                        help="the repository's top folder (default: the current directory)")
+    parser.add_argument("--config", help="a config file to use instead of the "
+                        "repository's records.json")
+    parser.add_argument("--json", action="store_true",
+                        help="print the results as one JSON object")
+    parser.add_argument("--print-config", action="store_true",
+                        help="print the default config, to copy into records.json and edit")
+    parser.add_argument("--render-check", action="store_true",
+                        help="run this file's own self-checks")
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    import json
+    args = _parse_args(sys.argv[1:] if argv is None else argv)
+    if args.render_check:
+        return render_check()
+    if args.print_config:
+        print(json.dumps(DEFAULT_CONFIG, indent=2, ensure_ascii=False))
         return 0
 
-    text = record_path.read_text()
-    entries, errors, unterminated, sentinel_reports = validate_entries(text)
+    repo = Path(args.repo).resolve()
+    result = {"ok": False, "exit": 2, "repo": str(repo), "config": None,
+              "record_files": [], "entries": 0, "errors": [], "unterminated": [],
+              "sentinels": [], "checks": [], "vacuous": False}
 
-    print(f"entries: {len(entries)}")
-    if unterminated:
-        print(f"unterminated intent entries (reported, not a failure): "
-              f"{', '.join(unterminated)}")
-    if sentinel_reports:
-        print("intent entries with prediction sentinels (reported, not a "
-              "failure):")
-        for r in sentinel_reports:
-            note = "resolved" if r["status"] == "resolved" else "pending"
-            print(f"  {r['id']}: {r['field']} = {r['sentinel']!r} ({note})")
-
-    print()
-    wt_ok, wt_msg, wt_vacuous = check_append_only(HERE)
-    vac = " (vacuous: nothing to compare against)" if wt_vacuous else ""
-    print(f"[working-tree check -- covers changes since the last commit "
-          f"only] {'PASS' if wt_ok else 'FAIL'}: {wt_msg}{vac}")
-    if not wt_ok:
-        errors.append(f"working-tree append-only: {wt_msg}")
+    def finish(code, lines):
+        result["exit"], result["ok"] = code, code == 0
+        if args.json:
+            print(json.dumps(result, indent=2, ensure_ascii=False))
+        else:
+            print("\n".join(lines))
+        return code
 
     try:
-        hist_ok, violations, commit_count, hist_vacuous = check_history_append_only(HERE)
-    except MergeCommitEncountered as e:
-        hist_ok = False
-        print(f"[history walk -- covers every committed transition in "
-              f"{RECORD_NAME}'s history] FAIL: {e}")
-        errors.append(f"history walk: {e}")
-    else:
-        if hist_ok:
-            vac = (f" (vacuous: only {commit_count} committed version(s), "
-                   f"zero prefix comparisons performed)") if hist_vacuous else ""
-            print(f"[history walk -- covers every committed transition in "
-                  f"{RECORD_NAME}'s history] PASS: {commit_count} commit(s) "
-                  f"checked, each a byte-prefix extension of the one "
-                  f"before it{vac}")
-        else:
-            print(f"[history walk -- covers every committed transition in "
-                  f"{RECORD_NAME}'s history] FAIL: {len(violations)} "
-                  f"violation(s)")
-            for v in violations:
-                msg = (f"{v['older'][:10]} ({v['older_subject']!r}) -> "
-                      f"{v['newer'][:10]} ({v['newer_subject']!r}): "
-                      f"diverges at line {v['divergence_line']}")
-                print("    " + msg)
-                errors.append(f"history walk: {msg}")
+        if not repo.is_dir():
+            raise ConfigError(f"repo: {repo} is not a folder")
+        cfg, source = load_config(repo, args.config)
+    except ConfigError as e:
+        result["errors"] = [f"config error: {e}"]
+        return finish(2, [f"config error: {e}", "Nothing was checked."])
+    result["config"] = source
+    git_error = _git_top_error(repo)
+    if git_error:
+        result["errors"] = [git_error]
+        return finish(2, [git_error, "Nothing was checked."])
 
-    sup_ok, sup_errors, sup_vacuous = check_superseded_by(entries)
-    vac = " (vacuous: no entry declares Outcome: superseded)" if sup_vacuous else ""
-    print(f"[Superseded-by cross-reference -- covers terminal entries "
-          f"declaring Outcome: superseded] {'PASS' if sup_ok else 'FAIL'}"
-          f"{vac}")
-    for e in sup_errors:
-        print("    " + e)
-        errors.append(f"Superseded-by: {e}")
+    lines = [f"repository: {repo}",
+             f"config: {source or 'default (RECORDING.md format; no ' + CONFIG_NAME + ')'}"]
+    files = record_files(repo, cfg)
+    result["record_files"] = files
+    if not files:
+        result["vacuous"] = True
+        msg = (f"{cfg['record_file']} does not exist yet in {repo}, and no "
+               f"monthly files -- nothing to validate. This is not a failure: "
+               f"the record store has no content until a first entry is "
+               f"committed. If a record does exist, record_file or monthly_dir "
+               f"in the config does not point at it.")
+        result["note"] = msg
+        return finish(0, lines + [msg])
 
-    dup_ok, dup_errors = check_duplicate_terminals(entries)
-    print(f"[duplicate-terminal check -- every intent closed by more than "
-          f"one terminal entry] {'PASS' if dup_ok else 'FAIL'}")
-    for e in dup_errors:
-        print("    " + e)
-        errors.append(f"duplicate terminal: {e}")
+    entries, errors, unterminated, sentinel_reports = validate_repo(repo, cfg)
+    result.update(entries=len(entries), unterminated=unterminated,
+                  sentinels=sentinel_reports)
+    lines += [f"record files: {', '.join(files)}", f"entries: {len(entries)}"]
+    if unterminated:
+        lines.append(f"unterminated intent entries (reported, not a failure): "
+                     f"{', '.join(unterminated)}")
+    if sentinel_reports:
+        lines.append("intent entries with prediction sentinels (reported, not "
+                     "a failure):")
+        lines += [f"  {r['id']}: {r['field']} = {r['sentinel']!r} ({r['status']})"
+                  for r in sentinel_reports]
+    lines.append("")
 
+    def add_check(name, label, r):
+        result["checks"].append({"check": name, "file": r.get("file"), "ok": r["ok"],
+                                 "vacuous": r["vacuous"], "message": r["msg"]})
+        vac = " (vacuous)" if r["vacuous"] and r["ok"] else ""
+        lines.append(f"[{label}] {'PASS' if r['ok'] else 'FAIL'}: {r['msg']}{vac}")
+
+    for r in append_only_checks(repo, cfg):
+        add_check("working-tree", f"working-tree check: {r['file']} -- changes "
+                  f"since the last commit", r)
+        if not r["ok"]:
+            errors.append(f"working-tree append-only, {r['file']}: {r['msg']}")
+    for r in history_checks(repo, cfg):
+        add_check("history walk", f"history walk: {r['file']} -- every "
+                  f"committed version", r)
+        for v in r["violations"]:
+            msg = (f"{v['older'][:10]} ({v['older_subject']!r}) -> "
+                   f"{v['newer'][:10]} ({v['newer_subject']!r}): diverges at "
+                   f"line {v['divergence_line']}")
+            lines.append("    " + msg)
+            errors.append(f"history walk, {r['file']}: {msg}")
+        if not r["ok"] and not r["violations"]:
+            errors.append(f"history walk, {r['file']}: {r['msg']}")
+
+    sup_ok, sup_errors, sup_vacuous = check_superseded_by(entries, cfg)
+    linked = sorted({f for o in (cfg["terminal_outcomes"] or {}).values()
+                     for f in o.get("names_intent", [])})
+    add_check("names-intent", f"{', '.join(linked) or 'outcome'} cross-reference "
+              f"-- terminals whose outcome must name an intent",
+              {"ok": sup_ok, "vacuous": sup_vacuous,
+               "msg": ("no entry declares such an outcome" if sup_vacuous
+                       else f"{len(sup_errors)} error(s)")})
+    lines += ["    " + e for e in sup_errors]
+    errors += [f"{', '.join(linked)}: {e}" for e in sup_errors]
+
+    dup_ok, dup_errors = check_duplicate_terminals(entries, cfg)
+    add_check("closed-once", "closed-once check -- no intent closed by more "
+              "than one closing entry",
+              {"ok": dup_ok, "vacuous": not cfg["closing_kinds"],
+               "msg": f"{len(dup_errors)} intent(s) closed more than once"})
+    lines += ["    " + e for e in dup_errors]
+    errors += [f"duplicate terminal: {e}" for e in dup_errors]
+
+    result["errors"] = errors
     if errors:
-        print("\nFAIL")
-        for e in errors:
-            print("  " + e)
-        return 1
-    print(f"\nPASS: entries structurally valid; working-tree check, "
-          f"history walk, and Superseded-by cross-reference all clean")
-    return 0
+        return finish(1, lines + ["", "FAIL"] + ["  " + e for e in errors])
+    return finish(0, lines + ["", f"PASS: entries structurally valid across "
+                              f"{len(files)} record file(s); working-tree check, "
+                              f"history walk, and cross-references all clean"])
 
 
 # --------------------------------------------------------------------------
@@ -1690,7 +1954,4 @@ def render_check():
 
 
 if __name__ == "__main__":
-    if "--render-check" in sys.argv:
-        sys.exit(render_check())
-    else:
-        sys.exit(main())
+    sys.exit(main())

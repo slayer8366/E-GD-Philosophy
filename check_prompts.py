@@ -50,6 +50,12 @@ asks a different question (dispatch-file binding) than that function
 answers (intent/terminal shape and sentinel handling), and duplicating
 its required-field logic here would only reintroduce a second copy of
 rules that already live in check_record.py.
+
+Since 2026-10-17 (RECORD.md 2026-10-17-05) main(argv) checks the
+repository it is given, and the record file, prompts folder, provenance
+folders, dispatch field and the intent/terminal pairing are read from
+that repository's records.json (check_record.load_config), defaulting to
+the names above.
 """
 import sys
 from pathlib import Path
@@ -58,28 +64,36 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import check_record as cr
 
-RECORD_NAME = "RECORD.md"
-PROMPTS_DIR = "prompts"
-DISPATCH_FIELD = "Dispatch-file"
-PROVENANCE_DIRS = ("preserved", "recovered")
+# Defaults, from check_record's DEFAULT_CONFIG. Since 2026-10-17-05 the
+# functions below read a config (the checked repository's records.json, or
+# --config) and use these only when given none.
+RECORD_NAME = cr.DEFAULT_CONFIG["record_file"]
+PROMPTS_DIR = cr.DEFAULT_CONFIG["prompts_dir"]
+DISPATCH_FIELD = cr.DEFAULT_CONFIG["dispatch_field"]
+PROVENANCE_DIRS = tuple(cr.DEFAULT_CONFIG["provenance_dirs"])
 
 
-def dispatch_claims(text):
+def _cfg(config):
+    return cr.DEFAULT_CONFIG if config is None else config
+
+
+def dispatch_claims(text, config=None):
     """List of (entry_id, dispatch_file_value) for every entry in
     RECORD.md that carries a Dispatch-file field, in entry order.
     entry_id is '' if the entry itself has no ID (already a distinct
     defect check_record.py's own validator reports separately)."""
+    field = _cfg(config)["dispatch_field"]
     claims = []
     for block in cr.split_entries(text):
         fields = cr.parse_fields(block)
-        value = fields.get(DISPATCH_FIELD, "").strip()
+        value = fields.get(field, "").strip()
         if not value:
             continue
         claims.append((fields.get("ID", "").strip(), value))
     return claims
 
 
-def entry_kind_closes(text):
+def entry_kind_closes(text, config=None):
     """Map entry_id -> (kind, closes) for every RECORD.md entry that
     carries an ID field. kind and closes are taken directly from that
     entry's own fields -- closes is '' for intent entries and for any
@@ -95,38 +109,41 @@ def entry_kind_closes(text):
             continue
         mapping[entry_id] = (
             fields.get("Kind", "").strip(),
-            fields.get("Closes", "").strip(),
+            fields.get(_cfg(config)["closes_field"], "").strip(),
         )
     return mapping
 
 
-def is_intent_terminal_pair(ids, kind_closes):
+def is_intent_terminal_pair(ids, kind_closes, config=None):
     """True if ids (the claimants of one Dispatch-file value) is
     exactly one intent entry and the terminal entry that closes it.
     ids containing a "(no ID)" placeholder, or any entry_id absent
     from kind_closes, can never match -- both fall through to False,
     so this only ever legalizes a claim between two well-formed,
     genuinely paired entries, not a loosening of the general rule."""
-    if len(ids) != 2:
+    cfg = _cfg(config)
+    intent, terminal = cfg["intent_kind"], cfg["terminal_kind"]
+    if len(ids) != 2 or not intent or not terminal:
         return False
     a, b = ids
     ka, kb = kind_closes.get(a), kind_closes.get(b)
     if ka is None or kb is None:
         return False
-    if ka[0] == "intent" and kb[0] == "terminal" and kb[1] == a:
+    if ka[0] == intent and kb[0] == terminal and kb[1] == a:
         return True
-    if kb[0] == "intent" and ka[0] == "terminal" and ka[1] == b:
+    if kb[0] == intent and ka[0] == terminal and ka[1] == b:
         return True
     return False
 
 
-def files_on_disk(repo_dir):
+def files_on_disk(repo_dir, config=None):
     """Set of paths relative to prompts/, for every regular file found
     under prompts/preserved/ and prompts/recovered/. A file placed
     directly under prompts/ (outside either subdirectory) is not
     counted as preserved or recovered by this walk and is reported
     separately -- provenance is mandatory, not inferred."""
-    prompts_root = Path(repo_dir) / PROMPTS_DIR
+    cfg = _cfg(config)
+    prompts_root = Path(repo_dir) / cfg["prompts_dir"]
     found = set()
     stray = set()
     if not prompts_root.is_dir():
@@ -135,23 +152,28 @@ def files_on_disk(repo_dir):
         if not entry.is_file():
             continue
         rel = entry.relative_to(prompts_root)
-        if rel.parts and rel.parts[0] in PROVENANCE_DIRS:
+        if rel.parts and rel.parts[0] in cfg["provenance_dirs"]:
             found.add(rel.as_posix())
         else:
             stray.add(rel.as_posix())
     return found, stray
 
 
-def check_binding(repo_dir=None):
+def check_binding(repo_dir=None, config=None):
     """(ok, errors, report_lines, counts). Pure existence/binding check,
-    no content comparison. counts is {'preserved': n, 'recovered': n}."""
-    repo_dir = Path(repo_dir) if repo_dir else HERE
+    no content comparison. counts is {'preserved': n, 'recovered': n}, one
+    key per provenance folder. repo_dir None means the current directory
+    (2026-10-17-05; it was this script's own folder before)."""
+    cfg = _cfg(config)
+    repo_dir = Path(repo_dir) if repo_dir else Path.cwd()
+    prompts_dir, field = cfg["prompts_dir"], cfg["dispatch_field"]
+    provenance = tuple(cfg["provenance_dirs"])
     errors = []
     report_lines = []
 
-    files = cr.record_files(repo_dir)
+    files = cr.record_files(repo_dir, cfg)
     if not files:
-        return False, [f"{RECORD_NAME} does not exist in {repo_dir}"], [], {}
+        return False, [f"{cfg['record_file']} does not exist in {repo_dir}"], [], {}
 
     # Every record file is read: RECORD.md and any records/YYYY-MM.md
     # (2026-10-17, RECORD.md 2026-10-17-01).
@@ -159,50 +181,50 @@ def check_binding(repo_dir=None):
     kind_closes = {}
     for rel in files:
         text = (repo_dir / rel).read_text()
-        claims += dispatch_claims(text)
-        kind_closes.update(entry_kind_closes(text))
-    on_disk, stray = files_on_disk(repo_dir)
+        claims += dispatch_claims(text, cfg)
+        kind_closes.update(entry_kind_closes(text, cfg))
+    on_disk, stray = files_on_disk(repo_dir, cfg)
 
     claimed_paths = {}
     duplicate_errors = []
     for entry_id, value in claims:
         claimed_paths.setdefault(value, []).append(entry_id or "(no ID)")
     for value, ids in claimed_paths.items():
-        if len(ids) > 1 and not is_intent_terminal_pair(ids, kind_closes):
+        if len(ids) > 1 and not is_intent_terminal_pair(ids, kind_closes, cfg):
             duplicate_errors.append(
                 f"{value!r} is claimed by more than one entry's "
-                f"{DISPATCH_FIELD!r} field: {', '.join(ids)}")
+                f"{field!r} field: {', '.join(ids)}")
     errors.extend(duplicate_errors)
 
     missing = []
     for entry_id, value in claims:
         if value not in on_disk:
             missing.append(
-                f"entry {entry_id or '(no ID)'}: {DISPATCH_FIELD!r} names "
-                f"{value!r}, which does not exist under {PROMPTS_DIR}/")
+                f"entry {entry_id or '(no ID)'}: {field!r} names "
+                f"{value!r}, which does not exist under {prompts_dir}/")
     errors.extend(missing)
 
     claimed_set = set(claimed_paths)
     orphaned_files = sorted(on_disk - claimed_set)
     for rel in orphaned_files:
         errors.append(
-            f"{PROMPTS_DIR}/{rel} exists but no RECORD.md entry's "
-            f"{DISPATCH_FIELD!r} field names it")
+            f"{prompts_dir}/{rel} exists but no record entry's "
+            f"{field!r} field names it")
 
     if stray:
         errors.append(
-            f"file(s) present directly under {PROMPTS_DIR}/, outside "
-            f"{PROVENANCE_DIRS!r}, with no provenance directory: "
+            f"file(s) present directly under {prompts_dir}/, outside "
+            f"{provenance!r}, with no provenance directory: "
             f"{sorted(stray)}")
 
-    counts = {name: 0 for name in PROVENANCE_DIRS}
+    counts = {name: 0 for name in provenance}
     for rel in on_disk:
         top = rel.split("/", 1)[0]
         if top in counts:
             counts[top] += 1
 
     report_lines.append(f"dispatch-recording entries found: {len(claims)}")
-    report_lines.append(f"files under {PROMPTS_DIR}/: "
+    report_lines.append(f"files under {prompts_dir}/: "
                          + ", ".join(f"{k}={v}" for k, v in counts.items()))
     if stray:
         report_lines.append(f"stray files with no provenance directory "
@@ -211,16 +233,58 @@ def check_binding(repo_dir=None):
     return not errors, errors, report_lines, counts
 
 
-def main():
-    ok, errors, report_lines, counts = check_binding()
+def main(argv=None):
+    """Checks the repository it is given (default: the current directory)
+    with its records.json or the file --config names (2026-10-17-05).
+    Exit 0 pass, 1 fail, 2 unusable config or repository."""
+    import argparse
+    import json
+    parser = argparse.ArgumentParser(
+        prog="check_prompts.py",
+        description="Check that every dispatch-file claim in a repository's "
+                    "record names a stored prompt, and every stored prompt is "
+                    "claimed. Exit 0 pass, 1 fail, 2 unusable config or repository.")
+    parser.add_argument("repo", nargs="?", default=".",
+                        help="the repository's top folder (default: the current directory)")
+    parser.add_argument("--config", help="a config file to use instead of the "
+                        "repository's records.json")
+    parser.add_argument("--json", action="store_true",
+                        help="print the results as one JSON object")
+    parser.add_argument("--render-check", action="store_true",
+                        help="run this file's own self-checks")
+    args = parser.parse_args(sys.argv[1:] if argv is None else argv)
+    if args.render_check:
+        return render_check()
 
+    repo = Path(args.repo).resolve()
+    try:
+        if not repo.is_dir():
+            raise cr.ConfigError(f"repo: {repo} is not a folder")
+        cfg, source = cr.load_config(repo, args.config)
+    except cr.ConfigError as e:
+        if args.json:
+            print(json.dumps({"ok": False, "exit": 2, "repo": str(repo),
+                              "errors": [f"config error: {e}"]}, indent=2))
+        else:
+            print(f"config error: {e}\nNothing was checked.")
+        return 2
+
+    ok, errors, report_lines, counts = check_binding(repo, cfg)
+    if args.json:
+        print(json.dumps({"ok": ok, "exit": 0 if ok else 1, "repo": str(repo),
+                          "config": source, "counts": counts, "errors": errors,
+                          "report": report_lines}, indent=2, ensure_ascii=False))
+        return 0 if ok else 1
+
+    print(f"repository: {repo}")
+    print(f"config: {source or 'default (no ' + cr.CONFIG_NAME + ')'}")
     for line in report_lines:
         print(line)
     print()
 
     if ok:
-        print(f"PASS: every dispatch-recording entry's {DISPATCH_FIELD!r} "
-              f"resolves to a real file, every file under {PROMPTS_DIR}/ "
+        print(f"PASS: every dispatch-recording entry's {cfg['dispatch_field']!r} "
+              f"resolves to a real file, every file under {cfg['prompts_dir']}/ "
               f"is claimed by exactly one entry (or by an intent/terminal "
               f"pair closing it), no orphans in either "
               f"direction. This checks existence and binding only -- it "
@@ -346,6 +410,4 @@ def render_check():
 
 
 if __name__ == "__main__":
-    if "--render-check" in sys.argv:
-        sys.exit(render_check())
     sys.exit(main())
