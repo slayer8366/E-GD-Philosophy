@@ -8320,3 +8320,166 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** revert_runs_accepted_violations_2026_10_17_14
+
+**Timestamp:** 2026-10-17T10:11:26Z
+
+**Expected failure mode:** A control fails nothing; each of 9 one-line sabotages on a temporary copy of the committed check_record.py fails its own checks among 64-70. unmatched_reported fails check65 by a StopIteration its edit causes; unmatched_silent, the same rule disabled cleanly, must fail it by assertion. Repository file equals the committed copy at start and end.
+
+**Command:** python3 /tmp/egd-scripts/revert_runner9.py .
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repo file equals committed copy at start: True
+    [control] CONTROL CLEAN: expected []; failed 0 of 70; others: []
+    [acceptances_read] BITES: expected ['check64_accepted_violation_listed_not_failed', 'check65_acceptance_of_nothing_reported', 'check66_acceptance_needs_a_reason', 'check67_unaccepted_violation_still_fails', 'check68_merge_violation_accepted', 'check69_accepts_field_configurable']; failed 6 of 70; others: []
+        check64_accepted_violation_listed_not_failed: AssertionError('an accepted violation still failed the check: ["history walk, RECORD.md: 3e194a37a5 (\'one\') -> 84c3b8f83b (\'two\'): diverges at line 10"]')
+        check65_acceptance_of_nothing_reported: AssertionError('an acceptance naming a commit with no violation was not reported: ["history walk, RECORD.md: 0dd61ad9cd (\'one\') -> 85b5788dda (\'two\'): diverges at line 10"]')
+        check66_acceptance_needs_a_reason: AssertionError('an acceptance with no reason was not reported: ["history walk, RECORD.md: 0dd61ad9cd (\'one\') -> 85b5788dda (\'two\'): diverges at line 10"]')
+        check67_unaccepted_violation_still_fails: AssertionError('the one accepted violation is not listed beside the one that fails: []')
+        check68_merge_violation_accepted: AssertionError('an accepted merge violation still failed: ["history walk, RECORD.md: merge 7452e026fb (\'merge side\'): the record is not the merge base\'s (78590c9d1c) followed by each branch\'s addi
+        check69_accepts_field_configurable: AssertionError('a configured accepts_field was not read: ["history walk, RECORD.md: 0dd61ad9cd (\'one\') -> 85b5788dda (\'two\'): diverges at line 10"]')
+    [unmatched_reported] BITES: expected ['check65_acceptance_of_nothing_reported']; failed 1 of 70; others: []
+        check65_acceptance_of_nothing_reported: StopIteration()
+    [unmatched_silent] BITES: expected ['check65_acceptance_of_nothing_reported']; failed 1 of 70; others: []
+        check65_acceptance_of_nothing_reported: AssertionError('an acceptance naming a commit with no violation was not reported: ["history walk, RECORD.md: 2b12b7b97b (\'one\') -> 0646f3e33f (\'two\'): diverges at line 10"]')
+    [reason_required] BITES: expected ['check66_acceptance_needs_a_reason']; failed 1 of 70; others: []
+        check66_acceptance_needs_a_reason: AssertionError('an acceptance with no reason was not reported: []')
+    [only_named_commit] BITES: expected ['check67_unaccepted_violation_still_fails']; failed 1 of 70; others: []
+        check67_unaccepted_violation_still_fails: AssertionError('a violation nobody accepted did not fail: []')
+    [pass_when_all_accepted] BITES: expected ['check64_accepted_violation_listed_not_failed', 'check68_merge_violation_accepted']; failed 3 of 70; others: ['check69_accepts_field_configurable']
+        check64_accepted_violation_listed_not_failed: AssertionError("an accepted violation still failed the check: ['history walk, RECORD.md: 2 commit(s) checked, 1 violation(s) accepted']")
+        check68_merge_violation_accepted: AssertionError("an accepted merge violation still failed: ['history walk, RECORD.md: 4 commit(s) checked, 1 violation(s) accepted']")
+    [accepts_field_config] BITES: expected ['check69_accepts_field_configurable']; failed 1 of 70; others: []
+        check69_accepts_field_configurable: AssertionError('a configured accepts_field was not read: ["history walk, RECORD.md: 9d14ccd8d6 (\'one\') -> 88068584aa (\'two\'): diverges at line 10"]')
+    [text_listing] BITES: expected ['check64_accepted_violation_listed_not_failed']; failed 1 of 70; others: []
+        check64_accepted_violation_listed_not_failed: AssertionError('text output does not list it: "repository: /tmp/tmpsne_03df\\nconfig: default (RECORDING.md format; no records.json)\\nrecord files: RECORD.md\\nentries: 3\\nunterminated intent entrie
+    [ambiguous_rejected] BITES: expected ['check70_ambiguous_acceptance_accepts_nothing']; failed 1 of 70; others: []
+        check70_ambiguous_acceptance_accepts_nothing: AssertionError('an ambiguous acceptance was not reported: []')
+    repo file equals committed copy at end: True
+    runs: 10, not biting, not run or control failed: 0
+    PASS
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_record_terminal_2026_10_17_15
+
+**Timestamp:** 2026-10-17T10:11:46Z
+
+**Expected failure mode:** Run from /tmp with this repository as the argument: PASS at 63 entries, none unterminated.
+
+**Command:** sh -c cd /tmp && python3 /home/zynergy-labs/Zynergy/E-GD-Philosophy/check_record.py /home/zynergy-labs/Zynergy/E-GD-Philosophy
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repository: /home/zynergy-labs/Zynergy/E-GD-Philosophy
+    config: default (RECORDING.md format; no records.json)
+    record files: RECORD.md
+    entries: 63
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-07: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-09: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-11: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-15: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-17: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-19: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-21: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-23: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-07: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-09: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-11: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-17-14: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check: RECORD.md -- changes since the last commit] PASS: current file starts with HEAD's content unchanged
+    [history walk: RECORD.md -- every committed version] PASS: 59 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- terminals whose outcome must name an intent] PASS: no entry declares such an outcome (vacuous)
+    [closed-once check -- no intent closed by more than one closing entry] PASS: 0 intent(s) closed more than once
+    
+    PASS: entries structurally valid across 1 record file(s); working-tree check, history walk, and cross-references all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_terminal_2026_10_17_15
+
+**Timestamp:** 2026-10-17T10:11:46Z
+
+**Expected failure mode:** PASS, 24 dispatch-recording entries, preserved=23.
+
+**Command:** sh -c cd /tmp && python3 /home/zynergy-labs/Zynergy/E-GD-Philosophy/check_prompts.py /home/zynergy-labs/Zynergy/E-GD-Philosophy
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    repository: /home/zynergy-labs/Zynergy/E-GD-Philosophy
+    config: default (no records.json)
+    dispatch-recording entries found: 24
+    files under prompts/: preserved=23, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_terminal_2026_10_17_15
+
+**Timestamp:** 2026-10-17T10:11:46Z
+
+**Expected failure mode:** 45/44/45; PASS.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 45
+    enforcement entries:  44
+    glossary rows:        45
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+

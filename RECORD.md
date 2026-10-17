@@ -2714,3 +2714,55 @@ Out of scope:
 **Abort conditions:** An existing check failing. A new check not failing first for its stated reason. An acceptance that could be matched to a commit other than the one it names.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-17-15
+
+**Timestamp:** 2026-10-17T10:11:45Z
+
+**Closes:** 2026-10-17-14
+
+**Outcome:** completed
+
+**Observed:** A past violation can now be accepted in the record, with its reason, and the history walk passes once every violation is accepted. Built on branch accepted-violations-2026-10-17, cut from Test-1 at 4bfff35 after the operator's "Merge 15" was carried out. After the intent (0f68deb):
+
+- 81e8bd4: checks 64 to 69, committed failing.
+- 95ef77e: accepts_field, read_acceptances and apply_acceptances, and the accepted list in text and JSON.
+- 110c9c6: check 70, written after its rule.
+- 65e8918, 724d53a, fc4a1c3: RECORDING.md, ADOPTING.md and the skill.
+
+Results, each registered in REGISTER.md:
+
+- check_record.py --render-check passes 70 of 70.
+- The revert run: a control with no edit failed nothing, and each of 9 one-line sabotages, on a temporary copy, failed its own checks among 64 to 70. The repository file equalled the committed copy at the start and the end.
+- ADOPTING.md: 21 of 21 claims hold. They include the guide's own Accepts-violation format accepting a real violation, a mistyped hash being reported, and a changed header line counting as an edit.
+- Forager's real record: a fresh shared throwaway clone at origin/records-after-173 8ef027ca, never pushed, with nothing written in Forager. Before, the walk had 9 violations. With one demonstration entry accepting each, the history walk passed, the same 9 commits listed as accepted.
+
+Confirmed against inferred:
+
+- The red at 81e8bd4 shows acceptances were not read, and that the config key did not exist. The evidence that each rule holds is the revert run.
+- Check 70's evidence is the revert run alone. It is the one check here that calls a function directly rather than going through main(argv), since two real commits sharing a 7-character prefix cannot be made in a fixture.
+- In the revert run, unmatched_reported made check 65 fail by a StopIteration the edit itself caused. unmatched_silent, the same rule disabled without that side effect, made it fail by its assertion.
+
+Could not determine: whether any project will want to accept a violation in a file other than the one it occurred in. An acceptance names a commit, so it covers that commit's violations in every record file.
+
+Premises that were wrong: none.
+
+Decided beyond scope:
+
+- An acceptance names a commit by 7 or more hex characters, and covers that commit's violations in every record file.
+- An acceptance matching violations in more than one commit accepts nothing and is an error.
+- Only the history walk accepts; the working-tree check never does.
+- RECORDING.md says the accepting entry quotes the operator's words, as any decision does.
+- The header note (the operator's "Yes, they should") goes in RECORDING.md's new section and in ADOPTING.md's description of a record file. The walk already treated headers that way, so no code changed.
+- Check 70.
+
+Observed, not asked:
+
+- On the way to the real-data run, a full clone of Forager's repository into /tmp hit the disk quota; /tmp is a memory-backed disk. I removed my own two scratch clones (411 MB) and used a shared clone, which reads Forager's objects in place. /tmp was back to 1.9 GB free afterwards.
+- Writing real acceptances into Forager's record is Forager's work: the planner writes them, on the owner's word, in its own window. The nine commits, with their subjects, are listed in REGISTER.md's forager_record_walk_with_merges_2026_10_17_11, taken at d23daa5d. The demonstration at 8ef027ca found the same count, and its register entry holds counts only.
+
+**Deviations:** Check 70 was added beyond 64 to 69. No existing RECORD.md or REGISTER.md entry was edited.
+
+---
