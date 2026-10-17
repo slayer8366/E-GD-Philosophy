@@ -4136,3 +4136,103 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** check_record_terminal_2026_10_16_22
+
+**Timestamp:** 2026-10-17T04:59:24Z
+
+**Expected failure mode:** Expected PASS: 46 entries, none unterminated.
+
+**Command:** python3 check_record.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    entries: 46
+    intent entries with prediction sentinels (reported, not a failure):
+      2026-08-13-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-13-09: Prediction (outcome — planner) = 'withheld' (pending)
+      2026-08-13-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-14-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-08-15-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-01: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-03: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-05: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-07: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-09: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-11: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-13: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-15: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-17: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-19: Prediction (outcome — planner) = 'not authored' (pending)
+      2026-10-16-21: Prediction (outcome — planner) = 'not authored' (pending)
+    
+    [working-tree check -- covers changes since the last commit only] PASS: current file starts with HEAD's content unchanged
+    [history walk -- covers every committed transition in RECORD.md's history] PASS: 43 commit(s) checked, each a byte-prefix extension of the one before it
+    [Superseded-by cross-reference -- covers terminal entries declaring Outcome: superseded] PASS (vacuous: no entry declares Outcome: superseded)
+    [duplicate-terminal check -- every intent closed by more than one terminal entry] PASS
+    
+    PASS: entries structurally valid; working-tree check, history walk, and Superseded-by cross-reference all clean
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_prompts_terminal_2026_10_16_22
+
+**Timestamp:** 2026-10-17T04:59:24Z
+
+**Expected failure mode:** Expected PASS: 18 entries, preserved=17.
+
+**Command:** python3 check_prompts.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    dispatch-recording entries found: 18
+    files under prompts/: preserved=17, recovered=0
+    
+    PASS: every dispatch-recording entry's 'Dispatch-file' resolves to a real file, every file under prompts/ is claimed by exactly one entry (or by an intent/terminal pair closing it), no orphans in either direction. This checks existence and binding only -- it does not and cannot verify stored text matches what was actually dispatched.
+
+**Stderr:**
+
+    (nothing captured)
+
+---
+
+**Check:** check_glossary_terminal_2026_10_16_22
+
+**Timestamp:** 2026-10-17T04:59:24Z
+
+**Expected failure mode:** Expected PASS at 45/44/45.
+
+**Command:** python3 check_glossary.py
+
+**Exit code:** 0
+
+**Vacuous:** no
+
+**Stdout:**
+
+    philosophy headwords: 45
+    enforcement entries:  44
+    glossary rows:        45
+    
+    PASS: bidirectional contract holds, sections aligned
+
+**Stderr:**
+
+    (nothing captured)
+

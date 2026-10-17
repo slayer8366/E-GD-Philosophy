@@ -1895,3 +1895,35 @@ Observed, not asked: nothing tells a curator session to read profiles/curator.md
 **Abort conditions:** A check failing.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-22
+
+**Timestamp:** 2026-10-17T04:59:23Z
+
+**Closes:** 2026-10-16-21
+
+**Outcome:** completed
+
+**Observed:** CLAUDE.md's "Read at session start" gains one paragraph, on branch curator-profile-at-start-2026-10-16, pushed. It says:
+
+- a session working as E-GD's curator reads profiles/curator.md before its first action;
+- a session in any other role named under PROTOCOL rule 22 reads its own profile in profiles/;
+- where a profile and CLAUDE.md disagree, CLAUDE.md wins.
+
+The diff of CLAUDE.md shows two added lines and none removed. The checks are run through check_register.py before this commit.
+
+Confirmed against inferred: the diff was read before commit.
+
+Could not determine: none.
+
+Premises that were wrong: none.
+
+Decided beyond scope: the sentence that CLAUDE.md wins over a profile. It repeats what the profile itself says, so a session reading CLAUDE.md alone also knows it.
+
+Observed, not asked: none.
+
+**Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited.
+
+---
