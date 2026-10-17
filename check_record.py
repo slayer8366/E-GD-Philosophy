@@ -2438,8 +2438,27 @@ def render_check():
           "a config's accepts_field is not used, or null does not turn acceptance off",
           check69)
 
+    # Check 70 was written after the rule, found unchecked when the revert run
+    # was planned. Two real commits sharing a 7-character prefix cannot be
+    # made in a fixture, so it calls apply_acceptances directly with
+    # synthetic results, the one check here not run through main(argv). Its
+    # evidence is the revert run, not a red.
+    def check70():
+        results = [{"file": RECORD_NAME, "ok": False, "msg": "2 violation(s)", "count": 2,
+                    "vacuous": False,
+                    "violations": [{"newer": "abcdef1" + "1" * 33, "divergence_line": 3},
+                                   {"newer": "abcdef1" + "2" * 33, "divergence_line": 5}]}]
+        errs = apply_acceptances(results, [{"commit": "abcdef1", "reason": "r", "entry": "E1"}])
+        assert any("more than one" in e and "E1" in e for e in errs), f"an ambiguous acceptance was not reported: {errs}"
+        assert not results[0]["accepted"] and len(results[0]["violations"]) == 2 and not results[0]["ok"], (
+            f"an ambiguous acceptance accepted something: {results[0]}")
+
+    check("check70_ambiguous_acceptance_accepts_nothing",
+          "an acceptance whose hash matches two violating commits accepts one of them",
+          check70)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{69} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{70} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
