@@ -2446,3 +2446,43 @@ Observed, not asked:
 **Deviations:** c9 and c10 were added beyond c1 to c8, after their rules. 14fd9bd was committed before its register entry was read, as above. No existing RECORD.md or REGISTER.md entry was edited. check_record.py and check_prompts.py are unchanged on this branch.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-17-09
+
+**Timestamp:** 2026-10-17T09:11:12Z
+
+**Title:** Clio is the curator's name in every system that runs the method; Clio welcomes people to the system and brings their feedback to the operator for approval
+
+**Dispatch-file:** preserved/2026-10-17-09.md
+
+**Change:**
+
+1. profiles/curator.md quotes the operator's words. It adds the practices: Clio introduces itself to anyone new and makes them welcome; feedback is quoted word for word with its source; feedback reaches the operator with a recommendation, and nothing changes without the operator's approval.
+2. PROTOCOL rule 22 gains one line: the curator is the exception to roles naming themselves per project. It keeps the method itself, so it is Clio in every system that runs it.
+3. ADOPTING.md opens with Clio's welcome, in the wording the operator approved.
+4. README.md's "Contributing" gains the approved paragraph on where feedback goes.
+5. skills/record-checking/SKILL.md ends with a "Feedback" section for agents.
+6. .github/ISSUE_TEMPLATE/feedback-for-clio.md: a "Feedback for Clio" issue form.
+
+**Scope boundary:** profiles/curator.md, PROTOCOL.md (rule 22, one line), ADOPTING.md, README.md, skills/record-checking/SKILL.md, .github/ISSUE_TEMPLATE/feedback-for-clio.md (new), RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-17-09.md, on branch clio-welcome-2026-10-17, cut from lookup-config-2026-10-17 at a5ec670 and stacked on PR #13.
+
+Out of scope:
+
+- The tools' help text, which the operator did not choose.
+- Any other project's repository.
+- Last round's four open decisions.
+- Merging, which waits for the operator's go.
+
+**Baseline:** lookup-config-2026-10-17 at a5ec67036d0d7f2b595875bf8c88761a818d32d8, equal to its remote after fetch; PRs #12 and #13 open; Test-1 at 7dc4a25. The repository has issues enabled, with none filed, and no .github folder. PROTOCOL rule 22's "The name" has each role propose three names from its own project. README.md's "Contributing" invites issues but names no one who reads them. check_record.py passes at 56 entries.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** Documentation only, so no self-check changes. check_record.py passes at 58 entries after the terminal, none unterminated. check_prompts.py passes with 22 claims and preserved=21. check_glossary.py stays at 45/44/45. The issue form appears in GitHub's new-issue chooser once the branch is merged to the default branch; until then it can be checked only as a file.
+
+**Finish line:** One commit per place, each pushed; the terminal; the checks through check_register.py; a PR stacked on #13. Not merged until the operator's go.
+
+**Abort conditions:** An approved wording that turns out false against the repository, such as the issues link not resolving. Any check failing.
+
+---
