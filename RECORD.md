@@ -2911,3 +2911,51 @@ The Forager quotes were checked at records-after-173 0335c015: 17 found and veri
 **Notes:** Written by the curator, Clio, on branch onboarding-2026-10-17. Found by checking the citation after the intent was pushed, so it is corrected forward rather than edited.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-17-22
+
+**Timestamp:** 2026-10-17T21:16:25Z
+
+**Closes:** 2026-10-17-19
+
+**Outcome:** completed
+
+**Observed:** The operator profile is rebuilt as a template, and E-GD has an onboarding process. Built on branch onboarding-2026-10-17, cut from Test-1 at 78975a1, after the intent (5604fd7), one commit per file:
+
+- 52aceba: OPERATOR_PROFILE.template.md.
+- 97068ff: ONBOARDING.md.
+- 88220e9: skills/onboarding/SKILL.md.
+- 2038585, 3a7d02e, fe5821a, 840f3af, 0cbf645: BOOTSTRAP.md, CLAUDE.md, OVERVIEW.md, README.md and skills/README.md.
+
+The draft of Forager's operator profile is recorded as dispatch-note 2026-10-17-20, approved, and handed to the operator to send. Correction 2026-10-17-21 fixes the intent's citation.
+
+Checked:
+- A script compared the three new files with the wording shown to the operator (prompts/preserved/2026-10-17-19.md). Every shown line is in the files word for word, ignoring formatting, except ONBOARDING.md's first line, which gains the record citation.
+- The Forager draft's 17 quotes were verified line by line at records-after-173 0335c015.
+
+Confirmed against inferred:
+- The reader agent's results were re-checked by hand: every found quote, and five of its nine not-founds.
+- The other four not-founds rest on the agent's search alone: "You better not, I didn't tell you to.", "Not the PR. Undo option C only. Redo the PR", the owner's words on overrides, and on describing products generically.
+- Whether the owner said them in a session that was never recorded cannot be told from the repository. That is why the 12 practices go to the owner to word, rather than in from memory.
+
+Could not determine: what the lost OPERATOR_PROFILE.template.md held. RECORD.md 2026-08-13-02 names it and nothing more, so this template is a new design.
+
+Premises that were wrong:
+- The proposal told the operator that their preferences were "already written down in Forager's planner profile ... with your words in Forager's record". The planner profile has them, but most are not in the owner's own words anywhere in Forager's sources. Nine of the sixteen searched-for preferences were not found, among them Pacific times, screenshots off GitHub and how questions and reports are shaped. The drafts message told the operator so before approval.
+- The intent cited the loss as RECORD.md 2026-08-13-01; it is -02 (correction 2026-10-17-21).
+- The intent predicted 69 entries after the terminal; the correction makes it 70.
+
+Decided beyond scope:
+- The files keep the wording shown, with formatting (bold lead-ins, lists, the skill's front matter) and one record citation added.
+- The skill's opening paragraph, in the first draft but not in what the operator saw, was left out.
+- The note to Forager's planner around the draft is the curator's wording. It is preserved in 2026-10-17-20.md.
+
+Observed, not asked:
+- Forager's planner handoffs and profiles carry many practices as the planner's own wording, with no owner quote behind them. They are followed, and as far as anyone can tell they are right, but under the template's own rule they cannot enter an operator profile until the owner words them.
+- My memory notes hold verbatim owner quotes for several of these, from sessions that were never recorded. Memory is a pointer, not a source, so they were not used.
+
+**Deviations:** None beyond the above. No existing RECORD.md or REGISTER.md entry was edited.
+
+---
