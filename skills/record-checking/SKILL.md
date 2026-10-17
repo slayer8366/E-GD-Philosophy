@@ -19,11 +19,12 @@ A record is only evidence while it is well formed and has only grown. Entries mi
 - **Vacuous is not a pass.** With `"vacuous": true`, no record was found or no entries were read, so the entry rules checked nothing. Report it as that, never as "the record checks clean". The same goes for any single check marked vacuous.
 - **Unclosed intents are reported, not failed.** Open work is normal. Say how many, and which.
 - **Name what failed exactly**, using the checker's own message and the entry ID. Don't summarise five failures as "a few formatting issues".
-- **A history-walk failure naming a merge commit** means the merge dropped or changed a row from one side, or wrote an entry of its own (PROTOCOL rule 13). Like any committed violation, it stays in the history and is reported on every run. Report it with the checker's message, record what happened in a correction entry, and leave the history alone. Next time, keep every row from both sides and write new entries only in ordinary commits.
+- **A history-walk failure naming a merge commit** means the merge dropped or changed a row from one side, or wrote an entry of its own (PROTOCOL rule 13). Like any committed violation, it stays in the history and is reported on every run until the record's owner accepts it. Report it with the checker's message, record what happened in a correction entry, and leave the history alone. Next time, keep every row from both sides and write new entries only in ordinary commits.
 
 ## Fixing what it finds
 
 - **Never edit a committed entry to make the check pass.** Append a correction entry that names the old entry and says what was wrong. The append-only checks exist to catch exactly that edit.
+- **A committed violation can be accepted, never by you alone.** Bring it to the record's owner with the checker's message. If they accept it, append an entry quoting their words, with an `Accepts-violation` line: the commit, then the reason. The checker then lists it as accepted instead of failing.
 - **Never loosen the config to reach a pass.** Removing a required field or widening the ID pattern changes what the record must hold. That is the owner's decision. Bring it as a question, with the failures that prompted it.
 - **Uncommitted entries can still be fixed in place.** The working-tree check compares against the last commit, so a mistake in an entry not yet committed is corrected before committing.
 
