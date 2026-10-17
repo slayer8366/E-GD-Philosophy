@@ -296,8 +296,52 @@ def render_check():
           "a Dispatch-file claim in records/YYYY-MM.md is not read, so its prompt is reported orphaned",
           p2)
 
+    # p3-p4 (2026-10-17-05): any repository, shaped by its records.json.
+    import inspect, io, json
+    from contextlib import redirect_stdout
+
+    def run_main(argv):
+        assert inspect.signature(main).parameters, (
+            "main() takes no arguments: the repository argument is missing")
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            code = main(argv)
+        return code, buf.getvalue()
+
+    def p3():
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / "records.json").write_text(json.dumps(
+            {"record_file": "LOG.md", "prompts_dir": "dispatches", "dispatch_field": "Prompt-file"}))
+        (tmp / "LOG.md").write_text(record("LOG.md", intent("2026-10-02-01", "x").replace(
+            "**Dispatch-file:** x", "**Prompt-file:** preserved/a.md")))
+        d = tmp / "dispatches" / "preserved"
+        d.mkdir(parents=True)
+        (d / "a.md").write_text("a dispatch\n")
+        code, out = run_main([str(tmp)])
+        assert code == 0, f"a renamed record, prompts folder and dispatch field were not applied: {out!r}"
+        (d / "b.md").write_text("unclaimed\n")
+        code, out = run_main([str(tmp)])
+        assert code == 1 and "dispatches/preserved/b.md" in out, (
+            f"an unclaimed prompt in the configured folder was not reported: {out!r}")
+
+    check("p3_repository_and_config",
+          "check_prompts ignores the given repository or its records.json",
+          p3)
+
+    def p4():
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / RECORD_NAME).write_text(record("RECORD.md", intent("2026-10-02-01", "preserved/x.md")))
+        code, out = run_main([str(tmp), "--json"])
+        data = json.loads(out)
+        assert data["ok"] is False and any("x.md" in e for e in data["errors"]), (
+            f"--json lacks ok or errors: {data}")
+
+    check("p4_json_output",
+          "--json does not print one JSON object carrying ok and errors",
+          p4)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{2} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{4} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 

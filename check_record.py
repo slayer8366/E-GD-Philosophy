@@ -1534,8 +1534,158 @@ def render_check():
           "a line removed from a monthly file in a committed change passes the history walk",
           check46)
 
+    # ---- Checks 47-55: any repository, shaped by a JSON config (2026-10-17-05)
+    # Written before the behaviour existed; run through main(argv), the real
+    # entry point. A main() that takes no arguments fails by assertion.
+
+    import inspect, io, json
+    from contextlib import redirect_stdout
+
+    def run_main(argv):
+        params = inspect.signature(main).parameters
+        assert params, "main() takes no arguments: the repository argument is missing"
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            code = main(argv)
+        return code, buf.getvalue()
+
+    def repo_with(files):
+        tmp = Path(tempfile.mkdtemp())
+        _init_repo(tmp)
+        for rel, text in files.items():
+            p = tmp / rel
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(text if isinstance(text, str) else json.dumps(text))
+        return tmp
+
+    def note(id_, **fields):
+        base = {"Kind": "note", "ID": id_}
+        base.update(fields)
+        return _render_entry(base)
+
+    NOTE_CONFIG = {"record_file": "LOG.md", "kinds": {"note": {"required": ["Kind", "ID", "Body"]}},
+                   "intent_kind": None, "terminal_kind": None, "continuation_kind": None,
+                   "closing_kinds": []}
+
+    def check47():
+        bad = repo_with({RECORD_NAME: _minimal_record(_minimal_intent(Change=None))})
+        code, out = run_main([str(bad)])
+        assert code == 1 and "'Change'" in out, (
+            f"the given repository was not the one checked (exit {code}): {out!r}")
+        good = repo_with({RECORD_NAME: _minimal_record(_minimal_intent())})
+        code, out = run_main([str(good)])
+        assert code == 0, f"a valid record in the given repository failed (exit {code}): {out!r}"
+
+    check("check47_repository_argument_is_the_one_checked",
+          "the checker checks its own folder, not the repository it is given",
+          check47)
+
+    def check48():
+        tmp = repo_with({"records.json": {"record_file": "LOG.md"},
+                         "LOG.md": _minimal_record(_minimal_intent())})
+        code, out = run_main([str(tmp)])
+        assert code == 0 and "LOG.md" in out, (
+            f"records.json in the repository was not read (exit {code}): {out!r}")
+
+    check("check48_records_json_in_repository_is_read",
+          "a records.json in the checked repository is ignored",
+          check48)
+
+    def check49():
+        tmp = repo_with({"records.json": NOTE_CONFIG,
+                         "LOG.md": _minimal_record(note("2026-01-01-01", Body="b"),
+                                                   note("2026-01-01-02"),
+                                                   _minimal_intent("2026-01-01-03"))})
+        code, out = run_main([str(tmp)])
+        assert code == 1, f"a config's entry types were not applied (exit {code}): {out!r}"
+        assert "2026-01-01-02" in out and "'Body'" in out, f"missing Body not named: {out!r}"
+        assert "invalid Kind" in out and "intent" in out, (
+            f"a kind outside the config's types was accepted: {out!r}")
+
+    check("check49_config_sets_the_entry_types",
+          "a config's own entry types and required fields are not applied",
+          check49)
+
+    def check50():
+        cfg = dict(NOTE_CONFIG, id_pattern="^N\\d+$", id_token_pattern="N\\d+")
+        tmp = repo_with({"records.json": cfg,
+                         "LOG.md": _minimal_record(note("N12", Body="b"), note("2026-01-01-02", Body="b"))})
+        code, out = run_main([str(tmp)])
+        assert "2026-01-01-02: malformed ID" in out and "N12: malformed ID" not in out, (
+            f"a config's ID pattern was not applied: {out!r}")
+
+    check("check50_config_sets_the_id_pattern",
+          "a config's ID pattern is not applied",
+          check50)
+
+    def check51():
+        tmp = repo_with({"records.json": {"recordfile": "X"}, RECORD_NAME: _minimal_record(_minimal_intent())})
+        code, out = run_main([str(tmp)])
+        assert code == 2 and "recordfile" in out, f"an unknown config key was not refused by name (exit {code}): {out!r}"
+        tmp = repo_with({"records.json": {"id_pattern": "("}, RECORD_NAME: _minimal_record(_minimal_intent())})
+        code, out = run_main([str(tmp)])
+        assert code == 2 and "id_pattern" in out, f"a bad regex was not refused by name (exit {code}): {out!r}"
+
+    check("check51_invalid_config_refused_by_name",
+          "an unknown key or an uncompilable regex in the config is accepted or not named",
+          check51)
+
+    def check52():
+        tmp = repo_with({RECORD_NAME: _minimal_record(_minimal_intent(Change=None))})
+        code, out = run_main([str(tmp), "--json"])
+        data = json.loads(out)
+        assert data["ok"] is False and data["entries"] == 1 and any("'Change'" in e for e in data["errors"]), (
+            f"--json output lacks ok, entries or errors: {data}")
+
+    check("check52_json_output",
+          "--json does not print one JSON object carrying ok, entries and errors",
+          check52)
+
+    def check53():
+        default = globals().get("DEFAULT_CONFIG")
+        assert default is not None, "DEFAULT_CONFIG does not exist: the config is missing"
+        code, out = run_main(["--print-config"])
+        printed = json.loads(out)
+        assert printed == json.loads(json.dumps(default)), "--print-config does not print the default config"
+        tmp = repo_with({"records.json": printed, RECORD_NAME: _minimal_record(_minimal_intent())})
+        code, out = run_main([str(tmp)])
+        assert code == 0, f"the printed default config, used as records.json, fails a valid record: {out!r}"
+
+    check("check53_print_config_round_trips",
+          "--print-config does not print the default, or the printed default is not a valid config",
+          check53)
+
+    def check54():
+        rec = "# Record, 2026-10\n\n## Entries\n\n---\n\n" + _minimal_intent(Timestamp="2026-10-01T00:00:00Z") + "\n\n---\n"
+        tmp = repo_with({"records.json": {"monthly_dir": "log"}, RECORD_NAME: "# RECORD.md\n\nThe index.\n",
+                         "log/2026-10.md": rec})
+        code, out = run_main([str(tmp), "--json"])
+        assert json.loads(out)["entries"] == 1, f"a configured monthly folder was not read: {out!r}"
+        tmp = repo_with({"records.json": {"monthly_dir": None}, RECORD_NAME: _minimal_record(_minimal_intent()),
+                         "records/2026-10.md": rec.replace("2026-01-01-01", "2026-01-01-09")})
+        code, out = run_main([str(tmp), "--json"])
+        assert json.loads(out)["entries"] == 1, f"monthly_dir null did not turn monthly files off: {out!r}"
+
+    check("check54_monthly_dir_configurable",
+          "a configured monthly folder is not read, or null does not turn monthly files off",
+          check54)
+
+    def check55():
+        tmp = repo_with({"records.json": {"terminal_outcomes": {"done": {}}},
+                         RECORD_NAME: _minimal_record(_minimal_intent(),
+                                                      _minimal_terminal(outcome="done"),
+                                                      _minimal_intent("2026-01-01-03"),
+                                                      _minimal_terminal("2026-01-01-04", closes="2026-01-01-03"))})
+        code, out = run_main([str(tmp)])
+        assert "'done' is not one of" not in out and "'completed' is not one of" in out, (
+            f"configured terminal outcomes were not applied: {out!r}")
+
+    check("check55_terminal_outcomes_configurable",
+          "a config's terminal outcomes are not applied",
+          check55)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{46} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{55} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
