@@ -232,6 +232,8 @@ def cmd_show(r, key):
             print(f"references: Forager RECORD {ref} -> {e['id']} — {e['cite']}" if e
                   else f"references: Forager RECORD {ref} -> {msg}")
         return 0
+    if _record_unread(r, f"show {key}"):
+        return 1
     e, msg = r.resolve(key)
     if not e:
         print(msg)
@@ -246,6 +248,8 @@ def cmd_show(r, key):
 
 
 def cmd_links(r, key):
+    if _record_unread(r, f"links of {key}"):
+        return 1
     e, msg = r.resolve(key)
     if not e:
         print(msg)
@@ -314,7 +318,19 @@ def cmd_search(r, words):
     return 0
 
 
+def _record_unread(r, what):
+    """True, after saying so, when the Forager record could not be read: an
+    answer drawn from it would be a plausible value standing in for
+    nothing."""
+    if r.sources["forager record"].commit and r.entries:
+        return False
+    print(f"{what}: unknown, the Forager record was not read")
+    return True
+
+
 def cmd_open(r):
+    if _record_unread(r, "open intents"):
+        return 1
     closed = set()
     for e in r.entries:
         if e["kind"] in ("terminal", "outcome"):
@@ -330,8 +346,7 @@ def cmd_open(r):
 
 def cmd_next_id(r):
     src = r.sources["forager record"]
-    if not r.entries:
-        print("next free ID: unknown, the Forager record was not read")
+    if _record_unread(r, "next free ID"):
         return 1
     counts = Counter(e["id"] for e in r.entries)
     for eid, n in sorted(counts.items()):
@@ -629,6 +644,8 @@ def render_check():
         code, out = _run(["open"] + args)
         assert any("forager record" in l and "NOT READ" in l and "no-such-ref" in l
                    for l in out.splitlines()), f"an unreadable source was not reported: {out!r}"
+        assert "open intents: 0" not in out and "open intents: unknown" in out, (
+            f"open answered a count from a record it could not read: {out!r}")
 
     check("r7_unread_source_reported",
           "a source whose ref cannot be read is skipped silently instead of reported",
