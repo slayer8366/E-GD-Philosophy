@@ -1869,3 +1869,29 @@ Observed, not asked: nothing tells a curator session to read profiles/curator.md
 **Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-16-21
+
+**Timestamp:** 2026-10-17T04:59:06Z
+
+**Title:** CLAUDE.md tells a curator session to read profiles/curator.md before its first action
+
+**Dispatch-file:** preserved/2026-10-16-21.md
+
+**Change:** One paragraph is added to CLAUDE.md's "Read at session start" section, after the PROTOCOL.md paragraph. It says a session working as E-GD's curator reads profiles/curator.md before its first action, and that a session in any other role named under PROTOCOL rule 22 reads its own profile in profiles/. Nothing else in CLAUDE.md changes.
+
+**Scope boundary:** CLAUDE.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-16-21.md, on branch curator-profile-at-start-2026-10-16 cut from Test-1 at 1943478. Out of scope: the profile itself, CLAUDE.md's other sections, and merging, which waits for the operator's go.
+
+**Baseline:** Test-1 at 1943478df35c313c32888bc32d64c8f88adf29c4 after the fast-forward of PR #7 on the operator's go. CLAUDE.md's "Read at session start" section names BOOTSTRAP.md, ENFORCEMENT.md, GLOSSARY.md, PHILOSOPHY.md and PROTOCOL.md, and not profiles/.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):** git diff of CLAUDE.md shows one hunk of added lines and none removed. check_record.py passes at 46 entries after the terminal, none unterminated; check_prompts.py passes at 18 entries, preserved=17; check_glossary.py stays at 45/44/45.
+
+**Finish line:** The line committed and pushed, the terminal and checks through check_register.py, a pull request shown to the operator. Not merged until the operator's go.
+
+**Abort conditions:** A check failing.
+
+---
