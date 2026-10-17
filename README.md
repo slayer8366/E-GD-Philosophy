@@ -30,6 +30,8 @@ None of these require the agent to be smart. They require it to be observed. Tha
 | `BOOTSTRAP.md` | Agents | One page, loaded every session. |
 | `GLOSSARY.md` | Machines | The index binding philosophy to enforcement, verified by script. |
 | `check_*.py` | Machines | The boundary checks. |
+| `ONBOARDING.md` | Both | How someone starts with E-GD: Clio's hello, how they like to work, their operator profile, then the method. |
+| `OPERATOR_PROFILE.template.md` | Both | The form each project's operator profile is built from: what the operator wants and how, in their own words. |
 | `ADOPTING.md` | Both | How to run the record checkers on any repository, shaped to its own record by a `records.json`. |
 | `records_lookup.py` | Both | Read-only lookup over a project's records, in whatever repositories a config names (show, links, search, open, next-id), every answer cited by repository, ref, commit, file and line (`specs/2026-10-16-records-lookup.md`; `ADOPTING.md`, "The lookup tool"). |
 | `lookups/` | Machines | Lookup configs for `records_lookup.py`, chosen with `--preset`: `forager.json` reads Forager's and forager-forecast's records. |
@@ -45,7 +47,7 @@ None of these require the agent to be smart. They require it to be observed. Tha
 | `specs/` | Both | Specifications awaiting or carrying the operator's approval, each read against named commits. A spec is not a go to build. |
 | `profiles/` | Agents | Role profiles, each named by its role from the project's scope and written from the record (PROTOCOL rule 22). |
 
-`OPERATOR_PROFILE.md`, listed in this table until 2026-10-16, was lost with the first record store (see `DURABILITY.md`) and has not been rebuilt.
+`OPERATOR_PROFILE.md`, listed in this table until 2026-10-16, was lost with the first record store (see `DURABILITY.md`). It was rebuilt on 2026-10-17 as `OPERATOR_PROFILE.template.md`; each project keeps its own operator profile, built from it.
 
 ## What it has actually been through
 

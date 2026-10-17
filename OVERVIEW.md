@@ -183,6 +183,8 @@ And per the philosophy's own standard: note which gates keep catching things and
 
 ## Getting started
 
+If an agent is setting you up, it starts with ONBOARDING.md: a hello from Clio, a question about how you like to work, and your operator profile, before the rest of this section.
+
 First, install the agent-facing documents where the agents will actually see them. BOOTSTRAP.md goes wherever your tooling injects standing instructions: a CLAUDE.md at the repo root, the project instructions of a chat project, or the system prompt of whatever harness you use. The planner and coder both get it. ENFORCEMENT.md, PHILOSOPHY.md, and GLOSSARY.md live in the repo where agents can read them on demand; they are not loaded into every session, and the bootstrap's reading protocol says when each is consulted. If your setup separates the planner from the coder (different projects, different tools), install the bootstrap in both, since it is the one document each role always has.
 
 Then set up the four pieces of infrastructure in the enforcement companion (the fourth, a content-hash routine, only if your outputs are data artifacts). That is one afternoon. While you are there, agree on your marker prefixes; the working set and what each drains to is the small table at the bottom of GLOSSARY.md, and `LESSON:`, `OPEN:`, `CLOSED:`, and `DEFER:` are enough to start.

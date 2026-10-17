@@ -38,6 +38,7 @@ Unlike the skills above, these were written in this repository, not copied from 
 
 | Skill | Use it when | Carries out |
 |---|---|---|
+| `onboarding` | someone starts with E-GD; a project has no operator profile; the operator states a preference (RECORD.md 2026-10-17-19, with ONBOARDING.md) | Operator Authority; Sourced Claims (every profile line the operator's own words, cited); Early Flagging of Ambiguities (ask, never infer a preference) |
 | `record-checking` | checking an append-only record on any repository, before citing it, committing to it or merging it; setting one up (RECORD.md 2026-10-17-05, with ADOPTING.md) | Immutable Append-Only History; Automated Boundary Enforcement; Severity of Checks (checking the checker on a copy); Explicit Failure Reporting (vacuous is not a pass) |
 
 **Flagged: `prior-art-before-interface` binds to no headword.** GLOSSARY.md's rule is that an action with no principle behind it is unjustified and must be flagged rather than forced into a row. This skill's premise is that an established convention is accumulated evidence from use, and departing from it is a decision to record with its reason. That is close to Document the Reasoning and Evidence-Based Feature Addition, and it is neither. It is kept, flagged, until the evidence for a principle of its own exists or the operator binds it.
