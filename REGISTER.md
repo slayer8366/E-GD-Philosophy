@@ -6489,3 +6489,72 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** lookup_tests_first_2026_10_17_07
+
+**Timestamp:** 2026-10-17T08:57:06Z
+
+**Expected failure mode:** Tests-first: exit 1, all 15 fail by assertion, each message carrying argparse's usage because --preset, --repo, --ref, --config and --print-config do not exist yet; r1-r7's bodies unchanged except r7's ref line; no crash or name error.
+
+**Command:** python3 records_lookup.py --render-check
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    records_lookup.py --render-check
+    
+    [r1_show_verbatim_with_citation] expected failure mode if broken: show does not print the entry verbatim under a citation that git show confirms
+    [r1_show_verbatim_with_citation] FAIL: AssertionError("show printed no citation line: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --preset --repo --ref --ref\\n'")
+    
+    [r2_links_each_type] expected failure mode if broken: links misses a Continues, Closes, Corrects or Supersedes link, or what an entry names
+    [r2_links_each_type] FAIL: AssertionError("links does not list the Continues link from -02 with a citation: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --preset --repo --ref --ref\\n'")
+    
+    [r3_search_seven_sources_newest_first] expected failure mode if broken: search misses a source, reads the session log's prose, is not newest first, or shows no Supersedes link
+    [r3_search_seven_sources_newest_first] FAIL: AssertionError("search found no hit in forager record: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --preset --repo --ref --ref --repo --ref\\n'")
+    
+    [r4_open_intents] expected failure mode if broken: open lists a closed intent (by terminal, or by outcome with Closes) or misses an open one
+    [r4_open_intents] FAIL: AssertionError("open listed []: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --preset --repo --ref --ref\\n'")
+    
+    [r5_next_id_across_months_with_duplicates] expected failure mode if broken: next-id reads only the current month, omits the commit read, or misses a duplicate
+    [r5_next_id_across_months_with_duplicates] FAIL: AssertionError("next-id did not read every month or name its commit: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --preset --repo --ref --ref\\n'")
+    
+    [r6_cross_repository_reference_resolves] expected failure mode if broken: a forecast decision's 'Forager RECORD -NN' is not resolved to the Forager entry, cited
+    [r6_cross_repository_reference_resolves] FAIL: AssertionError("show D200 printed no forecast citation: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --preset --repo --ref --ref --repo --ref\\n'")
+    
+    [r7_unread_source_reported] expected failure mode if broken: a source whose ref cannot be read is skipped silently instead of reported
+    [r7_unread_source_reported] FAIL: AssertionError("an unreadable source was not reported: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --preset --repo --ref --ref --ref\\n'")
+    
+    [c1_default_reads_one_repository_at_head] expected failure mode if broken: with no config the tool does not read the given (or current) repository's record at HEAD
+    [c1_default_reads_one_repository_at_head] FAIL: AssertionError("with no config, --repo's record was not read at HEAD: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --repo\\n'")
+    
+    [c2_config_names_the_sources] expected failure mode if broken: a config's record, table and folder, under its own names and ID scheme, are not read
+    [c2_config_names_the_sources] FAIL: AssertionError("a configured record's own link field was not read: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --config --repo\\n'")
+    
+    [c3_shape_from_records_json_at_the_ref] expected failure mode if broken: a record repository's records.json is not read when the lookup config gives no shape
+    [c3_shape_from_records_json_at_the_ref] FAIL: AssertionError("with no shape in the config, the record repository's records.json was not used: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --config --repo\\n'")
+    
+    [c4_open_unsupported_without_an_intent_type] expected failure mode if broken: open on a record whose shape has no intent type prints a count instead of 'unsupported'
+    [c4_open_unsupported_without_an_intent_type] FAIL: AssertionError("open on a record with no intent type answered a count: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --config --repo\\n'")
+    
+    [c5_next_id_for_any_trailing_number] expected failure mode if broken: next-id assumes YYYY-MM-DD-NN IDs and fails or misnumbers another scheme
+    [c5_next_id_for_any_trailing_number] FAIL: AssertionError("next-id did not work for an ID scheme other than the dated one: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --config --repo\\n'")
+    
+    [c6_config_refused_by_name] expected failure mode if broken: an unknown key, or a source naming a repository the config does not define, is accepted
+    [c6_config_refused_by_name] FAIL: AssertionError("an unknown config key was not refused by name: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --config\\n'")
+    
+    [c7_print_config_and_preset] expected failure mode if broken: --print-config does not print the default, or --preset forager does not load lookups/forager.json
+    [c7_print_config_and_preset] FAIL: AssertionError("--print-config does not print DEFAULT_LOOKUP: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         '")
+    
+    [c8_ref_overrides_source_over_repository] expected failure mode if broken: --ref by repository does not reach every source in it, or does not yield to a source's own --ref
+    [c8_ref_overrides_source_over_repository] FAIL: AssertionError("a source's own --ref did not win over its repository's: 'usage: records_lookup.py [-h] [--forager FORAGER] [--forecast FORECAST]\\n                         [--forager-record-ref FORAGER_RECORD_REF]\\n                         [--forager-prompts-ref FORAGER_PROMPTS_REF]\\n                         [--forager-audits-ref FORAGER_AUDITS_REF]\\n                         [--forecast-ref FORECAST_REF] [--no-fetch]\\n                         {show,links,search,open,next-id} [args ...]\\nrecords_lookup.py: error: unrecognized arguments: --preset --repo --ref --ref\\n'")
+    
+    FAIL: 15 of 15 checks failed: r1_show_verbatim_with_citation, r2_links_each_type, r3_search_seven_sources_newest_first, r4_open_intents, r5_next_id_across_months_with_duplicates, r6_cross_repository_reference_resolves, r7_unread_source_reported, c1_default_reads_one_repository_at_head, c2_config_names_the_sources, c3_shape_from_records_json_at_the_ref, c4_open_unsupported_without_an_intent_type, c5_next_id_for_any_trailing_number, c6_config_refused_by_name, c7_print_config_and_preset, c8_ref_overrides_source_over_repository
+
+**Stderr:**
+
+    (nothing captured)
+

@@ -444,10 +444,17 @@ def _intent(id_, ts, **extra):
 
 
 def _run(argv):
-    buf = io.StringIO()
-    with redirect_stdout(buf):
-        code = main(argv)
-    return code, buf.getvalue()
+    """main(argv) with its stdout; an argument error's exit and message are
+    returned rather than raised (2026-10-17-07), so a flag that does not
+    exist yet fails a check by assertion instead of ending the run."""
+    from contextlib import redirect_stderr
+    buf, err = io.StringIO(), io.StringIO()
+    with redirect_stdout(buf), redirect_stderr(err):
+        try:
+            code = main(argv)
+        except SystemExit as e:
+            code = e.code
+    return code, buf.getvalue() + err.getvalue()
 
 
 def _fixture_forager(entries_by_file, audits_rows=(), prompts=None):
@@ -485,12 +492,13 @@ def _fixture_forecast(decisions=(), audits_rows=(), dispatches=None, log_rows=()
 
 
 def _base_args(forager=None, forecast=None):
-    args = ["--no-fetch"]
+    """r1-r7 run through the Forager preset (2026-10-17-07)."""
+    args = ["--no-fetch", "--preset", "forager"]
     if forager:
-        args += ["--forager", str(forager), "--forager-record-ref", "rec",
-                 "--forager-prompts-ref", "rec", "--forager-audits-ref", "pre"]
+        args += ["--repo", f"forager={forager}", "--ref", "forager=rec",
+                 "--ref", "forager audits=pre"]
     if forecast:
-        args += ["--forecast", str(forecast), "--forecast-ref", "main"]
+        args += ["--repo", f"forecast={forecast}", "--ref", "forecast=main"]
     return args
 
 
@@ -639,8 +647,7 @@ def render_check():
     def r7():
         repo, _, _ = _fixture_forager({"RECORD.md": _record(
             _intent("2026-09-28-01", "2026-09-30T00:00:00Z"))})
-        args = _base_args(forager=repo)
-        args[args.index("--forager-record-ref") + 1] = "no-such-ref"
+        args = _base_args(forager=repo) + ["--ref", "forager record=no-such-ref"]
         code, out = _run(["open"] + args)
         assert any("forager record" in l and "NOT READ" in l and "no-such-ref" in l
                    for l in out.splitlines()), f"an unreadable source was not reported: {out!r}"
@@ -651,8 +658,170 @@ def render_check():
           "a source whose ref cannot be read is skipped silently instead of reported",
           r7)
 
+
+    # c1-c8 (2026-10-17-07): sources from a config, for any repositories.
+    # Written before the behaviour; all run through main().
+    import json
+    import os
+
+    def plain_repo(files):
+        repo = Path(tempfile.mkdtemp())
+        _commit_branch(repo, "main", files)
+        return repo
+
+    def write_config(cfg):
+        p = Path(tempfile.mkdtemp()) / "lookup.json"
+        p.write_text(json.dumps(cfg))
+        return str(p)
+
+    def c1():
+        repo = plain_repo({"RECORD.md": _record(
+            _intent("2026-01-01-01", "2026-01-01T00:00:00Z"),
+            _entry(Kind="decision", ID="2026-01-01-02", Timestamp="2026-01-01T01:00:00Z",
+                   Title="lamp colour", Notes="n"))})
+        code, out = _run(["show", "2026-01-01-02", "--repo", f"repo={repo}"])
+        assert code == 0 and "citation: repo HEAD@" in out and "lamp colour" in out, (
+            f"with no config, --repo's record was not read at HEAD: {out!r}")
+        here = os.getcwd()
+        try:
+            os.chdir(repo)
+            code, out = _run(["show", "2026-01-01-02"])
+        finally:
+            os.chdir(here)
+        assert code == 0 and "lamp colour" in out, (
+            f"with no config and no --repo, the current directory was not read: {out!r}")
+
+    check("c1_default_reads_one_repository_at_head",
+          "with no config the tool does not read the given (or current) repository's record at HEAD",
+          c1)
+
+    NOTES_SHAPE = {"record_file": "LOG.md", "monthly_dir": None, "id_pattern": "^N\\d+$",
+                   "id_token_pattern": "N\\d+", "backward_links": {"Follows": "first"},
+                   "intent_kind": None, "terminal_kind": None, "continuation_kind": None,
+                   "closing_kinds": [],
+                   "kinds": {"note": {"required": ["Kind", "ID"]}}}
+
+    def notes_repo(with_records_json=False):
+        log = _record(_entry(Kind="note", ID="N1", Timestamp="2026-02-01T00:00:00Z", Body="first kestrel"),
+                      _entry(Kind="note", ID="N2", Timestamp="2026-02-02T00:00:00Z", Body="kestrel nest"),
+                      _entry(Kind="note", ID="N9", Timestamp="2026-02-03T00:00:00Z", Body="b",
+                             Follows="N2 (the nest)"), title="LOG.md")
+        files = {"LOG.md": log,
+                 "LEDGER.md": "# Ledger\n\n| ID | Date | Entry |\n|---|---|---|\n"
+                              "| X1 | 2026-02-04 | kestrel count, see N2 |\n",
+                 "drafts/2026-02-05-plan.md": "a kestrel survey plan\n"}
+        if with_records_json:
+            files["records.json"] = json.dumps(NOTES_SHAPE)
+        return plain_repo(files)
+
+    def notes_config(shape):
+        return {"repos": {"notes": None},
+                "record": {"name": "notes log", "repo": "notes", "ref": "HEAD", "shape": shape,
+                           "links": None, "replaced_by": {}},
+                "tables": [{"name": "ledger", "repo": "notes", "ref": "HEAD", "path": "LEDGER.md",
+                            "row_pattern": "^\\| (X\\d+) \\| (\\d{4}-\\d{2}-\\d{2})",
+                            "id_pattern": "^X\\d+$", "record_reference": "see (N\\d+)"}],
+                "folders": [{"name": "drafts", "repo": "notes", "ref": "HEAD", "path": "drafts"}]}
+
+    def c2():
+        repo = notes_repo()
+        args = ["--config", write_config(notes_config(NOTES_SHAPE)), "--repo", f"notes={repo}"]
+        code, out = _run(["links", "N2"] + args)
+        assert code == 0 and any("named by: Follows N9" in l and "notes HEAD@" in l for l in out.splitlines()), (
+            f"a configured record's own link field was not read: {out!r}")
+        code, out = _run(["show", "X1"] + args)
+        assert code == 0 and "citation: notes HEAD@" in out and "LEDGER.md:" in out, (
+            f"a configured table's row was not shown by its ID: {out!r}")
+        assert any("references: see N2 -> N2" in l for l in out.splitlines()), (
+            f"a configured table's reference to the record was not resolved: {out!r}")
+        code, out = _run(["search", "kestrel"] + args)
+        for label in ("notes log", "ledger", "drafts"):
+            assert any(f" {label} " in l for l in out.splitlines() if l[:2] == "20"), (
+                f"search found no hit in the configured source {label}: {out!r}")
+
+    check("c2_config_names_the_sources",
+          "a config's record, table and folder, under its own names and ID scheme, are not read",
+          c2)
+
+    def c3():
+        repo = notes_repo(with_records_json=True)
+        cfg = notes_config(None)
+        code, out = _run(["show", "N2", "--config", write_config(cfg), "--repo", f"notes={repo}"])
+        assert code == 0 and "kestrel nest" in out and "LOG.md:" in out, (
+            f"with no shape in the config, the record repository's records.json was not used: {out!r}")
+
+    check("c3_shape_from_records_json_at_the_ref",
+          "a record repository's records.json is not read when the lookup config gives no shape",
+          c3)
+
+    def c4():
+        repo = notes_repo()
+        args = ["--config", write_config(notes_config(NOTES_SHAPE)), "--repo", f"notes={repo}"]
+        code, out = _run(["open"] + args)
+        assert code == 1 and "open intents: unsupported" in out and "open intents: 0" not in out, (
+            f"open on a record with no intent type answered a count: {out!r}")
+
+    check("c4_open_unsupported_without_an_intent_type",
+          "open on a record whose shape has no intent type prints a count instead of 'unsupported'",
+          c4)
+
+    def c5():
+        repo = notes_repo()
+        args = ["--config", write_config(notes_config(NOTES_SHAPE)), "--repo", f"notes={repo}"]
+        code, out = _run(["next-id"] + args)
+        assert code == 0 and "next free ID: N10 " in out, (
+            f"next-id did not work for an ID scheme other than the dated one: {out!r}")
+
+    check("c5_next_id_for_any_trailing_number",
+          "next-id assumes YYYY-MM-DD-NN IDs and fails or misnumbers another scheme",
+          c5)
+
+    def c6():
+        code, out = _run(["open", "--config", write_config({"tabels": []})])
+        assert code == 2 and "tabels" in out, f"an unknown config key was not refused by name: {out!r}"
+        cfg = notes_config(NOTES_SHAPE)
+        cfg["tables"][0]["repo"] = "nowhere"
+        code, out = _run(["open", "--config", write_config(cfg)])
+        assert code == 2 and "nowhere" in out, f"a source naming an unknown repository was not refused: {out!r}"
+
+    check("c6_config_refused_by_name",
+          "an unknown key, or a source naming a repository the config does not define, is accepted",
+          c6)
+
+    def c7():
+        code, out = _run(["open", "--print-config"])
+        default = globals().get("DEFAULT_LOOKUP")
+        assert default is not None and code == 0 and json.loads(out) == json.loads(json.dumps(default)), (
+            f"--print-config does not print DEFAULT_LOOKUP: {out[:300]!r}")
+        preset = Path(__file__).resolve().parent / "lookups" / "forager.json"
+        assert preset.is_file(), "lookups/forager.json does not exist"
+        code, out = _run(["open", "--print-config", "--preset", "forager"])
+        assert code == 0 and json.loads(out) == json.loads(preset.read_text()), (
+            "--preset forager does not load lookups/forager.json")
+
+    check("c7_print_config_and_preset",
+          "--print-config does not print the default, or --preset forager does not load lookups/forager.json",
+          c7)
+
+    def c8():
+        fc, _ = _fixture_forecast(decisions=[("D1", "2026-09-04", "x", "")])
+        _commit_branch(fc, "other", {"docs/planning/DECISIONS.md":
+                                     "# Decision log\n\n| ID | Date | Decision |\n|---|---|---|\n"
+                                     "| D2 | 2026-09-05 | y |\n"})
+        code, out = _run(["show", "D2", "--no-fetch", "--preset", "forager", "--repo", f"forecast={fc}",
+                          "--ref", "forecast decisions=other", "--ref", "forecast=main"])
+        assert any(l.startswith("source forecast decisions: forecast other@") for l in out.splitlines()), (
+            f"a source's own --ref did not win over its repository's: {out!r}")
+        assert any(l.startswith("source forecast audits: forecast main@") for l in out.splitlines()), (
+            f"a repository-wide --ref did not reach that repository's other sources: {out!r}")
+        assert code == 0 and "| D2 |" in out, f"D2 was not read at the overriding ref: {out!r}"
+
+    check("c8_ref_overrides_source_over_repository",
+          "--ref by repository does not reach every source in it, or does not yield to a source's own --ref",
+          c8)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{7} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{15} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
