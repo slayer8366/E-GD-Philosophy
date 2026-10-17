@@ -146,16 +146,21 @@ def check_binding(repo_dir=None):
     """(ok, errors, report_lines, counts). Pure existence/binding check,
     no content comparison. counts is {'preserved': n, 'recovered': n}."""
     repo_dir = Path(repo_dir) if repo_dir else HERE
-    record_path = repo_dir / RECORD_NAME
     errors = []
     report_lines = []
 
-    if not record_path.is_file():
+    files = cr.record_files(repo_dir)
+    if not files:
         return False, [f"{RECORD_NAME} does not exist in {repo_dir}"], [], {}
 
-    text = record_path.read_text()
-    claims = dispatch_claims(text)
-    kind_closes = entry_kind_closes(text)
+    # Every record file is read: RECORD.md and any records/YYYY-MM.md
+    # (2026-10-17, RECORD.md 2026-10-17-01).
+    claims = []
+    kind_closes = {}
+    for rel in files:
+        text = (repo_dir / rel).read_text()
+        claims += dispatch_claims(text)
+        kind_closes.update(entry_kind_closes(text))
     on_disk, stray = files_on_disk(repo_dir)
 
     claimed_paths = {}

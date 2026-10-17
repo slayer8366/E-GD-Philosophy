@@ -53,6 +53,13 @@ and backward links for Continues and Corrects. An outcome carrying
 Closes counts as its intent's closing entry. render_check gains checks
 19 to 38 for these rules. The other vendored functions are unchanged.
 
+Extended again 2026-10-17 (RECORD.md 2026-10-17-01): ID_RE accepts two
+or more digits after the date; validate_entries takes labelled blocks
+from several files and checks an entry's Timestamp month against its
+monthly file; record_files, validate_repo, append_only_checks,
+history_checks and main_monthly read RECORD.md and records/YYYY-MM.md as
+one record. render_check gains checks 39 to 46.
+
 main() and render_check() below are NEW CONSTRUCTION, modeled on
 OSCam's ledger_cli.py (itself new construction there, since the
 original main()/render_check() were never vendored) but not a copy of
@@ -81,7 +88,7 @@ TERMINAL_REQUIRED = [
     "Kind", "ID", "Timestamp", "Closes", "Outcome", "Observed", "Deviations",
 ]
 
-ID_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-\d{2}$")
+ID_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-\d{2,}$")
 FIELD_RE = re.compile(r"^\*\*(.+?):\*\*\s?(.*)$")
 ENTRY_SPLIT_RE = re.compile(r"(?m)^---$")
 
@@ -134,6 +141,12 @@ TERMINAL_OUTCOMES = {"completed", "partial", "superseded", "abandoned"}
 DEFERRED_FIELD = "Deferred"
 ENTRY_ID_TOKEN_RE = re.compile(r"\d{4}-\d{2}-\d{2}-\d+")
 
+# Monthly record files, added 2026-10-17 (RECORD.md 2026-10-17-01):
+# records/YYYY-MM.md, read with RECORD.md as one record (RECORDING.md,
+# "Layout: one file per month").
+MONTHLY_DIR = "records"
+MONTH_FILE_RE = re.compile(r"^records/(\d{4}-\d{2})\.md$")
+
 
 def split_entries(text):
     """Raw text blocks for each entry, found after the '## Entries'
@@ -171,7 +184,7 @@ def parse_fields(block):
     return fields
 
 
-def validate_entries(text):
+def validate_entries(text, labelled_blocks=None):
     """Returns (entries, errors, unterminated_ids, sentinel_reports).
     errors is a list of human-readable violation strings. unterminated_ids
     and sentinel_reports are both reported, never on their own a cause of
@@ -180,13 +193,19 @@ def validate_entries(text):
     which means a prediction was fabricated after the outcome.
 
     sentinel_reports is a list of {id, field, sentinel, status} dicts,
-    status one of 'pending' or 'resolved'."""
+    status one of 'pending' or 'resolved'.
+
+    labelled_blocks, when given, is a list of (source file, block) pairs
+    read from several record files (validate_repo); text is then unused.
+    An entry with a Timestamp in a monthly file must carry its month."""
     errors = []
     entries = []
     seen_ids = {}
     sentinel_reports = []
 
-    for i, block in enumerate(split_entries(text)):
+    if labelled_blocks is None:
+        labelled_blocks = [(None, b) for b in split_entries(text)]
+    for i, (source, block) in enumerate(labelled_blocks):
         fields = parse_fields(block)
         kind = fields.get("Kind", "").strip()
         entry_id = fields.get("ID", "").strip()
@@ -202,7 +221,13 @@ def validate_entries(text):
                           f"field 'ID'")
         elif not ID_RE.match(entry_id):
             errors.append(f"{kind} {entry_id}: malformed ID (expected "
-                          f"YYYY-MM-DD-NN)")
+                          f"YYYY-MM-DD-NN, two or more digits after the date)")
+
+        month_match = MONTH_FILE_RE.match(source or "")
+        timestamp = fields.get("Timestamp", "").strip()
+        if month_match and timestamp and timestamp[:7] != month_match.group(1):
+            errors.append(f"{kind} {label_for_errors}: Timestamp month "
+                          f"{timestamp[:7]} but filed in {source}")
 
         if kind == "intent":
             required = INTENT_REQUIRED
@@ -371,6 +396,119 @@ def validate_entries(text):
 
     unterminated = sorted(intent_ids - closed_ids)
     return entries, errors, unterminated, sentinel_reports
+
+
+def record_files(repo_dir):
+    """Relative names of the record's files: RECORD.md if present, then
+    records/YYYY-MM.md in month order. Their entries form one record."""
+    repo_dir = Path(repo_dir)
+    files = [RECORD_NAME] if (repo_dir / RECORD_NAME).is_file() else []
+    mdir = repo_dir / MONTHLY_DIR
+    if mdir.is_dir():
+        files += sorted(f"{MONTHLY_DIR}/{p.name}" for p in mdir.iterdir()
+                        if MONTH_FILE_RE.match(f"{MONTHLY_DIR}/{p.name}"))
+    return files
+
+
+def monthly_mode(repo_dir):
+    return any(MONTH_FILE_RE.match(f) for f in record_files(repo_dir))
+
+
+def _is_index(repo_dir, rel):
+    """RECORD.md is the index when monthly files exist and it holds no
+    entries of its own."""
+    return (rel == RECORD_NAME and monthly_mode(repo_dir)
+            and not split_entries((Path(repo_dir) / rel).read_text()))
+
+
+INDEX_NOTE = ("the index (no entries; they are in records/): append-only "
+              "checks not applied, since its rewrite into the index at a "
+              "split is the recorded one-time exception (RECORDING.md)")
+
+
+def validate_repo(repo_dir):
+    """validate_entries over every record file, in order, as one record."""
+    labelled = []
+    for rel in record_files(repo_dir):
+        text = (Path(repo_dir) / rel).read_text()
+        labelled += [(rel, b) for b in split_entries(text)]
+    return validate_entries("", labelled)
+
+
+def append_only_checks(repo_dir):
+    """The working-tree append-only check on each record file. Returns a
+    list of {file, ok, msg, vacuous}; the index is reported, not checked."""
+    results = []
+    for rel in record_files(repo_dir):
+        if _is_index(repo_dir, rel):
+            results.append({"file": rel, "ok": True, "msg": INDEX_NOTE,
+                            "vacuous": True})
+            continue
+        ok, msg, vacuous = check_append_only(repo_dir, record_name=rel)
+        results.append({"file": rel, "ok": ok, "msg": msg, "vacuous": vacuous})
+    return results
+
+
+def history_checks(repo_dir):
+    """The history walk on each record file. Returns a list of {file, ok,
+    msg, count, vacuous, violations}; the index is reported, not walked."""
+    results = []
+    for rel in record_files(repo_dir):
+        if _is_index(repo_dir, rel):
+            results.append({"file": rel, "ok": True, "msg": INDEX_NOTE,
+                            "count": 0, "vacuous": True, "violations": []})
+            continue
+        try:
+            ok, violations, count, vacuous = check_history_append_only(
+                repo_dir, record_name=rel)
+            msg = (f"{count} commit(s) checked" if ok
+                   else f"{len(violations)} violation(s)")
+        except MergeCommitEncountered as e:
+            ok, violations, count, vacuous, msg = False, [], 0, False, str(e)
+        results.append({"file": rel, "ok": ok, "msg": msg, "count": count,
+                        "vacuous": vacuous, "violations": violations})
+    return results
+
+
+def main_monthly():
+    """main() for a record kept in monthly files."""
+    entries, errors, unterminated, sentinel_reports = validate_repo(HERE)
+    files = record_files(HERE)
+    print(f"record files: {', '.join(files)}")
+    print(f"entries: {len(entries)}")
+    if unterminated:
+        print(f"unterminated intent entries (reported, not a failure): "
+              f"{', '.join(unterminated)}")
+    print()
+    for r in append_only_checks(HERE):
+        print(f"[working-tree check: {r['file']}] "
+              f"{'PASS' if r['ok'] else 'FAIL'}: {r['msg']}")
+        if not r["ok"]:
+            errors.append(f"working-tree append-only, {r['file']}: {r['msg']}")
+    for r in history_checks(HERE):
+        print(f"[history walk: {r['file']}] "
+              f"{'PASS' if r['ok'] else 'FAIL'}: {r['msg']}")
+        for v in r["violations"]:
+            msg = (f"{v['older'][:10]} -> {v['newer'][:10]}: diverges at "
+                   f"line {v['divergence_line']}")
+            print("    " + msg)
+            errors.append(f"history walk, {r['file']}: {msg}")
+        if not r["ok"] and not r["violations"]:
+            errors.append(f"history walk, {r['file']}: {r['msg']}")
+    sup_ok, sup_errors, _ = check_superseded_by(entries)
+    errors += [f"Superseded-by: {e}" for e in sup_errors]
+    dup_ok, dup_errors = check_duplicate_terminals(entries)
+    errors += [f"duplicate terminal: {e}" for e in dup_errors]
+    print(f"[Superseded-by and closed-once checks] "
+          f"{'PASS' if sup_ok and dup_ok else 'FAIL'}")
+    if errors:
+        print("\nFAIL")
+        for e in errors:
+            print("  " + e)
+        return 1
+    print("\nPASS: entries structurally valid across all record files; "
+          "each monthly file's working-tree check and history walk clean")
+    return 0
 
 
 def check_superseded_by(entries):
@@ -550,6 +688,8 @@ HERE = Path(__file__).resolve().parent
 
 
 def main():
+    if monthly_mode(HERE):
+        return main_monthly()
     record_path = HERE / RECORD_NAME
     if not record_path.is_file():
         print(f"{RECORD_NAME} does not exist yet in {HERE} -- nothing to "
