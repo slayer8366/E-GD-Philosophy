@@ -77,6 +77,8 @@ Then adopt the gates that keep catching things and stay skeptical of the ones th
 
 ## Contributing
 
-The most useful contribution is a second data point. If you run this on your own work, the trial record matters more than an opinion about the principles. Open an issue with what fired, what cost time and caught nothing, and what you bypassed.
+The most useful contribution is a second data point. If you run this on your own work, the trial record matters more than an opinion about the principles. Open an issue with what fired, what cost time and caught nothing, and what you bypassed. The "Feedback for Clio" form asks exactly that.
+
+Feedback goes to Clio, E-GD's curator. Clio brings each piece to the operator, quoted as written, with a recommendation. The operator decides what changes; nothing enters the method on feedback alone.
 
 Disagreement with a principle is welcome and should come with the case. Every one of these can be wrong, and several probably are.
