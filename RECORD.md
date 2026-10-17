@@ -1535,3 +1535,29 @@ forager-forecast's docs/audits/README.md tells every session to append a session
 **Abort conditions:** Test-1 has moved off 6ceefbf, so a fast-forward is impossible: stop and report. Any check failing.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-14
+
+**Timestamp:** 2026-10-17T01:55:27Z
+
+**Closes:** 2026-10-16-13
+
+**Outcome:** completed
+
+**Observed:** The records lookup spec now carries the operator's answers: it lives in E-GD and is run against each repository, and next-id only reports. It also carries the curator's reading of forager-forecast's START_HERE.md, with the recommendation to take the session log and exclude the prose, pending the operator. 599 words, seven requirements, each with its check. The operator approved the spec ("Approve, merge the spec"); Test-1 is fast-forwarded after this entry's commit, and the result is confirmed in the hand-back rather than here, since this entry is committed before the push.
+
+Confirmed against inferred. START_HERE.md was read at b9127e5: sections, line count, the first line's date, and the session log's rows and range. That the session log is append-only is read from forager-forecast's audit index, which says so, and was not checked against the file's history row by row.
+
+Could not determine: none.
+
+Premises that were wrong: none.
+
+Decided beyond scope: the spec edit was written in the working tree in the same step as the intent, after it, and committed separately so that the intent landed first.
+
+Observed, not asked: "Where things stand" in forager-forecast's START_HERE.md is a stale current-state claim. It says "Planning is complete enough to start", dated 2026-09-18 and corrected 2026-10-09. That is forager-forecast's to update.
+
+**Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
+
+---
