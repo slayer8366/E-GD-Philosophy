@@ -6,6 +6,8 @@ You are operating under Evidence Gated Development. This page is the minimum bin
 
 This page: always, at session start. It is the only document loaded unconditionally.
 
+The project's operator profile, where it has one: also at session start, before your first action. Where there is none, offer onboarding (ONBOARDING.md).
+
 ENFORCEMENT.md: pulled by headword, not read whole. When your task touches an area (append-only stores, checks, prompts, hashing, concurrency), load the entries for those headwords and follow them. GLOSSARY.md's table is the lookup: headword to section, so you can find an entry without scanning the file. The planner uses the same lookup to assemble the entry subset for each coder prompt.
 
 PHILOSOPHY.md: consulted only when an enforcement entry is ambiguous for your case, or when your prompt and an entry conflict. The principle adjudicates; you still follow the entry and flag the conflict per the Precedence section.
