@@ -1382,3 +1382,41 @@ Evidence behind the rule, read from this repository's record and history rather 
 **Abort conditions:** A check failing in a way not predicted. A claim in the rule's evidence that does not match the entry it cites.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-10
+
+**Timestamp:** 2026-10-17T00:14:01Z
+
+**Closes:** 2026-10-16-09
+
+**Outcome:** completed
+
+**Observed:** The rule is in E-GD, on branch check-from-source-2026-10-16, pushed, in 35efb6b after the intent (6c3e67d):
+
+- ENFORCEMENT.md's Complete Task Prompts gains it, worded as in the dispatch file, as the writer's side of Sourced Claims.
+- BOOTSTRAP.md's planner line carries the short form.
+- skills/dispatch-authoring/SKILL.md gains a section "Check from source, not memory", logged in skills/README.md.
+
+The line for Forager's planner profile, handed to the operator for the Forager planner. It goes in the "Dispatching work" section of docs/process/planner-profile.md, after "Verify first, then build". That section reads the same on Forager's origin/pre-main (last change to the file 40459be6) and origin/main (fbd34689), read here:
+
+    - **Check from source, not memory.** Every fact a dispatch states (a path, a line, an ID, a count, a branch or commit, what a RECORD entry or ruling says, whether something exists) is read from its source while the dispatch is written, and cited with the commit or time read. Recall, summaries, handoffs, earlier reports, a coder's reading and the memory notes are pointers to where to look, not sources; anything that can't be checked first is marked unverified and listed as a premise to re-check. The owner, 2026-10-16: "Memory drifts, so always check from source".
+
+Confirmed against inferred:
+
+- The four record entries the intent cites were read before it was committed.
+- The planner-profile section was read from both Forager branches, not recalled.
+- That skills/dispatch-authoring differs from the account copy only by the new section is checked by the run below.
+
+Could not determine: none.
+
+Premises that were wrong: the intent's first draft cited 2026-10-16-04 and -08 as instances of memory drift, and neither records one. It was corrected before commit, as the intent states.
+
+Decided beyond scope: none.
+
+Observed, not asked: none.
+
+**Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no check script changed.
+
+---
