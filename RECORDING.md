@@ -221,11 +221,14 @@ It also checks the links between entries:
 - **Closing an intent.** `Closes` appears only on a terminal or an outcome. An outcome with `Closes` counts as its intent's closing entry, so an intent closed by both a terminal and an outcome fails the closed-once check.
 - **Terminal outcomes.** A terminal's `Outcome` is completed, partial, superseded or abandoned. A completed terminal may not carry `Deferred`.
 
-Two limits of the checker:
+Since 2026-10-17 (RECORD.md 2026-10-17-01), the checkers also read a record kept in monthly files:
 
-- **IDs.** It still requires IDs of the form YYYY-MM-DD-NN. Forager's IDs carry three or four digits after the date, so it would reject them. It is not vendored into Forager.
-- **check_prompts.py** was not changed. It accepts one file claimed by an intent and its terminal, but not by an intent and an outcome that closes it.
+- **Monthly files.** check_record.py reads `RECORD.md` and `records/YYYY-MM.md` as one record. An entry with a Timestamp must sit in its month's file. The working-tree check and the history walk run on each monthly file, and an entry-less `RECORD.md` is reported as the index rather than checked.
+- **Longer IDs.** IDs may carry two or more digits after the date, as Forager's do.
+- **Dispatch claims.** check_prompts.py reads them from every record file.
 
-Each rule above has a self-check in `--render-check` (checks 19 to 38). A revert run disabling each rule in turn made its own check fail (REGISTER.md, 2026-10-16).
+One limit remains: check_prompts.py accepts one prompt claimed by an intent and its terminal, but not by an intent and an outcome that closes it.
+
+Each rule above has a self-check in `--render-check`: checks 19 to 38 for the entry types, 39 to 46 for monthly files and IDs, and check_prompts.py's own p1 and p2. Revert runs disabling each rule in turn made its own check fail (REGISTER.md, 2026-10-16 and 2026-10-17).
 
 Forager kept all twelve types without a checker after 2026-09-27. Run later from copies, its old checkers reported 1,646 entry errors (Forager record 2026-09-28-544). Much of that figure is types the old checkers did not know, so it measures the gap between practice and checker, not only mistakes.
