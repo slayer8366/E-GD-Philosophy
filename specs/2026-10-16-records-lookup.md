@@ -6,7 +6,7 @@
 - Forager `origin/records-after-173` at `efef0e46` and `origin/pre-main` at `462bb8ba`.
 - forager-forecast `origin/main` at `b9127e5`.
 
-All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md`.
+All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md` and `-13.md`. Approved 2026-10-16.
 
 ## Goal
 
@@ -17,7 +17,7 @@ All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md
 - Reads these sources, and writes nothing:
   - Forager: `RECORD.md`, `docs/audits/README.md`, `prompts/preserved/`;
   - forager-forecast: `docs/planning/DECISIONS.md`, `docs/audits/README.md`, `docs/dispatch/`.
-- Reads each source from a named git ref after `git fetch`, without checking anything out.
+- Reads each source from a named ref after `git fetch`, with no checkout.
 - Commands: `show`, `links`, `search`, `open`, `next-id`.
 
 ## Out of scope
@@ -25,7 +25,7 @@ All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md
 - Writing, reserving or editing anything, IDs included.
 - One file per entry (option B), or a hosted service (option C).
 - E-GD's own record, which is outside the operator's scope.
-- Judging what an entry means: it returns text and links, not verdicts.
+- Judging what an entry means: it returns text and links.
 
 ## Decisions
 
@@ -36,6 +36,8 @@ All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md
   - the audit index from `pre-main` (356 rows, against 280).
   - Each can be overridden per run.
 - Standard library only.
+- **Lives in E-GD,** one copy run against each repository (operator, 2026-10-16).
+- **`next-id` only reports;** it reserves nothing (operator, 2026-10-16).
 
 ## Requirements
 
@@ -49,7 +51,7 @@ All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md
 
 ## Constraints
 
-- No checkout, no writes, and no network use except `git fetch`.
+- No writes, and no network use except `git fetch`.
 - Accepts Forager's IDs (`YYYY-MM-DD-NNNN`) and forager-forecast's D-numbers.
 - Built tests-first, with every requirement revert-checked (E-GD's method).
 
@@ -62,10 +64,7 @@ All read 2026-10-16. The operator's rulings: `prompts/preserved/2026-10-16-11.md
 
 - That `pre-main`'s audit index holds every row of `records-after-173`'s: counted, not compared.
 - How far "current ruling" can go: only 8 Forager entries carry an explicit `Supersedes` (6 of them decisions, at `97f26098`). Replacements stated in prose cannot be followed.
-- forager-forecast's `START_HERE.md` session log: not read for this spec.
 
-## Open questions
+## Pending the operator
 
-1. **Where it lives:** one copy in E-GD, run against each repository, or a copy in each?
-2. **ID reservation:** should `next-id` reserve IDs? That is a write, outside option A.
-3. **Forecast session log:** should `START_HERE.md` be a source?
+forager-forecast's `START_HERE.md` (`b9127e5`): an append-only session log of 29 dated rows, tying dates to branches, D-numbers and Forager entries, under maintained prose that decays ("As of 2026-09-18"). Recommended: the log as a seventh source; the prose excluded.
