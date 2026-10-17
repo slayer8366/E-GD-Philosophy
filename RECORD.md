@@ -1594,3 +1594,29 @@ Test-1 is then fast-forwarded, as the third of the three answers the operator's 
 **Abort conditions:** Test-1 has moved off 84397ea. Any check failing.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-10-16-16
+
+**Timestamp:** 2026-10-17T01:59:13Z
+
+**Closes:** 2026-10-16-15
+
+**Outcome:** completed
+
+**Observed:** The records lookup spec takes forager-forecast's session log as its seventh source, with the prose above it excluded, by the operator's answer "Log only". The spec has no pending item left; it is 583 words, with seven requirements, each with its check. Test-1 is fast-forwarded after this entry's commit, as the operator's "Approve, merge the spec" covered all three answers.
+
+Confirmed against inferred: the spec's word count, its requirement checks, and the absence of the pending section were read from the file before commit.
+
+Could not determine: none.
+
+Premises that were wrong: none.
+
+Decided beyond scope: none.
+
+Observed, not asked: in this round a base-commit check printed an error and checked nothing, because --short takes one revision. That was found from the error line, and the base (84397ea, origin/Test-1) was confirmed separately before this entry was written.
+
+**Deviations:** None. No existing RECORD.md or REGISTER.md entry was edited; no code was written.
+
+---
