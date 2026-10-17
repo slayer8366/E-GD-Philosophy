@@ -2532,3 +2532,57 @@ Observed, not asked: nothing new. Last round's four decisions are still open, as
 **Deviations:** The issue form's file name, as above. No existing RECORD.md or REGISTER.md entry was edited.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-10-17-11
+
+**Timestamp:** 2026-10-17T09:30:25Z
+
+**Title:** The history walk handles merges by PROTOCOL rule 13; the curator profile's merge reason corrected; the lookup spec names Forager as the tool's first use case
+
+**Dispatch-file:** preserved/2026-10-17-11.md
+
+**Change:**
+
+1. A new history walk in check_record.py, used by history_checks and so by main:
+   - Every non-merge commit that changed a record file, on every branch in HEAD's history, is compared with its own parent's version. It must begin with that version, byte for byte.
+   - Every merge whose record differs from a parent's must hold the merge base's record, followed by each branch's additions, whole, in either order. Nothing removed or changed, and nothing written in the merge itself. This is rule 13 as written: "every row from both sides is kept"; "No record entry is written inside a merge commit".
+   - A violation names its commit, and the walk goes on, rather than stopping at the first merge.
+   - The vendored check_history_append_only stays, unchanged, with its own checks.
+2. The correction the operator asked for in profiles/curator.md: the merge reason states what is true.
+3. Every place that states the old limit: PROTOCOL rule 13's reason, ADOPTING.md (what the walk checks, and its known limits), and skills/record-checking.
+4. specs/2026-10-16-records-lookup.md: one line saying the tool is configurable, with the operator's words that Forager is its first use case.
+5. A correction entry for the broader claim in 2026-10-16-01 and -02.
+
+Built tests-first through main(argv), with fixture repositories holding real merges, and revert-checked. Real data: the new walk is run on Forager's record branches.
+
+**Scope boundary:** check_record.py, profiles/curator.md, PROTOCOL.md (rule 13, one line), ADOPTING.md, skills/record-checking/SKILL.md, specs/2026-10-16-records-lookup.md, RECORD.md and REGISTER.md (append only), prompts/preserved/2026-10-17-11.md, on branch merge-walk-2026-10-17, cut from Test-1 at 2212af2.
+
+Out of scope:
+
+- check_prompts.py and records_lookup.py.
+- A list of acknowledged past violations, so that a record's old merge stops failing.
+- Merging, which waits for the operator's go.
+
+**Baseline:** Test-1 at 2212af2f8e0581ea87ebe06ad720aa2eae8660ea after the operator's "merge #12, #13 and #14". check_record.py --render-check 56 of 56. history_checks walks `git log --reverse -- FILE` in pairs, and stops at a merge commit (MergeCommitEncountered); check16 holds that for the vendored function.
+
+On Forager, one merge's record differs from both of its parents: bebeb573, on origin/records-after-173, origin/pre-main and origin/main. One branch added 179 lines; the other added nothing; and the merge itself wrote a terminal, 2026-09-27-64.
+
+**Prediction (outcome — planner):** not authored
+
+**Prediction (mechanism — coder):**
+
+- The new checks fail first by assertion, on the current walk.
+- After the change:
+  - 1 to 56 still pass;
+  - merges that keep both branches whole pass;
+  - a merge that drops an entry, edits one, or writes its own entry fails, naming the merge;
+  - a merge that keeps one branch's record and discards the other's committed entry fails, though git's default history of the file hides that merge.
+- On Forager's records, bebeb573 is reported for the entry it wrote inside the merge. pre-main also shows dc4ef1c1, which edited two record lines (E-GD 2026-10-16-18).
+
+**Finish line:** Tests-first commit, implementation, doc and spec edits, the correction entry and the terminal committed and pushed; the revert run, the real-data run and the closing checks through check_register.py; a PR. Not merged until the operator's go.
+
+**Abort conditions:** An existing check failing. A new check not failing first for its stated reason. Rule 13's two lines cannot both be enforced by one walk without rejecting a merge they allow.
+
+---
