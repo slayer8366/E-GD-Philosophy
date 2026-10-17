@@ -1039,8 +1039,35 @@ def render_check():
           "--ref by repository does not reach every source in it, or does not yield to a source's own --ref",
           c8)
 
+    # c9-c10 were written after their rules, found unchecked when the
+    # revert run was planned; their evidence is the revert run, not a red.
+    def c9():
+        repo = plain_repo({"RECORD.md": _record(_intent("2026-01-01-01", "2026-01-01T00:00:00Z")),
+                           "records.json": json.dumps({"recordfile": "X"})})
+        code, out = _run(["open", "--repo", f"repo={repo}"])
+        assert any("records.json" in l and "NOT READ" in l and "recordfile" in l for l in out.splitlines()), (
+            f"an unusable records.json at the ref was not reported: {out!r}")
+        assert code == 1 and "open intents: unknown" in out and "open intents: 1" not in out, (
+            f"the record was read with the default shape despite an unusable records.json: {out!r}")
+
+    check("c9_unusable_records_json_leaves_the_record_unread",
+          "a records.json that is not a usable config is ignored and the record read with the default shape",
+          c9)
+
+    def c10():
+        code, out = _run(["open", "--repo", "elsewhere=/tmp"])
+        assert code == 2 and "elsewhere" in out, f"--repo with a name the config lacks was accepted: {out!r}"
+        code, out = _run(["open", "--ref", "nothing=main"])
+        assert code == 2 and "nothing" in out, f"--ref with a name the config lacks was accepted: {out!r}"
+        code, out = _run(["open", "--repo", "repo"])
+        assert code == 2 and "NAME=VALUE" in out, f"--repo without NAME=PATH was accepted: {out!r}"
+
+    check("c10_repo_and_ref_names_checked",
+          "--repo or --ref naming nothing in the config, or not in NAME=VALUE form, is accepted",
+          c10)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{15} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{17} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
