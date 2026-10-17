@@ -2219,8 +2219,24 @@ def render_check():
           "a committed line edited in linear history passes (guard: passes before and after by design)",
           check62)
 
+    # Check 63 was written after the walk, found unchecked when the revert run
+    # was planned: no check bit if --full-history were dropped. Its evidence
+    # is the revert run, not a red.
+    def check63():
+        edit = BASE.replace("**Title:** t", "**Title:** edited on the side branch")
+        tmp, m, side = merge_repo(BASE + A, edit + B, BASE + A, side_first_edit=edit)
+        ok, errs = walk_errors(tmp)
+        assert not ok and any(side[0][:10] in e and "diverges at line" in e for e in errs), (
+            f"a side branch's committed edit went unwalked because the merge kept the other "
+            f"branch's record: {errs}")
+
+    check("check63_branch_dropped_by_a_merge_still_walked",
+          "commits on a branch whose record a merge discarded are not walked (git's default "
+          "history of the file prunes that branch)",
+          check63)
+
     print(f"\n{'FAIL' if failures else 'PASS'}: {len(failures)} of "
-          f"{62} checks failed{': ' + ', '.join(failures) if failures else ''}")
+          f"{63} checks failed{': ' + ', '.join(failures) if failures else ''}")
     return 1 if failures else 0
 
 
