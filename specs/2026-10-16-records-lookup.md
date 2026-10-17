@@ -8,6 +8,8 @@
 
 Read 2026-10-16. Rulings: `prompts/preserved/2026-10-16-11.md`, `-13`, `-15`, `-17`. Approved 2026-10-16.
 
+**Configurable since 2026-10-17** (RECORD.md 2026-10-17-07). The operator: "Forager is the first use case of the tool" (`prompts/preserved/2026-10-17-11.md`). This spec is that use case, run as `--preset forager` from `lookups/forager.json`.
+
 ## Goal
 
 "Check from source" becomes one command: each lookup returns the text, its links, and its citation (repository, ref, commit, file, line).
