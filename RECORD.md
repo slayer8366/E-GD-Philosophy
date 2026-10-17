@@ -2875,3 +2875,39 @@ The Forager quotes were checked at records-after-173 0335c015: 17 found and veri
 **Abort conditions:** An approved wording that turns out false against the repository. Any check failing.
 
 ---
+
+**Kind:** dispatch-note
+
+**ID:** 2026-10-17-20
+
+**Timestamp:** 2026-10-17T21:15:37Z
+
+**Dispatch-file:** preserved/2026-10-17-20.md
+
+**Type:** Text handed to Forager's planner through the operator: a draft of Forager's operator profile. The curator writes nothing in Forager's repository.
+
+**Outcome:** Approved by the operator ("Yes, as drafted (Recommended)") and handed to the operator to send.
+
+**Report:** The draft is built from the owner's words on record. Each of its 17 quotes was verified line by line at records-after-173 0335c015 (and one in prompts/preserved/2026-10-14-planner-handoff.md:13). Its last section lists 12 practices the planners follow that are not in the owner's own words anywhere in Forager's record, preserved prompts, docs or commit messages, for the planner to confirm with the owner before they go in. A reader agent searched for the quotes. Every quote it found was re-read by hand, and five of its not-found results were spot-checked.
+
+**Notes:** Written by the curator, Clio, on branch onboarding-2026-10-17.
+
+---
+
+**Kind:** correction
+
+**ID:** 2026-10-17-21
+
+**Timestamp:** 2026-10-17T21:15:37Z
+
+**Corrects:** 2026-10-17-19, its Baseline's citation of the entry recording the loss
+
+**What was wrong:**
+
+    2026-10-17-19, Baseline: "RECORD.md 2026-08-13-01 names the template among the lost files and nothing else about it."
+
+**What it corrects:** The entry is 2026-08-13-02. Its Observed field, at RECORD.md:76, names OPERATOR_PROFILE.template.md among the lost files. The rest of the sentence holds.
+
+**Notes:** Written by the curator, Clio, on branch onboarding-2026-10-17. Found by checking the citation after the intent was pushed, so it is corrected forward rather than edited.
+
+---
