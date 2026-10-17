@@ -111,7 +111,7 @@ Each rule, with the config key that shapes it:
 - **Terminal outcomes** (`terminal_kind`, `outcome_field`, `terminal_outcomes`). The outcome must be one of those configured. Each outcome lists the fields it requires and forbids, and which of its fields must name an existing intent (`names_intent`).
 - **Prediction sentinels** (`sentinels`). An intent may hold a sentinel in place of a prediction. A "pending" sentinel is resolved when the closing terminal carries the supplied field. A "permanent" one can never be resolved, so a terminal supplying a value for it fails, because that value was written after the outcome was known. A terminal may not hold a sentinel in any field.
 - **Append-only, uncommitted changes.** The record file in the working tree must begin with exactly what is committed, so only additions are allowed.
-- **Append-only, history.** Every committed version of each record file must begin with the one before it, byte for byte.
+- **Append-only, history.** Every commit that changed a record file, on every branch merged into the one checked, must begin with its parent's version, byte for byte. At a merge, the record must be the merge base's record followed by each branch's additions, whole, in any order. Nothing may be removed or changed, and no entry may be written in the merge itself (PROTOCOL rule 13). A violation names its commit, and the walk goes on to report the rest.
 - **Monthly files** (`monthly_dir`). Monthly files named `YYYY-MM.md` in that folder are read after the record file, as one record. When they exist and the record file holds no entries, the record file is treated as the index and is not append-checked.
 
 ## Config reference
@@ -255,7 +255,8 @@ python3 records_lookup.py search login --config lookup.json --repo app=/path/to/
 
 ## Known limits
 
-- **A merge commit in which both branches had added to the record stops the history walk,** and the check fails, naming the commit. The walk does not guess which parent to compare against. A merge that takes the record unchanged from one branch passes, since git's history of the file skips such a merge. This repository merges by fast-forward. A repository whose record has been merged from two branches that both added entries will fail this check until the walk can handle merges.
+- **A past violation keeps failing.** History is never rewritten, so a committed edit, a removal or a bad merge is reported on every run from then on. There is no list of acknowledged violations yet.
+- **At a merge, each branch's additions must stay whole.** Entries from two branches shuffled together are reported, even when every row was kept.
 - **`## Entries` is found by plain text search,** so prose naming the heading above the real one produces a false entry.
 - **The `Kind`, `ID` and `Timestamp` names are fixed.**
 - **check_prompts.py** accepts one prompt claimed by both an intent and the terminal that closes it, but not by an intent and an outcome that closes it.
