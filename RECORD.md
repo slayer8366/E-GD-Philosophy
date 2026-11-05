@@ -2959,3 +2959,114 @@ Observed, not asked:
 **Deviations:** None beyond the above. No existing RECORD.md or REGISTER.md entry was edited.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-11-05-01
+
+**Timestamp:** 2026-11-05T23:41:19Z
+
+**Title:** The method paper's preparation, steps 1 and 3: harvest Forager and forager-forecast since the last reading, and gather related work
+
+**Dispatch-file:** preserved/2026-11-05-01.md
+
+**Change:**
+
+1. trials/forager-2026-11-05.md (new): a second reading of Forager and forager-forecast, starting where trials/forager-2026-10-16.md stopped. It states what is new and lists each candidate lesson with its evidence, a generic wording and a proposed home in E-GD. Nothing it proposes enters the method under this intent; each candidate goes to the operator.
+2. paper/related-work.md (new): sources for the paper's related-work section, each quoted at its source, with the E-GD principle it bears on, and marked as read at source or seen only in a summary.
+3. Two read-only reader sessions sweep Forager's record, its CLAUDE.md, its process documents, its audit index and forager-forecast. One read-only research session gathers the related work. The curator reads every candidate and every citation at its source before it goes into either file.
+
+**Scope boundary:** trials/forager-2026-11-05.md and paper/related-work.md (both new), RECORD.md and REGISTER.md (append only) and prompts/preserved/2026-11-05-01.md, on branch paper-prep-2026-11-05, cut from Test-1 at 6fa9d68.
+
+Out of scope:
+
+- Any change to the method documents. The project-neutral rewrite and the ADOPTING.md section (decision 2026-11-05-03) come under their own intents after the harvest, shown to the operator in full first.
+- Steps 2, 4, 5 and 6 of the plan, each on its own go.
+- Writing anything in Forager or forager-forecast.
+- The four answers given to Forager's planner on 2026-11-04. They are neither sent nor recorded; the operator: "4 c. neither".
+- Merging, which waits for the operator's go.
+
+**Baseline:**
+
+- E-GD Test-1 at 6fa9d6892619bd81e437ba183205afe44d19b2a8, equal to origin/Test-1 after a fetch at 2026-11-05T23:39Z. No branch holds a record ID after 2026-10-17-22.
+- Forager records-after-173 at 0b3075182cfefe98fc5cfa57e9ab456e3729f8d0: 2,330 entries, the last 2026-09-28-2161. The last reading was at 97f26098 (1,275 entries, the last -1106), so 1,055 entries are new, 1.42 MB of text.
+- Forager pre-main at 6e24b22c49a4d0fcd6d8f6bd3e7d9f220e6c93ea. The last reading read main at 402489ae. 94 commits in 402489ae..pre-main touch CLAUDE.md, docs/process or docs/audits/README.md; the index has grown from 372 lines to 410.
+- forager-forecast main at 98d4b33a6f34985732aecf9a6b35dae28545db44, 87 commits after the last reading's b9127e5.
+
+**Prediction (outcome — planner):**
+
+1. The harvest proposes at least 10 candidate lessons. Fewer than half are new principles; the rest are evidence for principles or PROTOCOL rules already written.
+2. At least one candidate shows Forager departing from a principle as written: correcting record entries in place, by the operator's rule of 2026-11-02.
+3. Under 10% of Forager's intents after -1106 carry a Prediction field.
+4. Forager's new entries use at least one entry kind outside RECORDING.md's twelve.
+5. The related-work pass finds at least one published method that already gates AI coding agents on evidence, which the paper's contribution has to be stated against.
+
+**Prediction (mechanism — coder):** The readers report candidates with entry IDs and verbatim quotes. The curator re-reads each at its source and drops any it can't find. Documentation only: check_record.py passes with the new entries and none unterminated after the terminal; check_prompts.py passes with 28 claims and preserved=27; check_glossary.py stays at 45/44/45.
+
+**Finish line:** Both files committed and pushed on the branch; the candidate list brought to the operator; a terminal entry closing this intent; the checks run through check_register.py after the terminal. Not merged until the operator's go.
+
+**Abort conditions:** A reader or research session that writes, commits, pushes or messages anything: the work stops and goes to the operator. A quote that can't be found at its source is dropped, never paraphrased. Any check failing.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2026-11-05. The curator's answer in the dispatch file has two errors, found while writing this entry: it said E-GD was "18 days out of date" (it was 19, from 2026-10-17 to 2026-11-05), and that Forager had written "several hundred entries" since (it is 1,055). Next free ID 2026-11-05-02.
+
+---
+
+**Kind:** decision
+
+**ID:** 2026-11-05-02
+
+**Timestamp:** 2026-11-05T23:41:19Z
+
+**Title:** The paper is a method paper presenting E-GD as a foundation, written after six preparation steps
+
+**Continues:** 2026-11-05-01
+
+**The operator, verbatim, 2026-11-05:** "A method paper presenting EGD as a foundation." Then: "after the six steps above".
+
+**What the operator was told before answering:** the curator recommended an experience report: the method, and what happened when one project ran it. The reasons were that the evidence comes from one operator and one project family, read after the fact, with no independent recount. The full text is in preserved/2026-11-05-01.md.
+
+**Who decided:** the operator's ruling, quoted. It departs from the curator's recommendation and stands.
+
+**What it sets:**
+
+- The paper presents E-GD as a foundation.
+- It is written after the six steps: the harvest, an independent recount, related work, an outline, a frozen release and an independent read.
+- Step 4 becomes an outline of the method paper, which the operator approves before drafting.
+- The paper carries the Self-Application principle as written, since it is one of the method's principles. This is the curator's reading, told to the operator before the go.
+
+**Not authorised by this:** drafting, the recount, tagging or uploading. Each waits for its own go.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2026-11-05. Next free ID 2026-11-05-03.
+
+---
+
+**Kind:** decision
+
+**ID:** 2026-11-05-03
+
+**Timestamp:** 2026-11-05T23:41:19Z
+
+**Title:** Each project keeps its own rules until harvested; E-GD's method text becomes project-neutral; the rule goes in ADOPTING.md
+
+**Continues:** 2026-11-05-01
+
+**The operator, verbatim, 2026-11-05:** "each project keeps its own rule and the paper says so. EGD acts as a basis on which projects can build on and add back. But each project keeps its own rules until harvested, where you will curate it and add what is useful, and leave out project specific references."
+
+- Asked whether "Leave out project specific references" also covers the method text already written, with the Forager evidence moving into trials/: "yes".
+- Asked where the rule goes, between ADOPTING.md plus the curator's profile, a new principle, or a PROTOCOL rule: "Adopting".
+
+**What the operator was told before answering:** E-GD's principle keeps corrections as new entries, while Forager's rule of 2026-11-02 puts them into the entry they correct. The curator offered no recommendation between the two, since both are the operator's words.
+
+**Who decided:** the operator's ruling, quoted. The curator reads "Adopting" as the option it named, which listed the curator's profile too. The profile line will be shown to the operator before it is written.
+
+**What it sets:**
+
+- Forager keeps its own rule of correcting entries in place, and E-GD keeps Immutable Append-Only History. The paper says each project keeps its own rules.
+- At a harvest the curator curates what is useful into E-GD, generically, and the operator approves what enters.
+- The method documents become project-neutral, and their Forager evidence moves into trials/. Knowledge Harvest Before Rewrite applies, so the rewrite follows the harvest.
+
+**Not authorised by this:** the rewrite or the ADOPTING.md text. Each is shown in full first, under its own intent.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2026-11-05. Next free ID 2026-11-05-04.
+
+---
