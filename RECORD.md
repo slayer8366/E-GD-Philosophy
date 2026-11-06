@@ -3070,3 +3070,110 @@ Out of scope:
 **Notes:** Written by the curator, Clio, on branch paper-prep-2026-11-05. Next free ID 2026-11-05-04.
 
 ---
+
+**Kind:** correction
+
+**ID:** 2026-11-05-04
+
+**Timestamp:** 2026-11-06T04:06:56Z
+
+**Corrects:** 2026-11-05-01
+
+**What was wrong:** The intent's out-of-scope list says of the four answers the curator gave Forager's planner on 2026-11-04:
+
+    They are neither sent nor recorded; the operator: "4 c. neither".
+
+The curator's plan before it (preserved/2026-11-05-01.md) rested on the same premise. It asked whether they should "go to Rowan as written", and the curator's message after the go said "Nothing has been sent to Rowan".
+
+**What it corrects:** The operator had already relayed the answers into Forager's planner session on 2026-11-04, and Forager filed them that day. That is Forager commit b8b8f10b9, prompts/preserved/2026-11-04-clio-process-advice.md on records-after-173, with Forager's record entry -2086. The operator's "4 c. neither" answered whether the curator should send them and record them in E-GD: the curator does neither, and does not use its own text as harvest evidence. Cite this entry for that out-of-scope line.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2026-11-05. Found by Reader B's report, which cited the filed copy, and checked at Forager records-after-173. The curator told the operator before writing this. Next free ID 2026-11-05-05.
+
+---
+
+**Kind:** terminal
+
+**ID:** 2026-11-05-05
+
+**Timestamp:** 2026-11-06T04:06:56Z
+
+**Closes:** 2026-11-05-01
+
+**Outcome:** completed
+
+**Observed:**
+
+Landed on paper-prep-2026-11-05, each commit pushed:
+
+- e944915: the intent, decisions -02 and -03, and preserved/2026-11-05-01.md.
+- b5aa80d: paper/related-work.md, 55 sources. The curator re-matched the quotes at source: 79 of 79 key phrases across 50 fetches, then 63 of 63 full quotes across 41 fetches. The positive control reported altered, misplaced and missing quotes as missing. The superpowers lines were confirmed through the GitHub API at 44c9b2d6e, the last commit before E-GD's first.
+- 5e15822: trials/forager-2026-11-05.md, the second reading.
+  - The curator checked 43 of Reader A's quotes and 18 of Reader B's, and 31 quote-to-entry attributions.
+  - It recounted the kinds, the intents (93; 66 with a prediction; 32 unclosed), the in-place edit commits, and the 43-ID collision between the two records.
+  - It holds 2 promotions, 4 amendments, 7 new PROTOCOL candidates, 6 RECORDING.md items, 5 ADOPTING.md items and 11 evidence-only items. None is in the method; each goes to the operator.
+
+The planner's predictions, scored:
+
+1. "At least 10 candidate lessons; fewer than half new principles." Held. Of about 35, none is a new principle; two are promotions of PROTOCOL rules.
+2. "At least one candidate shows Forager departing from a principle as written: correcting record entries in place." Held.
+3. "Under 10% of Forager's intents after -1106 carry a Prediction field." Wrong. It is 66 of 93, or 71%.
+4. "At least one entry kind outside RECORDING.md's twelve." Held: dispatch, ruling and audit.
+5. "At least one published method that already gates AI coding agents on evidence." Held: Proof-or-Stop (arXiv 2607.14890, 2026-07-16) and superpowers (2025-10). The research session had read this intent, so its search was not blind to this prediction.
+
+The mechanism prediction, checked after this entry and before the commit through check_register.py: check_record.py passes, check_prompts.py passes at 28 claims with preserved=27, and check_glossary.py stays at 45/44/45. REGISTER.md holds the observations.
+
+Confirmed against inferred:
+- Confirmed: every figure and quote listed above, by the curator, at the commits named.
+- Inferred: the research session's precedent and novelty readings, and the readers' readings of why practices lapsed or returned. Each is labelled where it appears.
+
+Could not determine: whether each of Forager's 32 unclosed intents is still open; what the entries removed on 2026-11-02 held; why intents lapsed from 10-24.
+
+Premises that were wrong:
+- Prediction 3.
+- The intent's "neither sent", corrected by -04.
+- The curator's "18 days" and "several hundred entries", noted in -01.
+- In the last reading: "No release with code has yet been audited", and RECORDING.md's line on forager-forecast's index.
+
+Decided beyond scope:
+- The folder paper/ was created with no README row; the row waits for the paper's own work.
+- The readers read commit history as well as the record.
+- Quotes of the operator's frustration were left out.
+- The curator's own advice to Forager is not used as evidence; the operator's rulings that followed are cited by their Forager commits.
+- The backups folder ~/Zynergy/egd-repo-backups/ and its INDEX.md were created for this repository's first recorded merge.
+
+Observed, not asked: the curator's two slips in the backups index, a wrong restore command and a typed time. Each is corrected by an appended line there.
+
+**Deviations:**
+- Reader A's redirect created one temporary file of command output, which it deleted at once. That met the intent's abort condition. The curator stopped and confirmed every repository read was unchanged, and the operator ruled "A", to continue.
+- The research session's fetch tool saved two PDFs to that session's own tool-results folder.
+- No existing RECORD.md or REGISTER.md entry was edited.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2026-11-05. Next free ID 2026-11-05-06.
+
+---
+
+**Kind:** merge
+
+**ID:** 2026-11-05-06
+
+**Timestamp:** 2026-11-06T04:06:56Z
+
+**PR:** none. Test-1 is fast-forwarded on the operator's go.
+
+**Head:** the commit that adds this entry. Its parent is 5e15822 on paper-prep-2026-11-05.
+
+**Base:** Test-1
+
+**Pre-merge:** 6fa9d6892619bd81e437ba183205afe44d19b2a8
+
+**Merge-commit:** none, because a fast-forward makes no merge commit. Test-1 moves from 6fa9d68 to the commit that adds this entry, so it lands exactly the commits that were checked.
+
+**Backup:** ~/Zynergy/egd-repo-backups/test-1-before-paper-prep-2026-11-05.bundle, verified with git bundle verify. Its sha256 is aa94859e88e7b43ef6db1d067b2231e62664afe9d76ae787e0b546b2b40bfa45, written to the manifest beside it, and the backup has a line in that folder's INDEX.md. Restore with: git fetch <bundle> refs/remotes/origin/Test-1:restored-test-1, tested.
+
+**Merged-by:** the curator, on the operator's word, 2026-11-05: "Merge when ready". The operator then answered "A", to continue after the abort condition.
+
+**Carries:** 2026-11-05-01 to -06; preserved/2026-11-05-01.md; paper/related-work.md; trials/forager-2026-11-05.md; REGISTER.md's new observations.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2026-11-05, before the fast-forward. If the fast-forward does not land as stated, a correction entry follows. Next free ID 2026-11-05-07.
+
+---
