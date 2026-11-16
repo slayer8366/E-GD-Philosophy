@@ -3353,3 +3353,68 @@ Observed, not asked, from the recount:
 **Notes:** Written by the curator, Clio, on branch paper-prep-2-2026-11-16. Intent -02 (the wording spec) stays open until the operator answers on the wording. Next free ID 2026-11-16-05.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-11-16-05
+
+**Timestamp:** 2026-11-16T23:58:53Z
+
+**Closes:** 2026-11-16-02
+
+**Outcome:** completed
+
+**Observed:**
+
+- **The spec:** specs/2026-11-16-harvest-wording.md, committed at f746e2a and pushed. It could not be sent as a file through this session, which has no place for files, so the operator was given its public link instead.
+- **The operator, 2026-11-16, verbatim:** "Yes, as drafted". The approved text goes into the method under its own intent, one commit per item.
+- **The recount** changed no figure the spec uses: the 43 IDs, the five removed IDs and the one still cited, and 11 of 11 audits all held.
+
+The planner's predictions, scored:
+
+1. "Every item's wording is generic." Held. No project name, record ID or path appears in the proposed method text. Evidence points into trials/ by item label. The trial files' own names, which include a project's name, are the one exception, stated in the spec.
+2. "PHILOSOPHY.md from 45 principles to 47, ENFORCEMENT.md from 44 to 46, GLOSSARY.md from 45 to 47." Not yet tested. It is checked when the text is written.
+
+Confirmed against inferred:
+- Confirmed: every figure the spec uses was matched by the recount or by the curator.
+- Inferred: none.
+
+Could not determine: None.
+
+Premises that were wrong: the curator told the operator of three out-of-date statements; there were four.
+
+Decided beyond scope: the four drafting calls listed at the end of the spec, which the operator approved with the rest.
+
+Observed, not asked: None.
+
+**Deviations:** The spec was delivered as a link rather than a file.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2-2026-11-16. Next free ID 2026-11-16-06.
+
+---
+
+**Kind:** merge
+
+**ID:** 2026-11-16-06
+
+**Timestamp:** 2026-11-16T23:58:53Z
+
+**PR:** none. Test-1 is fast-forwarded on the operator's go.
+
+**Head:** the commit that adds this entry. Its parent is 19334f1 on paper-prep-2-2026-11-16.
+
+**Base:** Test-1
+
+**Pre-merge:** 7e227d048e30e13e79151dbce4a8339cee4970b3
+
+**Merge-commit:** none, because a fast-forward makes no merge commit. Test-1 moves from 7e227d0 to the commit that adds this entry.
+
+**Backup:** ~/Zynergy/egd-repo-backups/test-1-before-paper-prep-2-2026-11-16.bundle, verified with git bundle verify, with sha256 c18ab96e6f8080102cbeaf164d8559871c225738acb9a3eb1b9ea269dae3851a in the manifest beside it. It has a line in that folder's INDEX.md. Its restore was tested: git fetch <bundle> refs/remotes/origin/Test-1:restored-test-1 gives 7e227d0.
+
+**Merged-by:** the curator, on the operator's word, 2026-11-16: "Merge when ready". The operator had been told the merge would carry the recount, the correction, the spec, and the wording intent until it was answered.
+
+**Carries:** 2026-11-16-01 to -06; preserved/2026-11-16-01.md; trials/recount-2026-11-16-rules.md; trials/recount-2026-11-16.md; specs/2026-11-16-harvest-wording.md; REGISTER.md's new observations.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2-2026-11-16, before the fast-forward. If the fast-forward does not land as stated, a correction entry follows. Next free ID 2026-11-16-07.
+
+---
