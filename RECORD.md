@@ -3260,3 +3260,96 @@ A spec is not a go. The operator's approval of the wording is asked as its own q
 **Notes:** Written by the curator, Clio, on branch paper-prep-2-2026-11-16. Next free ID 2026-11-16-03.
 
 ---
+
+**Kind:** correction
+
+**ID:** 2026-11-16-03
+
+**Timestamp:** 2026-11-16T23:43:10Z
+
+**Corrects:** 2026-10-16-01, 2026-11-05-01
+
+**What was wrong:** The independent recount (trials/recount-2026-11-16.md) found five figures in the two trial readings that do not hold as stated. The trial files are not edited; this entry says what to cite.
+
+- trials/forager-2026-10-16.md (under 2026-10-16-01), "What decayed after the gates went":
+
+      63 intents have no terminal entry naming them in Closes; 49 of those have a continuation entry instead.
+
+- trials/forager-2026-11-05.md (under 2026-11-05-01), "What changed, in brief", item 2:
+
+      Before that date there were 4, all later accepted as violations (-1185, -1540) [git; a floor].
+
+- The same file, item 1:
+
+      127 dispatch IDs from 10-22 to 11-01 have no intent naming them [pattern].
+
+- The same file, "Practice counts", every row: these are pattern counts, and the recount's own patterns gave figures from about 3% to about 2.5 times different.
+- The same file, "Intents (93)": "Of those, 30 were continued".
+
+**What it corrects:**
+
+- **63 and 49.** That count treats a Closes or Continues field on any kind of entry as closing or continuing an intent, merges included. Counted as the sentence words it, by terminals and continuation entries only, the figures are 79 unclosed and 41 of those continued. The curator re-ran both definitions at 97f26098 and got both pairs. Cite either pair with its definition.
+- **"4 before".** It is not reproduced. Under the recount's rule (an entry present in parent and child whose body differs), 20 commits before 2026-11-02 edit an existing entry. 10 of them extend the newest entry and 10 edit an older one. Cite 61 from 2026-11-02 against 20 before, with that rule.
+- **127.** By preserved-prompt files the count is 126, and by record text it is 128; the two extra are notes in another folder. The curator re-counted 126 from the files at 0b3075182. Cite: none of the 126 dispatch files from 2026-10-22 to 2026-11-01 is named by an intent.
+- **The practice counts are not to be quoted as figures.** Where the paper needs one, it states the pattern beside the count, or uses a reading. "Choices against the recommendation" is a reading, not a pattern: the recount's pattern found six candidates, of which one, on reading, is a choice against the recommendation.
+- **30 continued.** By any entry's Continues field it is 31 of 32.
+
+Figures that held exactly, and may be cited as stated:
+- the first reading's 1,275 entries, its twelve kind counts, its predictions (99 of 100, then 0 of 143), its Finish line (31 of 143), and 0 uses of the withheld-hash form;
+- the second reading's 1,055 entries and fifteen kind counts, its intent figures (93; 66; 81; 80; 32 unclosed), its 13 corrections, and its 48 of 296 against 10 of 1,904;
+- the 43 colliding IDs;
+- 11 of 11 audits passing with items;
+- the removals of -1342 and -1963 to -1967.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2-2026-11-16. The curator re-ran the figure-5 and figure-10 differences before writing this. The other differences are the recount's own figures, labelled as such. Next free ID 2026-11-16-04.
+
+---
+
+**Kind:** terminal
+
+**ID:** 2026-11-16-04
+
+**Timestamp:** 2026-11-16T23:43:10Z
+
+**Closes:** 2026-11-16-01
+
+**Outcome:** completed
+
+**Observed:**
+
+- **Commits:**
+  - 11c5785: trials/recount-2026-11-16-rules.md, the counting rules, committed at 2026-11-16T23:30:47Z. The recount session was told to count after that commit was on the remote.
+  - The commit adding this entry carries trials/recount-2026-11-16.md, its report, filed unedited apart from removing the harness's indent.
+- **The recount** ran on Fable, a different model from the readers and the curator. Of the 14 figure groups, these matched exactly: 1, 2, 3, 4, 6, 7, 8, 9b, 11, 13 and 14. Figures 5, 9a's "4 before", 10, and every pattern count in 12 differ. Correction -03 says what to cite.
+
+The planner's predictions, scored:
+
+1. "Every figure counted by script (groups 1 to 11, 13 and 14) reproduces exactly, or differs only by a definition the recounter states." Held. Figures 5, 9a and 10 differ by definition, and every other script figure matches.
+2. "At least one pattern count in group 12 differs from the claim by more than 10% under the recounter's own pattern." Held: the premise, revert and owner-quote counts.
+3. "No figure the paper would quote is shown to be an error." Held only in part. No arithmetic error was found. But one figure's stated definition (the first reading's 63 and 49) does not describe how it was counted, and two figures (the "4 before" and the 127) could not be reproduced exactly.
+
+The mechanism prediction, checked after this entry through check_register.py: check_record.py passes, and check_prompts.py passes at 29 claims with preserved=28.
+
+Confirmed against inferred:
+- Confirmed: the recount's results, as its report gives them. The curator also re-ran figures 5 and 10.
+- Inferred, the recount's own: how the earlier counts were defined.
+
+Could not determine: the rule behind the second reading's "4 before"; which note made the 127.
+
+Premises that were wrong:
+- The first reading's description of figure 5.
+- The brief's naming of pre-main as a source. No figure needed it, and figure 13's location was corrected in the brief before it was committed.
+
+Decided beyond scope:
+- The recount added three variants after seeing data and labelled them. For each, the committed rule's result is given first.
+- The curator filed both reports with the harness's two-space indent removed, and said so in each file's header.
+
+Observed, not asked, from the recount:
+- Four IDs are duplicated in Forager's whole record, not two. -540 and -542 fall before the second reading's range.
+- Seven commits removed entries, five of them before that range.
+
+**Deviations:** None. The rules were committed before the count. No trial file was edited, and no existing RECORD.md or REGISTER.md entry was edited.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2-2026-11-16. Intent -02 (the wording spec) stays open until the operator answers on the wording. Next free ID 2026-11-16-05.
+
+---
