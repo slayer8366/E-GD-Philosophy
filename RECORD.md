@@ -3177,3 +3177,86 @@ Observed, not asked: the curator's two slips in the backups index, a wrong resto
 **Notes:** Written by the curator, Clio, on branch paper-prep-2026-11-05, before the fast-forward. If the fast-forward does not land as stated, a correction entry follows. Next free ID 2026-11-05-07.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-11-16-01
+
+**Timestamp:** 2026-11-16T23:17:22Z
+
+**Title:** The method paper's preparation, step 2: an independent recount of the headline figures from both readings, on a different model, with its counting rules committed before any count
+
+**Dispatch-file:** preserved/2026-11-16-01.md
+
+**Change:**
+
+1. A read-only session on Fable re-derives the figures listed in the brief, 14 groups, with its own code. The readers were Opus sessions and the curator runs on Opus.
+2. Its counting rules arrive first. They are committed as trials/recount-2026-11-16-rules.md before it is told to count.
+3. Its final report is filed unedited as trials/recount-2026-11-16.md.
+4. Where a figure does not hold, the trial file that states it is not edited. The finding goes to the operator, and the record says which figure to cite.
+
+**Scope boundary:** trials/recount-2026-11-16-rules.md and trials/recount-2026-11-16.md (both new), RECORD.md and REGISTER.md (append only) and prompts/preserved/2026-11-16-01.md, on branch paper-prep-2-2026-11-16, cut from Test-1 at 7e227d0.
+
+Out of scope:
+
+- Editing either trial file.
+- Writing in Forager or forager-forecast.
+- Merging, which needs the operator's go for this branch. The go of 2026-11-05 was for the branch it named.
+
+**Baseline:** E-GD Test-1 at 7e227d048e30e13e79151dbce4a8339cee4970b3, equal to origin/Test-1 after a fetch at 2026-11-16T23:15Z. No branch holds a record ID after 2026-11-05-06, and no issue is open. The sources are fixed at the commits named in the brief.
+
+**Prediction (outcome — planner):**
+
+1. Every figure counted by script (groups 1 to 11, 13 and 14) reproduces exactly, or differs only by a definition the recounter states.
+2. At least one pattern count in group 12 differs from the claim by more than 10% under the recounter's own pattern.
+3. No figure the paper would quote is shown to be an error.
+
+**Prediction (mechanism — coder):** The recounter reports its rules and stops. The curator commits them and checks that the commit precedes the go. The recounter counts, and its report is filed byte for byte. Documentation only: check_record.py passes, and check_prompts.py passes at 29 claims with preserved=28.
+
+**Finish line:** The rules committed before the go, the report filed, a terminal entry, the checks through check_register.py after it, and the results brought to the operator.
+
+**Abort conditions:**
+- The recounter writes anything outside its reports. The work stops and goes to the operator.
+- A count is run before its rules are committed. That count is discarded, and the recount restarts with fresh rules.
+- Any check fails.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2-2026-11-16. The brief's source for figure 13 was corrected before this commit, from pre-main to Forager's record branch, where the reports are. Next free ID 2026-11-16-02.
+
+---
+
+**Kind:** intent
+
+**ID:** 2026-11-16-02
+
+**Timestamp:** 2026-11-16T23:17:22Z
+
+**Title:** The wording for the lessons the operator approved, proposed in full as a spec before anything is written into the method
+
+**Change:** specs/2026-11-16-harvest-wording.md (new). It holds the exact proposed text for each approved item, with where each goes:
+
+- **P1 and P2** as principles, with their enforcement entries and glossary rows.
+- **The four amendments** to PROTOCOL rules 12, 13 and 23 and to Operator Authority.
+- **The seven new PROTOCOL rules,** 24 to 30.
+- **The RECORDING.md and ADOPTING.md notes,** and the three corrections of statements now false.
+- **The ADOPTING.md section for decision 2026-11-05-03,** and the line for the curator's profile, which that decision reserved for the operator to see first.
+
+A spec is not a go. The operator's approval of the wording is asked as its own question.
+
+**Scope boundary:** specs/2026-11-16-harvest-wording.md (new) and RECORD.md (append only), on branch paper-prep-2-2026-11-16. No method document is changed under this intent; the text goes in under its own intent, after approval.
+
+**Baseline:** As 2026-11-16-01. The operator's approvals are preserved in preserved/2026-11-16-01.md: "1 both", "2 all of them", "3 yes".
+
+**Prediction (outcome — planner):**
+
+1. Every item's wording is generic: no project's name, record ID or path appears in method text, and each evidence note points into trials/.
+2. Promoting P1 and P2 takes PHILOSOPHY.md from 45 principles to 47, ENFORCEMENT.md from 44 entries to 46, and GLOSSARY.md from 45 rows to 47.
+
+**Prediction (mechanism — coder):** Drafted from the current text of each target at 7e227d0, read before writing, and each draft is placed beside the text it changes.
+
+**Finish line:** The spec committed, pushed and sent to the operator. A terminal entry closes this intent once the operator has answered on the wording.
+
+**Abort conditions:** An approved item turns out, on drafting, to need a ruling the approvals did not give. It is stopped and asked about rather than worded.
+
+**Notes:** Written by the curator, Clio, on branch paper-prep-2-2026-11-16. Next free ID 2026-11-16-03.
+
+---
