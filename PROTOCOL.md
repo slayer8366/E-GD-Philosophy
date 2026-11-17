@@ -415,6 +415,12 @@ A long session degrades, and its context and usage run out. An executor or plann
 
 Evidence: trials/forager-2026-11-05.md, N5. Standing: a dozen handoffs and one session run far past its threshold, in one project.
 
+**29. Points of no return are named in the plan and asked at the point.**
+
+A plan names its points of no return: an irreversible step, a public one, or one that spends what cannot be recovered. The operator's go for each is asked when the work reaches it, never assumed from an earlier go for the plan.
+
+Evidence: trials/forager-2026-11-05.md, N6. Standing: two instances, in one project. This applies Operator Authority, which already holds that authorization is local.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
