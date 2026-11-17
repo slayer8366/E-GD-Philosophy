@@ -219,6 +219,13 @@ To change infrastructure later: record the change in the record store as a super
 - Amended 2026-10-16 under RECORD.md 2026-10-16-01: the control is the operator confirming the decisions, not reviewing the prompt's text.
 - Check from source, not memory. Every factual claim a dispatch makes is read from its source while the dispatch is being written, and cited with the commit or time it was read. That covers a path, a line, an ID, a count, a branch or commit, what a record entry or ruling says, and whether something exists. Memory drifts. The writer's recall, a summary, a handoff, an earlier report, another agent's reading, and saved memory notes are pointers to where to look, never the source. A claim that can't be checked before dispatch is marked unverified and listed as a premise for the executor to check first. The operator's rule, 2026-10-16: "Memory drifts, so always check from source". It is the writer's side of Sourced Claims, whose enforcement gives the executor's side: every claim in a dispatch is a premise to re-check. Added under RECORD.md 2026-10-16-09.
 
+**Verify Premises Before Building**
+- Before writing anything, the executor reads at the source every premise its task states: a path, a caller, a count, a behaviour, whether something exists. It reports each as confirmed, false or not determined, with file and line and the commit read.
+- The report carries what was found as well as options. A false premise that leaves the task undecided stops the task. The executor builds nothing on it until the planner adjudicates and the operator approves.
+- The executor's mechanism prediction goes in the same report, before building.
+- Where every premise is already in front of the executor, it says so and goes on; the report still lists each premise as confirmed.
+- Promoted from PROTOCOL rule 3 under RECORD.md 2026-11-16-07. Evidence: trials/forager-2026-11-05.md, P1.
+
 **Decisions Have Standing Conditions**
 - When a decision is recorded as closed, the agent records the conditions it rests on: the facts, constraints, or system states that would have to hold for it to remain correct.
 - Before work that touches a recorded condition, the agent surfaces the closed decisions standing on it, with the condition named.

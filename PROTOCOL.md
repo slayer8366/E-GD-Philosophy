@@ -44,6 +44,8 @@ The executor proposes. It does not choose. Choosing is the planner's and approvi
 
 This costs a round trip. It is worth paying where the plan would otherwise rest on remembered state, and not worth paying where the relevant facts are already in front of the executor.
 
+Promoted 2026-11-16 into PHILOSOPHY.md as Verify Premises Before Building (RECORD.md 2026-11-16-07). The text above stays as written.
+
 **4. Every factual claim in a proposed entry is checked before it lands.**
 
 Errors before a write to an append-only store are cheap. Errors after are permanent: nothing can be corrected, only appended beside.

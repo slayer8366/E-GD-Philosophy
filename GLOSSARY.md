@@ -48,6 +48,7 @@ Mapping is one-to-one. Where two principles jointly govern an area, each still o
 | Sourced Claims | Testing and Verification Culture | Sourced Claims | Active |
 | Intent-Driven Engineering | Workflow and Documentation | Intent-Driven Engineering | Active |
 | Complete Task Prompts | Workflow and Documentation | Complete Task Prompts | Active |
+| Verify Premises Before Building | Workflow and Documentation | Verify Premises Before Building | Active |
 | Decisions Have Standing Conditions | Workflow and Documentation | Decisions Have Standing Conditions | Active |
 | Terminal Intent Entries | Workflow and Documentation | Terminal Intent Entries | Active |
 | Complete Execution Reports | Workflow and Documentation | Complete Execution Reports | Active |
