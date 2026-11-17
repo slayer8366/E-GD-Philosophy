@@ -403,6 +403,12 @@ A clause saying which document wins settles a conflict once someone has found it
 
 Evidence: trials/forager-2026-11-05.md, N3. There were five contradictions across two projects' process documents; two were found by an outside reader. Standing: five instances.
 
+**27. A ruling about how work is done lives in the document that governs the work.**
+
+An operator ruling that changes how work is done is written, with the operator's words, into the governing document before it is applied. A copy in an agent's private notes is a pointer to the rule, not the rule, and a rule that lives only there is missed by the next session.
+
+Evidence: trials/forager-2026-11-05.md, N4. Standing: several instances, in two projects.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
