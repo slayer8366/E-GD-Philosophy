@@ -17,6 +17,16 @@ Neither can tell whether what an entry says is true. They check shape, links and
 - git. The record must be committed in a git repository, and you give the checker that repository's top folder.
 - Both files in one folder, since check_prompts.py loads check_record.py from beside it. Copy them, or run them from a clone of this repository.
 
+## Building on E-GD
+
+E-GD is a basis. A project adopts it, builds on it, and adds back.
+
+- **Each project keeps its own rules.** Where a project needs something different from what E-GD says, its own rule stands in that project, and E-GD does not change on it.
+- **Harvest.** At intervals the curator reads what the projects have learned. What is useful is curated into E-GD in general wording, without the project's own references, and the operator approves what enters.
+- **Departures are recorded.** Where a project's rule departs from E-GD, the trial reading in `trials/` records it, so a reader can see where E-GD has been changed in use and why.
+
+The operator, 2026-11-05, verbatim: "each project keeps its own rule and the paper says so. EGD acts as a basis on which projects can build on and add back. But each project keeps its own rules until harvested, where you will curate it and add what is useful, and leave out project specific references." (RECORD.md 2026-11-05-03)
+
 ## Quick start
 
 ```
