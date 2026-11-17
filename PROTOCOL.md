@@ -195,6 +195,9 @@ So:
 - No record entry is written inside a merge commit. Since 2026-10-17, this repository's history check walks merges and reports one that adds anything of its own, or drops or changes a row from either side (RECORD.md 2026-10-17-11).
 - A retired ID is not reused.
 - A planner session believed dead is confirmed stopped before another takes over its branch.
+- Identifiers shared between records are partitioned by namespace, such as a prefix per record, not by numeric range. A reserved range is a forecast of the other record's growth, and it fails silently when the forecast does.
+- A removed ID stays retired, and its removal is recorded where the entries citing it will be read.
+- Where several planners share one branch, every merge is recorded where the others read before they act.
 
 Evidence, from Forager (Forager `CLAUDE.md` at `402489ae` and trials/forager-2026-10-16.md):
 
@@ -204,6 +207,7 @@ Evidence, from Forager (Forager `CLAUDE.md` at `402489ae` and trials/forager-202
 - Two branches each declared the same schema version with different migrations, which no file-level merge detects (Forager `CLAUDE.md`, the base-branch pitfall).
 - The audit index conflicted on every push after the first when two sessions ran in parallel (Forager `CLAUDE.md`, the serialization-point pitfall).
 - From forager-forecast: a decision filed on one branch had to be renumbered the same day, because the number had already been taken on another (`docs/planning/DECISIONS.md:17`, D123, at `b9127e5`).
+- Added 2026-11-16: trials/forager-2026-11-05.md, M2. A range partition between two records failed and left 43 IDs each naming two different entries. Five removed IDs were reused, and one removed entry is still cited.
 
 Standing: six instances across two projects. If promoted, this extends Concurrency Awareness's enforcement entry.
 
