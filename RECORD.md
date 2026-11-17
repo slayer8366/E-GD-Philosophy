@@ -3573,3 +3573,86 @@ Observed, not asked: None.
 **Notes:** Written by the curator, Clio, on branch neutral-text-2026-11-17. Next free ID 2026-11-17-03.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-11-17-03
+
+**Timestamp:** 2026-11-17T20:24:55Z
+
+**Closes:** 2026-11-17-02
+
+**Outcome:** completed
+
+**Observed:**
+
+- **The spec:** specs/2026-11-17-project-neutral.md, committed at 7ef03ff and pushed. Its link was given to the operator.
+- **The operator, 2026-11-17, verbatim:** "1 yes, as proposed", "2 no, new name", "3 yes". These answered:
+  1. Is the rewrite right? It is, including the folded-in correction of the "63 unclosed" definition.
+  2. Should the lookup tool's preset keep its name? It should not.
+  3. Once approved, can it be written in and merged when the checks pass? It can.
+- **The preset's new name was not given.** It goes to the operator as a question. The rename touches records_lookup.py's help and self-checks, so it is built tests-first under its own intent. The rewrite does not depend on it.
+
+The planner's predictions, scored:
+
+1. "Applying the spec changes 97 lines and keeps 7…". Held on the throwaway copy, and checked again when written.
+2. "check_glossary.py stays at 47/46/47." Checked when written.
+
+Confirmed against inferred:
+- Confirmed: the counts and scans above, run on a throwaway copy of 584a8c9.
+- Inferred: None.
+
+Could not determine: None.
+
+Premises that were wrong: the curator's statement of 2026-11-05 that OVERVIEW.md "cite[s] Forager throughout". It does not, as the spec says.
+
+Decided beyond scope: the two example hashes in ADOPTING.md replaced with made-up ones, which the spec shows.
+
+Observed, not asked: Forager's own notes use the old preset command (Forager prompts/preserved/2026-11-09-handoff-memory.md on records-after-173). The curator writes nothing in Forager; this goes to the operator.
+
+**Deviations:** None.
+
+**Notes:** Written by the curator, Clio, on branch neutral-text-2026-11-17. Next free ID 2026-11-17-04.
+
+---
+
+**Kind:** intent
+
+**ID:** 2026-11-17-04
+
+**Timestamp:** 2026-11-17T20:24:55Z
+
+**Title:** The project-neutral rewrite written into the method text, as approved in specs/2026-11-17-project-neutral.md
+
+**Change:**
+
+1. trials/method-text-evidence-2026-11-17.md (new), committed first. It holds every line the rewrite changes, verbatim as it stood at 584a8c9, grouped by file and by rule or section.
+2. The rewrite, one commit per file, generated from the same table of substitutions as the spec:
+   - PROTOCOL.md, 45 lines and a new paragraph;
+   - RECORDING.md, 37 lines;
+   - README.md, ADOPTING.md, profiles/curator.md, skills/README.md, DURABILITY.md and ENFORCEMENT.md.
+
+**Scope boundary:** those files, at the lines the spec names; trials/method-text-evidence-2026-11-17.md (new); RECORD.md and REGISTER.md (append only). On branch neutral-text-2026-11-17.
+
+Out of scope:
+
+- The preset rename, which waits for the operator's choice of name.
+- Any line the spec does not show.
+
+**Baseline:** the method files at 584a8c9, unchanged on this branch since it was cut. The operator's rulings, 2026-11-17: "1 yes, as proposed", "3 yes".
+
+**Prediction (outcome — planner):**
+
+1. 97 lines change. Every spec "Proposed" line is found in its file, and every "Now" line is gone from it.
+2. Two scans, each with a positive control, find no project name, project path, record ID or commit hash from either project outside the 7 kept lines.
+3. check_glossary.py at 47/46/47; check_record.py and check_prompts.py pass.
+
+**Prediction (mechanism — coder):** The generator asserts each method file equals its 584a8c9 content before writing, and each substitution matches once.
+
+**Finish line:** Every commit pushed. The comparison and the scans pass. A terminal entry, the checks through check_register.py, a merge entry, and then Test-1 fast-forwarded on the operator's "3 yes", with a backup taken first.
+
+**Abort conditions:** A method file differs from 584a8c9 before writing. A comparison or scan failure. Any check failing.
+
+**Notes:** Written by the curator, Clio, on branch neutral-text-2026-11-17. Next free ID 2026-11-17-05.
+
+---
