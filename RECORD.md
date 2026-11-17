@@ -3656,3 +3656,76 @@ Out of scope:
 **Notes:** Written by the curator, Clio, on branch neutral-text-2026-11-17. Next free ID 2026-11-17-05.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-11-17-05
+
+**Timestamp:** 2026-11-17T20:26:20Z
+
+**Closes:** 2026-11-17-04
+
+**Outcome:** completed
+
+**Observed:**
+
+- **Commits:**
+  - 51e5219: trials/method-text-evidence-2026-11-17.md, the 97 changed lines verbatim at 584a8c9, in 52 groups, committed before the rewrite.
+  - beebd51 to cd06edf: the rewrite, one commit per file, eight in all: 99 lines in, 97 out. PROTOCOL.md also gained a two-line paragraph.
+- **The comparison:**
+  - all 97 of the spec's "Proposed" lines are found in their files, and all 97 "Now" lines are gone;
+  - PROTOCOL.md's new paragraph is present;
+  - positive control: with one character of each proposed line altered, 0 of 97 were found.
+- **The name, path and record-ID scan:** 7 matches remain, exactly the 7 kept lines. Its control is the survey itself, which found 100 lines in the text at 584a8c9.
+- **The commit-hash scan:** no commit hash from either project remains. Its positive control on 584a8c9 found 8.
+- **check_glossary.py:** 47/46/47, unchanged.
+
+The planner's predictions, scored:
+
+1. "97 lines change…". Held.
+2. "Two scans, each with a positive control, find no project name, project path, record ID or commit hash from either project outside the 7 kept lines." Held.
+3. "check_glossary.py at 47/46/47; check_record.py and check_prompts.py pass." Checked after this entry through check_register.py.
+
+Confirmed against inferred:
+- Confirmed: all of the above, by script, at cd06edf.
+- Inferred: None.
+
+Could not determine: None.
+
+Premises that were wrong: None in this work. The spec's wrong premise, about OVERVIEW.md, is recorded at -03.
+
+Decided beyond scope: None beyond the spec, which the operator approved as proposed.
+
+Observed, not asked: None.
+
+**Deviations:** None. Only the lines the spec shows were changed.
+
+**Notes:** Written by the curator, Clio, on branch neutral-text-2026-11-17. Next free ID 2026-11-17-06.
+
+---
+
+**Kind:** merge
+
+**ID:** 2026-11-17-06
+
+**Timestamp:** 2026-11-17T20:26:20Z
+
+**PR:** none. Test-1 is fast-forwarded on the operator's go.
+
+**Head:** the commit that adds this entry. Its parent is cd06edf on neutral-text-2026-11-17.
+
+**Base:** Test-1
+
+**Pre-merge:** 584a8c9577062147869c1c237a17cf18b0de65cb
+
+**Merge-commit:** none, because a fast-forward makes no merge commit.
+
+**Backup:** ~/Zynergy/egd-repo-backups/test-1-before-neutral-text-2026-11-17.bundle, verified, with sha256 7d994533036447b2369bf7600acb8184bbc13734c9ba9973999f6c90ee299e48 in the manifest beside it and a line in INDEX.md. Its restore was tested and gives 584a8c9.
+
+**Merged-by:** the curator, on the operator's word, 2026-11-17: "3 yes", answering "Once you've approved it, can I write it in and merge when the checks pass?"
+
+**Carries:** 2026-11-17-02 to -06; specs/2026-11-17-project-neutral.md; trials/method-text-evidence-2026-11-17.md; the rewrite's eight commits; REGISTER.md's new observations.
+
+**Notes:** Written by the curator, Clio, on branch neutral-text-2026-11-17, before the fast-forward. The preset rename is not carried; it waits for the operator's choice of name. Next free ID 2026-11-17-07.
+
+---
