@@ -409,6 +409,12 @@ An operator ruling that changes how work is done is written, with the operator's
 
 Evidence: trials/forager-2026-11-05.md, N4. Standing: several instances, in two projects.
 
+**28. A session hands off at a context threshold, and the handoff carries the record.**
+
+A long session degrades, and its context and usage run out. An executor or planner hands off to a fresh session past a set context size, and before a usage limit, with all its work committed and pushed. The handoff names the dispatch, the record entries and the branch heads; it is not a summary. A session let run past the threshold gets closer review of what it produced.
+
+Evidence: trials/forager-2026-11-05.md, N5. Standing: a dozen handoffs and one session run far past its threshold, in one project.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
