@@ -34,7 +34,7 @@ None of these require the agent to be smart. They require it to be observed. Tha
 | `OPERATOR_PROFILE.template.md` | Both | The form each project's operator profile is built from: what the operator wants and how, in their own words. |
 | `ADOPTING.md` | Both | How to run the record checkers on any repository, shaped to its own record by a `records.json`. |
 | `records_lookup.py` | Both | Read-only lookup over a project's records, in whatever repositories a config names (show, links, search, open, next-id), every answer cited by repository, ref, commit, file and line (`specs/2026-10-16-records-lookup.md`; `ADOPTING.md`, "The lookup tool"). |
-| `lookups/` | Machines | Lookup configs for `records_lookup.py`, chosen with `--preset`: `forager.json` reads Forager's and forager-forecast's records. |
+| `lookups/` | Machines | Lookup configs for `records_lookup.py`, chosen with `--preset`. One preset ships, for the operator's own projects. |
 | `RECORD.md` | Both | The append-only record store. |
 | `prompts/` | Both | Every prompt dispatched, preserved verbatim. |
 | `PROTOCOL.md` | Both | Working rules on probation: candidates that have not yet earned a place in the philosophy, each with its evidence. |
@@ -63,7 +63,7 @@ One intent record is permanently unterminated. Its prediction was never written,
 
 The prompts in `prompts/` are preserved exactly as dispatched, including a reference to a file that never existed, two contradictory section names in one document, and an instruction to close a record that was never opened. A prompt store that quietly fixes the planner's mistakes destroys its own evidentiary value.
 
-A second project has since run it. Forager, a field app, adopted the method in September 2026, installed its gates as harness hooks on 2026-09-22, removed them five days later because they blocked actions the agents were expected to take, leaving the operator to hold the agent's hand at every step, and kept going without them. What fired, what was dropped, and what decayed once the checkers were gone is in `trials/forager-2026-10-16.md`. Its lessons are what the October 2026 changes to the philosophy and the protocol rest on.
+A second project has since run it. A field app adopted the method in September 2026, installed its gates as harness hooks on 2026-09-22, removed them five days later because they blocked actions the agents were expected to take, leaving the operator to hold the agent's hand at every step, and kept going without them. What fired, what was dropped, and what decayed once the checkers were gone is in `trials/forager-2026-10-16.md`. Its lessons are what the October 2026 changes to the philosophy and the protocol rest on.
 
 ## What this does not claim
 
