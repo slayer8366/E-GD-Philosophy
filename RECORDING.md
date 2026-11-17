@@ -137,6 +137,7 @@ Accounts for a dispatch that opens no intent, in one of two forms.
   - `Report`;
   - and no `Closes`, prediction or finish line.
 - **Forager's later form,** about two thirds: a change to a dispatch already running. Fields: `Dispatch` (the dispatch changed), `Reason`, `Changes`, and the operator's answer.
+- **Every dispatch is claimed.** A dispatch file is claimed by an intent or a dispatch-note before its work runs. check_prompts.py lists any that are not. A record that keeps dispatch files without running it should expect unclaimed dispatches to accumulate unseen (trials/forager-2026-11-05.md, R2).
 
 ### handoff (practice) — 5 in Forager
 
