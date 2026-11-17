@@ -3542,3 +3542,34 @@ Observed, not asked: None.
 **Notes:** Written by the curator, Clio, on branch method-wording-2026-11-16, before the fast-forward. The operator's date has turned, so IDs restart at 2026-11-17-01. If the fast-forward does not land as stated, a correction entry follows. Next free ID 2026-11-17-02.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-11-17-02
+
+**Timestamp:** 2026-11-17T19:57:10Z
+
+**Title:** The project-neutral rewrite of E-GD's method text, proposed in full as a spec before anything is changed
+
+**Change:** specs/2026-11-17-project-neutral.md (new). It shows every line of the method text that names a project, a project's path, a commit or a record ID, as it is now and as proposed, generated from one table of exact substitutions. It also lists the lines kept, with the reason for each. A spec is not a go; the operator approves the text, and the rewrite then goes in under its own intent.
+
+**Scope boundary:** specs/2026-11-17-project-neutral.md (new) and RECORD.md (append only), on branch neutral-text-2026-11-17, cut from Test-1 at 584a8c9. No method document is changed under this intent.
+
+**Baseline:**
+- Test-1 at 584a8c9577062147869c1c237a17cf18b0de65cb, equal to origin/Test-1.
+- The operator's rulings: on 2026-11-05, "yes" to the method documents becoming project-neutral with the evidence moving into trials/ (2026-11-05-03); on 2026-11-17, "project neutral text" as the next work.
+
+**Prediction (outcome — planner):**
+
+1. Applying the spec changes 97 lines and keeps 7. Afterwards no project name, project path, record ID or commit hash from either project remains in the method text outside the kept lines. This is checked by two scans, each first shown to find such references in the current text.
+2. check_glossary.py stays at 47/46/47, since no headword changes.
+
+**Prediction (mechanism — coder):** Every substitution matches exactly once in its line, and all 100 lines a survey found are either changed or kept with a reason. Tried first on a throwaway copy of Test-1.
+
+**Finish line:** The spec committed, pushed and its link given to the operator. A terminal entry once the operator answers on it.
+
+**Abort conditions:** A line whose neutral wording needs a ruling the operator has not given. It is asked about, not worded.
+
+**Notes:** Written by the curator, Clio, on branch neutral-text-2026-11-17. Next free ID 2026-11-17-03.
+
+---
