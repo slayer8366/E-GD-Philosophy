@@ -443,4 +443,6 @@ Rule 7 is a special case: it does not supplement PHILOSOPHY.md but replaces part
 
 Rules 10 onward were added on 2026-10-16 (RECORD.md 2026-10-16-01) from the records of Forager and forager-forecast (trials/forager-2026-10-16.md). Their evidence comes from one further project family, read after the fact. It is not a test in this repository, and none of them is enforced by a check.
 
+Rules 24 to 30 were added on 2026-11-16 from the second reading of the same project family (trials/forager-2026-11-05.md), on the operator's "all of them" (prompts/preserved/2026-11-16-01.md). None is enforced by a check.
+
 A rule that goes unexercised through a full phase is reviewed rather than assumed still relevant. This document has no forgetting mechanism of its own, and an untested rule that persists indefinitely looks like anticipation while being accumulation.
