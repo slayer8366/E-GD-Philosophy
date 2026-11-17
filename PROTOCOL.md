@@ -336,6 +336,8 @@ E-GD's curator was named under this rule on 2026-10-16 (RECORD.md 2026-10-16-19)
 
 Standing: one profile has been in use for about nine days; three more are being written in Forager, and E-GD's curator profile is new. Untested as a general method.
 
+Standing, updated 2026-11-16: the project family now keeps nine role profiles, each naming the model it runs on (trials/forager-2026-11-05.md, AD4).
+
 **23. A release passes an evidence gate: checks, an independent audit, and the operator's approval.**
 
 Tests show the code does what its builder intended. Nothing in them checks that what ships is fit for the people who use it. A release is therefore promoted through a gate.
