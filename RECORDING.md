@@ -34,6 +34,7 @@ Opens a piece of work, before anything is built.
 - **Fields:** `Title`, `Change`, `Scope boundary`, `Baseline`, `Prediction (outcome — planner)`, `Prediction (mechanism — coder)`, `Finish line`, `Abort conditions`, and `Dispatch-file` when a dispatch governs it.
 - **The prediction is required.** Forager's intents stopped carrying predictions, finish lines and abort conditions after its checker was removed; the cause is inferred, not recorded. The operator ruled that drift, not a decision (prompts/preserved/2026-10-16-01.md), so the requirement stands.
 - **Predictions in both directions.** An intent may state its prediction as two: what will be seen if the change works, and what will be seen if it fails. Its terminal scores both. Where a record's header or a role's profile listed the prediction fields, predictions came back with no checker behind them (trials/forager-2026-11-05.md, R1).
+- **Who writes the intent.** The plan and the outcome prediction are the planner's. The intent itself may be written by the executor. One operator's ruling: "Intent is different than plan, and can be written by the coder still, it's a good practice to. But planning is the planner task" (trials/forager-2026-11-05.md, R6).
 - **Closing:** every intent is closed by exactly one closing entry. That is a terminal, or an outcome that carries `Closes`.
 
 ### terminal (this repository; partial from the kit) — 166 in Forager
