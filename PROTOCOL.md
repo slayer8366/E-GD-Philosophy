@@ -421,6 +421,12 @@ A plan names its points of no return: an irreversible step, a public one, or one
 
 Evidence: trials/forager-2026-11-05.md, N6. Standing: two instances, in one project. This applies Operator Authority, which already holds that authorization is local.
 
+**30. Code refuses rather than choosing.**
+
+Where data needs a reading the fixed rules do not give, the program stops and names what needs a ruling, rather than picking a default. The refusal is the stop-and-ask, moved into code.
+
+Evidence: trials/forager-2026-11-05.md, N7. Two refusals became the operator's rulings. Standing: two instances, in one project.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
