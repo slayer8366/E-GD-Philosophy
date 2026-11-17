@@ -25,7 +25,7 @@ When an answer is partial, unclear or surprising, the question is asked again un
 
 ## Entry types
 
-Twelve, kept as Forager used them, synonyms included, by the operator's ruling ("Keep all twelve", prompts/preserved/2026-10-16-05.md). Where two types overlap, both are described as Forager wrote them, and the overlap is stated. Counts are from Forager's record at `97f26098`. "(this repository)" marks the two this repository's record already had, "(kit)" the three Claude-kit v0.2 added, and "(practice)" the seven defined here from Forager's usage.
+Twelve, kept as Forager used them, synonyms included, by the operator's ruling ("Keep all twelve", prompts/preserved/2026-10-16-05.md). Where two types overlap, both are described as Forager wrote them, and the overlap is stated. Counts are from Forager's record at `97f26098`. "(this repository)" marks the two this repository's record already had, "(kit)" the three Claude-kit v0.2 added, and "(practice)" the seven defined here from Forager's usage. Projects add kinds of their own as they need them. A kind enters this method only when it is harvested and approved; until then it stays the project's (trials/forager-2026-11-05.md, R5).
 
 ### intent (this repository) — 243 in Forager
 
