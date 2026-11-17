@@ -385,6 +385,12 @@ Standing: one promotion has run through the gate. It was documents only, and pas
 
 Standing, updated 2026-11-16: releases with code have since passed through the gate, and every audit verdict recorded in the period read was "pass with items" (trials/forager-2026-11-05.md, M3). The gate has not yet been seen to fail. The device path is still untested as a gate step.
 
+**24. Exhausted resources let checks fail open, and an exit code is not a state.**
+
+Disk, memory, temporary storage and usage limits are shared state that every check depends on. When one runs out, a check can pass on truncated input, and a gated step can run past a failed precondition. So free space is checked before a gated step, and a tool's output is checked for completeness, not only its exit code. Success is read from the resulting state, and gated steps are chained so that a failure stops the next.
+
+Evidence: trials/forager-2026-11-05.md, N1. Exhaustion recurred in one project, twice letting a check or a gate fail open, once through a tool that stopped partway and still exited 0. Standing: one project.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
