@@ -3464,3 +3464,55 @@ Out of scope:
 **Notes:** Written by the curator, Clio, on branch method-wording-2026-11-16. The ID keeps the operator's working date, 2026-11-16, as the merge entry -06 named it, although the clock's UTC date may have turned. Next free ID 2026-11-16-08.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-11-16-08
+
+**Timestamp:** 2026-11-17T00:03:46Z
+
+**Closes:** 2026-11-16-07
+
+**Outcome:** completed
+
+**Observed:**
+
+- **Commits:** 27, c4ea605 to 31d0aa6 on method-wording-2026-11-16, one per item and each pushed as it was made:
+  - P1 and P2;
+  - README.md's two lines;
+  - M1 to M4;
+  - rules 24 to 30, and the Standing sentence;
+  - R1 to R6;
+  - the three corrections;
+  - the two ADOPTING.md sections;
+  - the curator-profile line.
+- **How the text was written:** each passage was read from specs/2026-11-16-harvest-wording.md itself, with its placeholders filled. Every anchor was asserted to occur once. A cumulative dry run came first; it applied every item, gave check_glossary.py at 47/46/47, and was restored to a clean tree before the real run.
+- **The comparison:** all 37 spec passages are found verbatim in their target files, and no placeholder is left unfilled. Its positive control altered one character in each passage, and found 0 of 37.
+
+The planner's predictions, scored:
+
+1. "check_glossary.py passes at 47/46/47." Held.
+2. "Every spec passage, with placeholders filled, is found verbatim in its target file." Held, 37 of 37.
+3. "check_record.py and check_prompts.py pass." Checked after this entry through check_register.py, with the results in REGISTER.md.
+
+Also held, from intent -02: no project's name, record ID or path is in the new text, apart from the trial file names the spec allowed. Three edited lines still name Forager in their older text: rule 14's evidence, RECORDING.md's "Twelve, kept as Forager used them", and its index line. They are left for the project-neutral rewrite.
+
+Confirmed against inferred:
+- Confirmed: all of the above, by script, at 31d0aa6.
+- Inferred: None.
+
+Could not determine: None.
+
+Premises that were wrong: None.
+
+Decided beyond scope:
+- In ENFORCEMENT.md's Operator Authority, the three new bullets sit before the existing Amended line, and the new Amended line after it, so the two Amended lines read in date order.
+- The ID keeps the operator's working date, 2026-11-16.
+
+Observed, not asked: None.
+
+**Deviations:** None. No wording outside the spec was written, and no existing RECORD.md or REGISTER.md entry was edited.
+
+**Notes:** Written by the curator, Clio, on branch method-wording-2026-11-16. Merging waits for the operator's go for this branch. Next free ID 2026-11-16-09.
+
+---
