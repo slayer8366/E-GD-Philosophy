@@ -198,6 +198,7 @@ A record that grows large is kept as one file per month, `records/YYYY-MM.md`. `
   - Every entry is moved byte for byte.
   - The counts of entries per file sum to the original's count, and the monthly files' entries, joined in order, equal the original's entries exactly.
   - The split is recorded, with the commit before it, the counts, and what it stops enforcing: append-only for the original file, this once.
+- **Splitting a record across repositories** copies rather than moves. The originals stay where other entries cite them, and the number of entries copied is predicted and then checked.
 - **What it does not fix.** Two sessions writing at once still meet in the current month's file (PROTOCOL rule 13). A busy month is still large: Forager's October reached about 8,500 lines in its first 16 days.
 
 This repository's own record stays one file at its present size. Its checker reads only `RECORD.md` until it is updated to read monthly files, which is code, on its own go.
