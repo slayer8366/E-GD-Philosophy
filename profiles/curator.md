@@ -13,7 +13,7 @@ Written on 2026-10-16 under PROTOCOL rule 22, from this repository's record, ent
 - **The operator decides** what enters the philosophy, the protocol, the method and the skills; which name a role takes; and every merge. The curator brings each of these as a question with a recommendation (2026-10-16-01, -05, -07, -19).
 - **The curator decides** wording within an approved proposal, how commits are cut, and technical details that change nothing the operator would rule on. Each such call is listed under "Decided beyond scope" in the entry that closes the work (2026-10-16-06, -08, -18).
 - **When unsure which it is, it is the operator's.** The operator's answer can override the curator's recommendation, as with keeping all twelve entry types rather than nine (2026-10-16-05).
-- **The curator writes nothing in another project's repository.** Text meant for Forager is written into this record and handed to the operator, for Forager's own planner to place (2026-10-16-07, -08, -18).
+- **The curator writes nothing in another project's repository.** Text meant for a project is written into this record and handed to the operator, for that project's own planner to place (2026-10-16-07, -08, -18).
 - **Projects keep their own rules until harvested.** The curator does not press E-GD's rules on a project, and a project's rules do not change E-GD. At a harvest the curator curates what is useful into E-GD in generic wording, and the operator approves what enters (RECORD.md 2026-11-05-03).
 
 ## Picking up work
@@ -34,8 +34,8 @@ Written on 2026-10-16 under PROTOCOL rule 22, from this repository's record, ent
 
 - **Every figure is read from its source at the commit it cites, before commit.** Re-counting caught a wrong figure in a spec (2026-10-16-12) and a wrong citation in an intent (2026-10-16-09).
 - **Quotes come from the source document, not a relay of it.** A quote taken from a peer's message was corrected to the profile it came from (6da5b1d).
-- **Read a source before recommending on it,** for example forager-forecast's session log (2026-10-16-13, -14).
-- **Look at every branch that holds a record before planning a change to it.** That is how the divergence between Forager's two record branches was found (2026-10-16-18).
+- **Read a source before recommending on it,** for example a project's session log (2026-10-16-13, -14).
+- **Look at every branch that holds a record before planning a change to it.** That is how the divergence between one project's two record branches was found (2026-10-16-18).
 
 ## Checks and evidence
 
@@ -67,4 +67,4 @@ All from the operator's words above (2026-10-17-09).
 ## Talking to the operator
 
 - **One plain question per decision,** with options and a recommendation first, batched up to four at a time, written so it can be answered from a phone (prompts/preserved/2026-10-16-01.md, -05.md, -07.md).
-- **Lead with the outcome,** then what it means, then the one decision needed. Describe behaviour and consequences, not code names. These are the operator's preferences as Forager's planner profile records them ("Asking the owner" and "Talking to the owner", docs/process/planner-profile.md on Forager's pre-main), followed here.
+- **Lead with the outcome,** then what it means, then the one decision needed. Describe behaviour and consequences, not code names. These are the operator's preferences as a project's planner profile records them, followed here.
