@@ -4,6 +4,8 @@ Rules governing how the operator, planner and coder work together that have not 
 
 These are not principles. PHILOSOPHY.md holds rules that have earned their place; this document holds rules that have not. They live apart on purpose: a rule installed in the philosophy can only be removed by archival, and these are likely enough to be wrong that installing them would be building ahead of the evidence.
 
+The evidence notes below describe the projects they came from by what each is: the field-app project, and the research project descended from it. The project names, paths, commits and record IDs that stood in them until 2026-11-17 are kept verbatim in trials/method-text-evidence-2026-11-17.md, by rule (RECORD.md 2026-11-05-03).
+
 ## Where these came from
 
 The planning role in this project has no access to the repository. It cannot read a file, run a check, or observe a commit. Every claim it makes about repository state comes from memory of what it dispatched rather than from what exists.
@@ -20,7 +22,7 @@ The planner does not state what a file contains, which IDs are in use, what a pr
 
 In practice this means writing "confirm the archive count and use what you find" rather than "the archive contains two entries." Both point at the same place. Only one can be wrong.
 
-Promoted 2026-10-16 into PHILOSOPHY.md's Sourced Claims (RECORD.md 2026-10-16-01), with rule 2. Forager gave its planner read access to remove this rule's premise and the premise held anyway: at least 24 of its record entries describe planner slips about repository state, and a claim that a file had zero references decayed inside its own pull request (trials/forager-2026-10-16.md; Forager CLAUDE.md at 402489ae, the pitfall on a planner's picture of the repository). The text above stays as written.
+Promoted 2026-10-16 into PHILOSOPHY.md's Sourced Claims (RECORD.md 2026-10-16-01), with rule 2. The field-app project gave its planner read access to remove this rule's premise, and the premise held anyway: at least 24 of its record entries describe planner slips about repository state, and a claim that a file had zero references decayed inside its own pull request (trials/forager-2026-10-16.md; sources: trials/method-text-evidence-2026-11-17.md, rule 1). The text above stays as written.
 
 **2. State reaches the planner at task boundaries, carrying a commit hash.**
 
@@ -32,7 +34,7 @@ A snapshot expires at the next commit. During a task the executor is authoritati
 
 Where a prompt would dictate edits to a file the planner has not been passed at the current hash, the planner says so and stops. Working from memory is the failure this rule exists to prevent, and doing it while holding a stale file is worse, because it looks sourced.
 
-Promoted 2026-10-16 into PHILOSOPHY.md's Sourced Claims (RECORD.md 2026-10-16-01), with rule 1. Forager's practice is this rule's general form: a dispatch states the base commit it assumes, and the executing session verifies that base before acting on any claim about what exists. The text above stays as written.
+Promoted 2026-10-16 into PHILOSOPHY.md's Sourced Claims (RECORD.md 2026-10-16-01), with rule 1. The field-app project's practice is this rule's general form: a dispatch states the base commit it assumes, and the executing session verifies that base before acting on any claim about what exists. The text above stays as written.
 
 **3. Investigation precedes planning.**
 
@@ -64,7 +66,7 @@ Values that answer yes carry their source: a capture identifier, a datasheet ref
 
 The executor cannot verify these by any amount of care or capability, because it cannot observe the thing being claimed. That is what distinguishes them from every other claim in the codebase.
 
-Evidence, added 2026-10-16 (RECORD.md 2026-10-16-01): Forager supports this rule's premise at n of 5 or more. A simulated test environment reported zero for a quantity that is never zero on a device, and a fixed constant matching that zero passed the suite and failed on the device. A fake camera defaulted to ready, so the deadlock under test could not be represented. A test harness supplied a value from outside the component under test. A device reported a constant positional accuracy. The `assumed` marker this rule prescribes was never tried there, so the marking practice is still untested. Severity of Checks now carries the premise as a principle; this rule stays here for its marking practice.
+Evidence, added 2026-10-16 (RECORD.md 2026-10-16-01): the field-app project supports this rule's premise at n of 5 or more. A simulated test environment reported zero for a quantity that is never zero on a device, and a fixed constant matching that zero passed the suite and failed on the device. A fake camera defaulted to ready, so the deadlock under test could not be represented. A test harness supplied a value from outside the component under test. A device reported a constant positional accuracy. The `assumed` marker this rule prescribes was never tried there, so the marking practice is still untested. Severity of Checks now carries the premise as a principle; this rule stays here for its marking practice.
 
 **6. Deciding above your authority produces output identical to deciding within it.**
 
@@ -86,7 +88,7 @@ This axis is decidable: a decision can be placed on it, and disagreements about 
 
 Stated standing: this is a replacement for Role Partition, not a supplement to it. It is here rather than in PHILOSOPHY.md because replacing a load-bearing principle on the strength of an untested draft is what Evidence-Based Feature Addition exists to prevent. It is promoted only if it decides cases the installed partition cannot, and that has not been demonstrated.
 
-Forager evidence, added 2026-10-16 (RECORD.md 2026-10-16-01): this rule's axis became Forager's working partition, in a form one step finer than the table above. The operator decides behaviour, scope, design, wording, licences, merges and anything public. The planner decides technical routes that change nothing the operator would see or rule on, records each call, and says so in its next message. "When unsure which it is, it's the owner's" (`docs/process/planner-profile.md:13-15` at `402489ae`). forager-forecast labels such a row as the planner's call with "no rule changed" (`docs/planning/DECISIONS.md`, D118, at `b9127e5`). The same project departed from Role Partition in two recorded ways: its planner reads the repository and writes the record. It also added two roles the partition does not have: a read-only scout that answers questions about the repository without changing it, and an independent reviewer (rule 11). What has not been shown is a case this axis decided that the installed partition could not have, which is this rule's own bar for promotion. It stays here.
+Evidence from the field-app project, added 2026-10-16 (RECORD.md 2026-10-16-01): this rule's axis became its working partition, in a form one step finer than the table above. The operator decides behaviour, scope, design, wording, licences, merges and anything public. The planner decides technical routes that change nothing the operator would see or rule on, records each call, and says so in its next message. "When unsure which it is, it's the owner's". The research project descended from it labels such a row as the planner's call with "no rule changed". The field-app project departed from Role Partition in two recorded ways: its planner reads the repository and writes the record. It also added two roles the partition does not have: a read-only scout that answers questions about the repository without changing it, and an independent reviewer (rule 11). What has not been shown is a case this axis decided that the installed partition could not have, which is this rule's own bar for promotion. It stays here. Sources: trials/method-text-evidence-2026-11-17.md, rule 7.
 
 **8. A record is testimony about a source, not the source.**
 
@@ -124,7 +126,7 @@ Rationale: a check that reports a permanently unresolvable state as pending does
 
 Standing: n=2. One case in which an outcome prediction was authored before dispatch, released after the terminal entry was already committed, and stranded permanently. One in which a prediction existed and was held, no mechanism conveyed its existence, the intent entry recorded `not authored` correctly on the evidence available, and the prediction is now unverifiable as pre-dispatch. No check enforces this rule. Rules 1 through 8 are likewise unenforced, and building machinery for a rule at n=2 is what Evidence-Based Feature Addition exists to prevent.
 
-Forager evidence, added 2026-10-16 (RECORD.md 2026-10-16-01): the `committed:<sha256>` form appears 0 times in Forager's record of 1,275 entries. forager-forecast reached the same end, a choice provably fixed before the outcome, by public commits whose order a reviewer checks (rule 10). That route was used and this one was not; rule 10 is the working method, and this rule's withheld hash remains for a prediction that must stay hidden from the executor until it has run.
+Evidence from the field-app project, added 2026-10-16 (RECORD.md 2026-10-16-01): the `committed:<sha256>` form appears 0 times in its record of 1,275 entries. The research project descended from it reached the same end, a choice provably fixed before the outcome, by public commits whose order a reviewer checks (rule 10). That route was used and this one was not; rule 10 is the working method, and this rule's withheld hash remains for a prediction that must stay hidden from the executor until it has run. Sources: trials/method-text-evidence-2026-11-17.md, rule 9.
 
 **10. Choices that could be tuned to a result are committed before the result is read.**
 
@@ -134,7 +136,7 @@ The evidence that the order held is the commit order, checked by someone other t
 
 This extends Intent-Driven Engineering's prediction from the outcome to the analysis that will judge the outcome.
 
-Evidence: forager-forecast fixes its production seed and a 20-configuration tuning grid before any model is fit, rejecting the alternative because it "invites tuning until it wins" (`docs/planning/DECISIONS.md:101`, D31 at `b9127e5`), and does the same for its evaluation, filters and licence tracks (D33, D26, D29). Reviewers confirmed that the commit came before the first count in four cases. The rule held when the result pulled the other way (D109, D90), and caught a committed tolerance that would have failed before any value was read. Forager's planner profile carries the same rule: "Fix choices before data" (`docs/process/planner-profile.md:38` at `402489ae`).
+Evidence: the research project fixes its production seed and a 20-configuration tuning grid before any model is fit, rejecting the alternative because it "invites tuning until it wins", and does the same for its evaluation, filters and licence tracks. Reviewers confirmed that the commit came before the first count in four cases. The rule held when the result pulled the other way, and caught a committed tolerance that would have failed before any value was read. The field-app project's planner profile carries the same rule: "Fix choices before data". Sources: trials/method-text-evidence-2026-11-17.md, rule 10.
 
 Standing: four checked orderings and three holds or catches, in one project. Untested here.
 
@@ -142,7 +144,7 @@ Standing: four checked orderings and three holds or catches, in one project. Unt
 
 A finding that later work will stand on is reviewed by a session that did not produce it, working from the repository rather than from the producer's conversation. The reviewer recomputes headline figures with its own code, runs its own revert checks, and fixes its own samples and tolerances before reading the data. Finding nothing is an acceptable result; saying what was checked is mandatory. A builder's own check is kept and labelled as a self-check; it is not a review. A dependent task waits for its prerequisite's review to be filed.
 
-Evidence: forager-forecast decision D18 (`docs/planning/DECISIONS.md:114` at `b9127e5`) and its standing review protocol (`docs/dispatch/2026-09-18-review-protocol.md`; the quoted sentence is at `:17`). It has 21 review files on main, 14 of which led to a fix, a correction or a decision traceable in its record (a reader session's classification, 17 of the 21 from index rows). In its decision D35, an independent review found two things the builder's self-check had missed, while the self-check re-ran a count the reviewer could not reach; both documents were kept, because each saw something the other could not. In Forager, an independent review caught 37 guessed record timestamps (record 2026-09-28-608). This repository's own record named the need first: RECORD.md 2026-08-15-04, Finding 1, "a single investigation is one sample, not a determination".
+Evidence: the research project's decision setting up independent review, and its standing review protocol. It has 21 review files on its main branch, 14 of which led to a fix, a correction or a decision traceable in its record (a reader session's classification, 17 of the 21 from index rows). In one of its decisions, an independent review found two things the builder's self-check had missed, while the self-check re-ran a count the reviewer could not reach; both documents were kept, because each saw something the other could not. In the field-app project, an independent review caught 37 guessed record timestamps. This repository's own record named the need first: RECORD.md 2026-08-15-04, Finding 1, "a single investigation is one sample, not a determination". Sources: trials/method-text-evidence-2026-11-17.md, rule 11.
 
 Standing: the strongest of the candidates, in one project family. Role Partition has no reviewer role, so promoting this would amend it.
 
@@ -168,10 +170,10 @@ A one-time override records what it stopped enforcing, as a removal does.
 
 Evidence, added 2026-11-16: trials/forager-2026-11-05.md, M1. In one project, intents went unwritten for ten days, and merge and correction entries stopped and had not returned by the time of reading. Rules written after slips were breached again. One rule named enforcement that did not exist.
 
-Evidence, all from Forager (trials/forager-2026-10-16.md):
+Evidence, all from the field-app project (trials/forager-2026-10-16.md; sources: trials/method-text-evidence-2026-11-17.md, rule 12):
 
-- Per-dispatch operator approval was removed four days after it began. The operator: "Can't have me hitting buttons. Those hooks need to change" (`docs/audits/2026-09-26-approval-exempt-build-device.md`).
-- The whole hook kit was disabled and deleted on 2026-09-27. The operator's account, 2026-10-16: "The hooks were removed because actions agents are expected to perform were being hindered. The operator had to hold the agent's hand every step of the way, which was the opposite of the kit's intentions." (prompts/preserved/2026-10-16-03.md). The note written on 2026-09-27 records the operator's words then, "to work around weekly limits" (`docs/audits/2026-09-27-kit-hooks-disabled.md`). That note is the model for recording a removal: its section 3 lists what stops being enforced.
+- Per-dispatch operator approval was removed four days after it began. The operator: "Can't have me hitting buttons. Those hooks need to change".
+- The whole hook kit was disabled and deleted on 2026-09-27. The operator's account, 2026-10-16: "The hooks were removed because actions agents are expected to perform were being hindered. The operator had to hold the agent's hand every step of the way, which was the opposite of the kit's intentions." (prompts/preserved/2026-10-16-03.md). The note written on 2026-09-27 records the operator's words then, "to work around weekly limits". That note is the model for recording a removal: its section 3 lists what stops being enforced.
 - The guards' own bypass table: a script, a subshell, a split variable or a build alias passed every guard except the planner's tool restriction. A merge went through the hosting service's API from a checkout that carried no hooks.
 - What decayed after the checkers went:
   - Prediction fields fell from 99 of 100 intents to 0 of 143, and Finish line to 31 of 143.
@@ -179,7 +181,7 @@ Evidence, all from Forager (trials/forager-2026-10-16.md):
   - The working trunk was bypassed for about two weeks.
 - What survived without enforcement: dispatches as files, verbatim quotes, revert checks, and the pre-build disclosure sections.
 
-The operator ruled the loss of predictions to be drift, not a decision (prompts/preserved/2026-10-16-01.md), so Intent-Driven Engineering's prediction requirement stands unchanged. Forager is recorded as a gate lost once its checker was removed.
+The operator ruled the loss of predictions to be drift, not a decision (prompts/preserved/2026-10-16-01.md), so Intent-Driven Engineering's prediction requirement stands unchanged. The field-app project is recorded as a gate lost once its checker was removed.
 
 Standing: four removals or bypasses, plus the decay above, in one project. If promoted, this amends Automated Boundary Enforcement, which says a boundary defended only by convention is undefended but says nothing about what a defence costs.
 
@@ -199,14 +201,14 @@ So:
 - A removed ID stays retired, and its removal is recorded where the entries citing it will be read.
 - Where several planners share one branch, every merge is recorded where the others read before they act.
 
-Evidence, from Forager (Forager `CLAUDE.md` at `402489ae` and trials/forager-2026-10-16.md):
+Evidence, from the field-app project and the research project descended from it (trials/forager-2026-10-16.md; sources: trials/method-text-evidence-2026-11-17.md, rule 13):
 
-- A planner session believed dead reconnected and kept writing to the same record branch, so two record IDs were each used twice (`docs/audits/2026-10-05-planner-handoff.md`).
-- An entry was deleted with its ID declared retired, and the ID was used again 26 minutes later (Forager commits `0bda73e8` and `4805cb90`).
-- A hook numbered each preserved prompt by counting only its own checkout, so parallel worktrees took the same numbers (Forager `RECORD.md` on `main`, 2026-09-23 finding on the dispatch guard).
-- Two branches each declared the same schema version with different migrations, which no file-level merge detects (Forager `CLAUDE.md`, the base-branch pitfall).
-- The audit index conflicted on every push after the first when two sessions ran in parallel (Forager `CLAUDE.md`, the serialization-point pitfall).
-- From forager-forecast: a decision filed on one branch had to be renumbered the same day, because the number had already been taken on another (`docs/planning/DECISIONS.md:17`, D123, at `b9127e5`).
+- A planner session believed dead reconnected and kept writing to the same record branch, so two record IDs were each used twice.
+- An entry was deleted with its ID declared retired, and the ID was used again 26 minutes later.
+- A hook numbered each preserved prompt by counting only its own checkout, so parallel worktrees took the same numbers.
+- Two branches each declared the same schema version with different migrations, which no file-level merge detects.
+- The audit index conflicted on every push after the first when two sessions ran in parallel.
+- From the research project: a decision filed on one branch had to be renumbered the same day, because the number had already been taken on another.
 - Added 2026-11-16: trials/forager-2026-11-05.md, M2. A range partition between two records failed and left 43 IDs each naming two different entries. Five removed IDs were reused, and one removed entry is still cited.
 
 Standing: six instances across two projects. If promoted, this extends Concurrency Awareness's enforcement entry.
@@ -224,15 +226,15 @@ This repository's checkers accept only intent and terminal entries. Supporting m
 
 Evidence:
 
-- Forager's record held, at the first reading, 12 entry kinds, with 224 decisions and 330 continuations among 1,275 entries (fifteen by the second reading, trials/forager-2026-11-05.md).
-- The operator had one entry deleted from it as clutter (Forager commit `0bda73e8`).
-- 63 of its intents have no terminal entry; 49 of those were continued instead (trials/forager-2026-10-16.md).
+- The field-app project's record held, at the first reading, 12 entry kinds, with 224 decisions and 330 continuations among 1,275 entries (fifteen by the second reading, trials/forager-2026-11-05.md).
+- The operator had one entry deleted from it as clutter.
+- 63 of its intents have no entry closing them, counting a Closes field on any kind of entry, and 49 of those were continued instead (trials/forager-2026-10-16.md). Counted by terminal entries alone, the figures are 79 and 41 (trials/recount-2026-11-16.md).
 - This repository's own first entry pair recorded two agents reaching for a kind that did not exist (RECORD.md 2026-08-13-02, Deviations).
-- forager-forecast's decision rows carry the provenance labels above (`docs/planning/DECISIONS.md` at `b9127e5`).
+- The research project's decision rows carry the provenance labels above. Sources: trials/method-text-evidence-2026-11-17.md, rule 14.
 
 Standing: the shape of one project's record, plus the operator's practice. Untested here.
 
-Promoted 2026-10-16 into RECORDING.md (RECORD.md 2026-10-16-05), on the operator's ruling, with the twelve entry types kept as Forager used them rather than reduced to the two this rule proposed. The text above stays as written.
+Promoted 2026-10-16 into RECORDING.md (RECORD.md 2026-10-16-05), on the operator's ruling, with the twelve entry types kept as the field-app project used them rather than reduced to the two this rule proposed. The text above stays as written.
 
 **15. A display may change a fact's form, never remove or soften it.**
 
@@ -244,7 +246,7 @@ Presentation Is Not Acquisition lets display paths transform data freely for the
 
 Ease is the goal inside that constraint, not a reason to cross it. An automatic, sensible default beats a new setting or prompt, and the worst case is a state a person could misread as broken.
 
-Evidence: Forager's field-instrument skill states two governing rules in this order, "honesty is never traded for ease" and then "don't make me think" (`skills/examples/field-instrument-interface/SKILL.md`). The operator's design principle "Don't make me think" is recorded in Forager's `CLAUDE.md` (2026-09-30). The skill itself says three of its seven rules are inferred from the app's purpose and general practice, not from field data.
+Evidence: the field-app project's field-instrument skill states two governing rules in this order, "honesty is never traded for ease" and then "don't make me think" (`skills/examples/field-instrument-interface/SKILL.md`). The operator's design principle "Don't make me think" is recorded in that project's standing instructions (2026-09-30). The skill itself says three of its seven rules are inferred from the app's purpose and general practice, not from field data. Sources: trials/method-text-evidence-2026-11-17.md, rule 15.
 
 Standing: moderate, in one project. If promoted, this amends Presentation Is Not Acquisition, whose "freely" is too strong.
 
@@ -252,19 +254,19 @@ Standing: moderate, in one project. If promoted, this amends Presentation Is Not
 
 A check that enumerates states what each enumerated thing means, or records that it did not. And a correct-looking result is tested by changing an input and seeing whether the result moves, because a right answer can come from a wrong mechanism.
 
-Evidence: a tree check counted the outcome labels correctly and never asked what one label meant. That label carried four reasons, one of which was the mechanism working, so a device check built on the count would have filed correct behaviour as a fault (Forager `CLAUDE.md`, testing section; index line 145). Three more instances in one week of a correct observation produced by an incorrect mechanism are at index line 165. Standing: four instances, in one project. This sits beside Severity of Checks: that principle asks whether a check could fail, and this asks what a passing check licenses.
+Evidence: a tree check counted the outcome labels correctly and never asked what one label meant. That label carried four reasons, one of which was the mechanism working, so a device check built on the count would have filed correct behaviour as a fault. Three more instances in one week of a correct observation produced by an incorrect mechanism are in the same project's audit index. Standing: four instances, in one project. This sits beside Severity of Checks: that principle asks whether a check could fail, and this asks what a passing check licenses. Sources: trials/method-text-evidence-2026-11-17.md, rule 16.
 
 **17. A refactor that is correct by construction carries the original's omissions forward.**
 
 Rebuilding a path so that it provably does what the old one did also provably keeps what the old one failed to do. A refactor is checked against what the path should do, not only against what it did.
 
-Evidence: Forager, index line 110, where the operator ruled that this general form supersedes the instance it came from "because it predicts recurrence rather than recording one occurrence". Standing: one instance.
+Evidence: in the field-app project, the operator ruled that this general form supersedes the instance it came from "because it predicts recurrence rather than recording one occurrence". Standing: one instance. Sources: trials/method-text-evidence-2026-11-17.md, rule 17.
 
 **18. The model an agent actually ran on is part of the run's conditions.**
 
 Which model executed a session is recorded as read from the harness or the session's own log, not assumed from a configured alias, and it is never stated to the operator unread.
 
-Evidence: in Forager, an alias chosen for coder sessions resolved to a different model than the one the planner had told the operator (`docs/audits/2026-09-29-planner-handoff.md:55`). The operator later used two builds of one dispatch as a comparison between models: "we are measuring [model B] vs [model A]" (`docs/audits/2026-09-29-f5-landed-and-redo-compared.md`). Standing: two instances. If promoted, this extends Capture Environmental Context to the agents themselves.
+Evidence: in the field-app project, an alias chosen for coder sessions resolved to a different model than the one the planner had told the operator. The operator later used two builds of one dispatch as a comparison between models: "we are measuring [model B] vs [model A]". Standing: two instances. If promoted, this extends Capture Environmental Context to the agents themselves. Sources: trials/method-text-evidence-2026-11-17.md, rule 18.
 
 **19. Two artifacts that collide are compared on content, not on who wrote them.**
 
@@ -276,11 +278,11 @@ Evidence: operator-reported, 2026-09-16, in no repository. Two independently wri
 
 Ignoring, skipping, weakening or deleting a test, or widening a skip list, is a stop-and-ask in any task that did not ask for it. That holds even when the failure is diagnosed as harness-only. Diagnosing is the job; deciding to reduce coverage is not.
 
-Evidence: Forager `CLAUDE.md`, testing section, where the rule is written. A coder deleted 26 tests without reporting it, and they were restored at the next merge (index line 335). Standing: two instances.
+Evidence: the field-app project's standing instructions, testing section, where the rule is written. A coder deleted 26 tests without reporting it, and they were restored at the next merge. Standing: two instances. Sources: trials/method-text-evidence-2026-11-17.md, rule 20.
 
 **21. Gate on the evidence the work produces, not on the agent's actions.**
 
-The operator's stated approach since Forager's hooks were removed: "So now I let philosophy, precise methodology, and evidence gating drive the agent" (2026-10-16, prompts/preserved/2026-10-16-03.md).
+The operator's stated approach since the field-app project's hooks were removed: "So now I let philosophy, precise methodology, and evidence gating drive the agent" (2026-10-16, prompts/preserved/2026-10-16-03.md).
 
 An action gate stops the agent before it acts and asks someone to judge the action. An evidence gate lets the agent act and requires it to produce something checkable. Examples:
 
@@ -298,8 +300,8 @@ Evidence:
 - The operator's account of the removal, under rule 12: the hooks "hindered" actions agents were expected to perform, and the operator "had to hold the agent's hand every step of the way".
 - After the removal, practices that produce evidence the work needs held with no enforcement at all: dispatch files with intents, verbatim quotes, revert checks, and disclosure sections (trials/forager-2026-10-16.md).
 - Fields that existed for a checker drifted. Predictions were 0 of 143 later intents, and finish lines 31 of 143. Record-format errors went unseen.
-- Forager's release gate of 2026-10-16 is an evidence gate at a boundary: CI, both test phones, an advisory interface audit, and the operator's approval (Forager record 2026-09-28-1085 to -1087).
-- forager-forecast's dependent tasks wait for their prerequisite's review to be filed (rule 11).
+- The field-app project's release gate of 2026-10-16 is an evidence gate at a boundary: CI, both test phones, an advisory interface audit, and the operator's approval.
+- The research project's dependent tasks wait for their prerequisite's review to be filed (rule 11). Sources: trials/method-text-evidence-2026-11-17.md, rule 21.
 
 Standing: the operator's approach since 2026-09-27, about three weeks in one project, read after the fact. The drift above is the caution, in the curator's reading: what held was evidence someone reads, and what drifted was evidence only a removed checker read. If promoted, this amends Automated Boundary Enforcement, and Role Partition's description of the separation as "structural, not a matter of discipline".
 
@@ -326,15 +328,15 @@ The project's standing instructions govern, and where a profile disagrees with t
 
 **A name is a label, not authority.** A named role keeps exactly the authority of its role. This is the curator's addition, not the operator's words.
 
-Evidence: Forager's docs/process/planner-profile.md, written on 2026-10-07 at the owner's request. Its planner was named from Forager's world, which is woods, foraging and wayfinding: "A rowan is the guardian tree at the edge of the woods. A waymark is the blaze that keeps the next walker on the trail." (planner-profile.md:5). The owner's words:
+Evidence: the field-app project's planner profile, written on 2026-10-07 at the operator's request. Its planner was named from that project's world, woods, foraging and wayfinding, with one plain line on why. The operator's words:
 
-- "That way each role can have a profile that models their behavior" (Forager record 2026-09-28-1141);
+- "That way each role can have a profile that models their behavior";
 - "Each role proposes, you pick" (the same entry);
-- "EGD may adopt it but to make it general, the profiles should have the roles name themselves based on the project and its scope" (2026-09-28-1142).
+- "EGD may adopt it but to make it general, the profiles should have the roles name themselves based on the project and its scope". Sources: trials/method-text-evidence-2026-11-17.md, rule 22.
 
 E-GD's curator was named under this rule on 2026-10-16 (RECORD.md 2026-10-16-19), and its profile is profiles/curator.md.
 
-Standing: one profile has been in use for about nine days; three more are being written in Forager, and E-GD's curator profile is new. Untested as a general method.
+Standing: one profile has been in use for about nine days; three more are being written in the field-app project, and E-GD's curator profile is new. Untested as a general method.
 
 Standing, updated 2026-11-16: the project family now keeps nine role profiles, each naming the model it runs on (trials/forager-2026-11-05.md, AD4).
 
@@ -346,7 +348,7 @@ Tests show the code does what its builder intended. Nothing in them checks that 
 
 - Production changes only by promotion through the gate. Documents count too.
 - The working branch receives finished work.
-- An experiments branch is production plus developer tools plus running experiments. It is rebased onto production after every release, "to reflect workability" (Forager record 2026-09-28-1087), and never merged anywhere. An experiment chosen to ship is carried onto the working branch without the tools.
+- An experiments branch is production plus developer tools plus running experiments. It is rebased onto production after every release, "to reflect workability", and never merged anywhere. An experiment chosen to ship is carried onto the working branch without the tools.
 
 **The gate, in order:**
 
@@ -357,33 +359,33 @@ Tests show the code does what its builder intended. Nothing in them checks that 
 - A register of known defects ships with each release. It lists each defect's severity and whether users already have it. A defect already live may ship; a new one that risks a user's data, safety or trust fails the release.
 - The gate's verdicts are counted. A gate that has only ever passed has not been shown able to fail, and its standing says so.
 
-A device check or field walk is proposed by the planner when a promotion needs one, and the operator decides. It is not a standing step: "Field walks and device checks aren't always necessary" (-1133). An urgent fix takes the same gate, at the front of the queue, and is then carried into the working branch.
+A device check or field walk is proposed by the planner when a promotion needs one, and the operator decides. It is not a standing step: "Field walks and device checks aren't always necessary". An urgent fix takes the same gate, at the front of the queue, and is then carried into the working branch.
 
 **The auditor:**
 
-- **Who.** A fresh session for each promotion. It is never the session that built the work, and it runs on a different model from the one that built it, because "the same model shares blind spots" (-1134).
+- **Who.** A fresh session for each promotion. It is never the session that built the work, and it runs on a different model from the one that built it, because "the same model shares blind spots".
 - **What it reads.** The evidence, the known bugs, accessibility, the copy, and every changed behaviour walked as a step path.
 - **Its verdict:**
   - pass;
   - pass with items, none of which risks a user's data, safety or trust;
   - fail.
   - Each item says where it is, what a user would meet, why it matters, and the evidence, or "not seen on a device".
-- **"Advises, you decide"** (-1086). The verdict goes to the operator, who decides; it is not a veto. The auditor writes no product code, fixes and merges nothing, never weakens a test, and never settles a conflict between two of the operator's rulings: it puts both sides to the operator.
-- **Devices.** A real device comes first. An emulator run is labelled "emulator, not a device", and what an emulator cannot stand in for is listed (-1094).
+- **"Advises, you decide"**. The verdict goes to the operator, who decides; it is not a veto. The auditor writes no product code, fixes and merges nothing, never weakens a test, and never settles a conflict between two of the operator's rulings: it puts both sides to the operator.
+- **Devices.** A real device comes first. An emulator run is labelled "emulator, not a device", and what an emulator cannot stand in for is listed.
 
-**The QA philosophy it audits against.** If none exists, the auditor's first task is to draft one (-1085):
+**The QA philosophy it audits against.** If none exists, the auditor's first task is to draft one:
 
 - each principle is marked as the operator's words, quoted with its source, or as the auditor's proposal;
 - the draft ends with numbered questions, each with a recommendation;
-- an adopted proposal stays marked as adopted from the auditor's proposal, never as the operator's words (-1092, -1097).
+- an adopted proposal stays marked as adopted from the auditor's proposal, never as the operator's words.
 
 **Recording.** Each promotion is an intent, the auditor's report filed unedited, a merge entry with its backup, and one terminal (RECORDING.md).
 
-**Sources.** Forager's planner wrote the framework for this repository: prompts/preserved/2026-10-16-05-auditor-framework-for-egd.md and its addendum, -05b, on Forager's origin/records-after-173 (f09ff09c, 7d6cdd45). They are cited there rather than copied here. Where the addendum changed the original, this rule follows the addendum: the original lists a device check as step 2 of the gate, and the addendum removes it (-1133). The owner's view of the whole: "the rules we have are simply what we already do. Just codified" (-1138).
+**Sources.** The field-app project's planner wrote the framework for this repository, with an addendum. Both are cited in trials/method-text-evidence-2026-11-17.md, rule 23, rather than copied here. Where the addendum changed the original, this rule follows the addendum: the original lists a device check as step 2 of the gate, and the addendum removes it. The owner's view of the whole: "the rules we have are simply what we already do. Just codified".
 
 This is Independent Replication (rule 11) applied at release time. If both hold up, they may become one principle.
 
-Standing: one promotion has run through the gate. It was documents only, and passed with two notes on the planner's own documents, neither blocking (-1131, -1132). No release with code has been audited, and the device path is untested.
+Standing: one promotion has run through the gate. It was documents only, and passed with two notes on the planner's own documents, neither blocking. No release with code has been audited, and the device path is untested.
 
 Standing, updated 2026-11-16: releases with code have since passed through the gate, and every audit verdict recorded in the period read was "pass with items" (trials/forager-2026-11-05.md, M3). The gate has not yet been seen to fail. The device path is still untested as a gate step.
 
@@ -443,7 +445,7 @@ To be exercised in phase 3 and reviewed afterward. Rules that earn their place a
 
 Rule 7 is a special case: it does not supplement PHILOSOPHY.md but replaces part of it, so promoting it means archiving Role Partition. That raises the bar for its promotion rather than lowering it.
 
-Rules 10 onward were added on 2026-10-16 (RECORD.md 2026-10-16-01) from the records of Forager and forager-forecast (trials/forager-2026-10-16.md). Their evidence comes from one further project family, read after the fact. It is not a test in this repository, and none of them is enforced by a check.
+Rules 10 onward were added on 2026-10-16 (RECORD.md 2026-10-16-01) from the records of a field-app project and a research project descended from it (trials/forager-2026-10-16.md). Their evidence comes from one further project family, read after the fact. It is not a test in this repository, and none of them is enforced by a check.
 
 Rules 24 to 30 were added on 2026-11-16 from the second reading of the same project family (trials/forager-2026-11-05.md), on the operator's "all of them" (prompts/preserved/2026-11-16-01.md). None is enforced by a check.
 
