@@ -165,6 +165,7 @@ One append-only table for the dated records that live outside the record store i
 - **A row that supersedes another names the row it replaces.** A stale row nobody marked is worse than no row.
 - **A finding outside a task's scope gets its own row,** not a sentence inside an unrelated report, where nobody searching for it would look (Durability Is Location).
 - **The index is a serialization point for parallel work.** Sessions that append to it are sequenced, or the index is split so each appends to its own fragment. On a merge conflict, every row from both sides is kept (PROTOCOL rule 13).
+- **Coverage decays when reports move.** An index covers only the store it was built for. Reports filed elsewhere, such as beside the dispatch they answer, get rows too, or the index states what it does not cover (trials/forager-2026-11-05.md, R3).
 
 Forager's index is `docs/audits/README.md`, with 356 dated rows at `402489ae`. forager-forecast files every dispatch byte-identical under `docs/dispatch/` and indexes it in that same single table, rather than keeping a second index that would drift out of step with the first.
 
