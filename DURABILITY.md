@@ -55,4 +55,4 @@ Nothing here is a claim that this will not happen again for some other
 reason. It is a claim that it will not happen again for *this* reason,
 because this reason is now checked instead of assumed.
 
-Promoted on 2026-10-16 to PHILOSOPHY.md as Durability Is Location, with Forager's instances (RECORD.md 2026-10-16-01; trials/forager-2026-10-16.md).
+Promoted on 2026-10-16 to PHILOSOPHY.md as Durability Is Location, with a field-app project's instances (RECORD.md 2026-10-16-01; trials/forager-2026-10-16.md).
