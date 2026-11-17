@@ -185,6 +185,14 @@ To change infrastructure later: record the change in the record store as a super
 - Where a test environment supplies a constant in place of a real-world quantity (a simulated device reading, a default, a fixture value), the agent reports that the check cannot test anything depending on that quantity, and routes it to Separate Execution Contexts.
 - Added 2026-10-16 under RECORD.md 2026-10-16-01. Evidence: trials/forager-2026-10-16.md.
 
+**Independent Review**
+- A result that later work stands on, and each change before it is promoted to production, is reviewed by a session that did not build it, running on a different model from the builder's. The record names the model each ran on, as read from the session, not assumed.
+- The reviewer works from the repository at named commits. It recomputes headline figures with its own code, runs its own revert checks, and commits its samples, tolerances and counting rules before it reads the data (PROTOCOL rule 10).
+- A dependent task waits until its prerequisite's review is filed.
+- The review is filed unedited. A reviewer that may not write gives its report as its final message, and that message is filed byte for byte.
+- Where two reviews of one result run on different models, neither reads the other's until both are filed.
+- Promoted from PROTOCOL rule 11 under RECORD.md 2026-11-16-07. Evidence: trials/forager-2026-11-05.md, P2; related work S27 and S28 (paper/related-work.md).
+
 **Data-Driven Debugging**
 - After two failed fix attempts on the same symptom, the agent stops proposing fixes. Next actions are limited to: gathering raw runtime logs, instrumenting the live path, and constructing a minimal reproduction. A third speculative fix is a violation.
 

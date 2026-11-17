@@ -146,6 +146,8 @@ Evidence: forager-forecast decision D18 (`docs/planning/DECISIONS.md:114` at `b9
 
 Standing: the strongest of the candidates, in one project family. Role Partition has no reviewer role, so promoting this would amend it.
 
+Promoted 2026-11-16 into PHILOSOPHY.md as Independent Review (RECORD.md 2026-11-16-07). The text above stays as written.
+
 **12. What a gate costs decides whether it survives.**
 
 Every gate has a running cost, paid in operator attention, compute, latency or usage limits. A gate whose cost is paid on every action is the first to be removed, and it is often removed wholesale, taking the cheap gates down with the expensive one. So a gate's running cost is priced before it is installed, and checks that run at commit or in CI are preferred over checks that run on every action.
