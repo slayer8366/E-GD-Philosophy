@@ -397,6 +397,12 @@ A tool call shown as refused, a command interrupted, or a step that failed may h
 
 Evidence: trials/forager-2026-11-05.md, N2. In one instance, a call shown as refused had in fact landed, and its re-run landed a second time. Standing: three instances, in one project.
 
+**26. Process documents drift against each other, and an outside reader cross-reads them.**
+
+A clause saying which document wins settles a conflict once someone has found it. It does not find it. Profiles, process documents and standing instructions written at different times contradict each other silently. At intervals, and before any release of the method, a session from outside the project reads them against each other and lists every contradiction for the operator.
+
+Evidence: trials/forager-2026-11-05.md, N3. There were five contradictions across two projects' process documents; two were found by an outside reader. Standing: five instances.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
