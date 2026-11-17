@@ -43,7 +43,11 @@ To change infrastructure later: record the change in the record store as a super
 - A stop-and-ask trigger written into a dispatch belongs to the operator. When an executor reports a difference that matches one, it goes to the operator with options, even when the planner judges that nothing visible changes.
 - An instruction to undo reaches only the step it interrupted. Anything wider is asked about, not assumed.
 - When the operator overrides a gate or a rule, the agent carries out the override exactly where it was asked and records what the override stops enforcing, as far as the repository shows it. It records a reason only if the operator gives one, and does not ask for one. It does not generalize the override, write it into a profile or process document, or cite it as precedent: the rule stands for every agent, the planner included. Operator's ruling, 2026-10-16 (prompts/preserved/2026-10-16-01.md).
+- Before offering options, the agent checks each against the operator's standing words on the matter, quoted. The operator's words are the first option. An option that departs from them is never marked recommended, and says in its own text that it departs, and from what.
+- A restatement of a ruling, in a prompt, a record or a report, sits beside the ruling quoted verbatim and is labelled as the restater's. It is never later cited as the ruling.
+- Changing settings or data on a device or account the operator uses needs the operator's go, whether or not the change can be undone.
 - Amended 2026-10-16 under RECORD.md 2026-10-16-01. Evidence: trials/forager-2026-10-16.md.
+- Amended 2026-11-16 under RECORD.md 2026-11-16-07. Evidence: trials/forager-2026-11-05.md, M4.
 
 **Operator Observation**
 - Agent claims about live system behavior are limited to what an instructed run actually exercised. Behavior outside those runs is reported as unknown, not inferred.
