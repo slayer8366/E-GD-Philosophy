@@ -45,7 +45,7 @@ Unlike the skills above, these were written in this repository, not copied from 
 
 ## Example: a project-specific skill
 
-`examples/field-instrument-interface/` is Forager's interface rules for a field app, built on these principles: honesty is never traded for ease, then "don't make me think". It is here as an example of deriving a project's own skill from the general ones, not as a general skill. It bears on Truthful Interface Contracts and Explicit Failure Reporting, and on PROTOCOL rule 15. It says itself which of its rules are inferred rather than drawn from field data.
+`examples/field-instrument-interface/` is one project's interface rules for a field app, built on these principles: honesty is never traded for ease, then "don't make me think". It is here as an example of deriving a project's own skill from the general ones, not as a general skill. It bears on Truthful Interface Contracts and Explicit Failure Reporting, and on PROTOCOL rule 15. It says itself which of its rules are inferred rather than drawn from field data.
 
 ## Third-party skills and plugins in use, not copied
 
@@ -61,10 +61,10 @@ These were in use in the same environment on 2026-10-16. They are listed so a re
 
 ## Found while copying, not changed
 
-Forager keeps untracked local copies of nine of these skills. Three of them (completion-report, dispatch-authoring, prior-art-before-interface) are older than the account's and lack the Conventions field the account versions added. They were reported to the operator and not touched.
+One project keeps untracked local copies of nine of these skills. Three of them (completion-report, dispatch-authoring, prior-art-before-interface) are older than the account's and lack the Conventions field the account versions added. They were reported to the operator and not touched.
 
 ## Edits made here after copying
-- `revert-check`, protocol step 5: after restoring, confirm the forward change is still present. From Forager's CLAUDE.md, where a restore from git discarded an uncommitted change the check had just vouched for. The account copy does not have this edit.
-- `failing-test-first`, after "Read the message and say why it is the right one.": the red must come from the same unchanged test that later goes green. From Forager's "red that proves nothing" (its audit index, 2026-09-12), where the rule was followed and the red still belonged to an earlier version of the test. Corrected in a follow-up commit to say the test was edited after the fix, and that a red counts only if the same test could have passed. The account copy does not have this edit.
+- `revert-check`, protocol step 5: after restoring, confirm the forward change is still present. From a project's standing instructions, where a restore from git discarded an uncommitted change the check had just vouched for. The account copy does not have this edit.
+- `failing-test-first`, after "Read the message and say why it is the right one.": the red must come from the same unchanged test that later goes green. From a project's finding of 2026-09-12, "red that proves nothing", where the rule was followed and the red still belonged to an earlier version of the test. Corrected in a follow-up commit to say the test was edited after the fix, and that a red counts only if the same test could have passed. The account copy does not have this edit.
 - `failing-test-first` ("Half the tests…") and `evidence-discipline` ("Most of the expensive bugs…"): each figure marked as unsourced, the operator's wording kept. The account copies do not have these marks.
 - `dispatch-authoring`: a section "Check from source, not memory", the operator's rule of 2026-10-16 (RECORD.md 2026-10-16-09). The account copy does not have it.
