@@ -145,8 +145,8 @@ History is never rewritten, so a committed edit, a removal or a bad merge fails 
 
 ```
 **Accepts-violation:**
-    0bda73e8 an entry removed at the owner's instruction
-    bebeb573 an entry written inside a merge, kept as it was
+    1a2b3c4d an entry removed at the owner's instruction
+    5e6f7a8b an entry written inside a merge, kept as it was
 ```
 
 3. Commit it. The checker then lists those violations as accepted, with the reason and the entry, and passes the history walk if nothing else is wrong.
@@ -257,7 +257,7 @@ python3 records_lookup.py show 2026-10-17-05
 
 `--repo repo=PATH` points it at another repository, and `--ref record=origin/main` reads another ref. A ref starting `origin/` is fetched first unless `--no-fetch` is given. A source that cannot be read is reported as NOT READ, and an answer that would depend on it says "unknown". A question the record's shape cannot answer, such as `open` on a record with no intent type, says "unsupported".
 
-**More sources, in any repositories,** come from a lookup config given with `--config FILE`. `--print-config` prints the config in use, and `--preset forager` loads `lookups/forager.json`, which reads Forager's and forager-forecast's records. A config names:
+**More sources, in any repositories,** come from a lookup config given with `--config FILE`. `--print-config` prints the config in use, and `--preset NAME` loads `lookups/NAME.json`. One preset ships, for the operator's own projects. A config names:
 
 - **repos:** each repository's name, with a path or `null`. `--repo NAME=PATH` gives or replaces a path.
 - **record:**
