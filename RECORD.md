@@ -3516,3 +3516,29 @@ Observed, not asked: None.
 **Notes:** Written by the curator, Clio, on branch method-wording-2026-11-16. Merging waits for the operator's go for this branch. Next free ID 2026-11-16-09.
 
 ---
+
+**Kind:** merge
+
+**ID:** 2026-11-17-01
+
+**Timestamp:** 2026-11-17T19:50:07Z
+
+**PR:** none. Test-1 is fast-forwarded on the operator's go.
+
+**Head:** the commit that adds this entry. Its parent is 08175cd on method-wording-2026-11-16.
+
+**Base:** Test-1
+
+**Pre-merge:** c21e13b2cf039181bfbac48fb503ebed5f1618e4
+
+**Merge-commit:** none, because a fast-forward makes no merge commit. Test-1 moves from c21e13b to the commit that adds this entry.
+
+**Backup:** ~/Zynergy/egd-repo-backups/test-1-before-method-wording-2026-11-16.bundle, verified, with sha256 9436fbe69cc237945541cb848d3891f9b5c1878765a75e9d7cea3862a933b214 in the manifest beside it and a line in INDEX.md. Its restore was tested and gives c21e13b.
+
+**Merged-by:** the curator, on the operator's word, 2026-11-17: "1 yes", answering "Can I merge this branch when it's ready?".
+
+**Carries:** 2026-11-16-07 and -08; the 27 wording commits, c4ea605 to 31d0aa6; REGISTER.md's new observations.
+
+**Notes:** Written by the curator, Clio, on branch method-wording-2026-11-16, before the fast-forward. The operator's date has turned, so IDs restart at 2026-11-17-01. If the fast-forward does not land as stated, a correction entry follows. Next free ID 2026-11-17-02.
+
+---
