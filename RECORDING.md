@@ -2,15 +2,15 @@
 
 How a project working under this method keeps its record. The record store is the first of the four pieces of infrastructure (ENFORCEMENT.md, Minimal Required Infrastructure), and this document is its method: what goes in, in what form, and what travels with it.
 
-It was adopted on 2026-10-16 (RECORD.md 2026-10-16-05), on the operator's ruling, from Forager's record. There these methods ran for about four weeks and 1,275 entries (trials/forager-2026-10-16.md). The operator, on the methods: "These recording methods have been invaluable" (prompts/preserved/2026-10-16-05.md).
+It was adopted on 2026-10-16 (RECORD.md 2026-10-16-05), on the operator's ruling, from the record of a field-app project, called here the source project. There these methods ran for about four weeks and 1,275 entries (trials/forager-2026-10-16.md). The operator, on the methods: "These recording methods have been invaluable" (prompts/preserved/2026-10-16-05.md). The project paths and record IDs that stood in this document until 2026-11-17 are kept verbatim in trials/method-text-evidence-2026-11-17.md (RECORD.md 2026-11-05-03).
 
-Two of the entry types, intent and terminal, are this repository's own. Three more, continuation, merge and dispatch-note, were first defined in the checker of Claude-kit v0.2, the kit that carried this method's gates into Forager as harness hooks; the kit also added partial to the terminal outcomes. The other seven are written down here for the first time, from how Forager used them. Each type below says which it is.
+Two of the entry types, intent and terminal, are this repository's own. Three more, continuation, merge and dispatch-note, were first defined in the checker of Claude-kit v0.2, the kit that carried this method's gates into the source project as harness hooks; the kit also added partial to the terminal outcomes. The other seven are written down here for the first time, from how the source project used them. Each type below says which it is.
 
 ## What every entry carries
 
 - **Kind, ID and Timestamp.** The timestamp is read from a clock at the time of writing, never estimated (Sourced Claims).
-- **Who wrote it, and where.** A closing `Notes` line such as "Written by the planner by hand, on branch records-after-173". 1,004 of Forager's 1,275 entries carry one.
-- **The next free ID**, wherever IDs can collide between parallel sessions or branches. It is stated at the end of the entry and checked against the remote before it is used (PROTOCOL rule 13). 548 of Forager's entries name it.
+- **Who wrote it, and where.** A closing `Notes` line such as "Written by the planner by hand, on branch records". 1,004 of the source project's 1,275 entries carry one.
+- **The next free ID**, wherever IDs can collide between parallel sessions or branches. It is stated at the end of the entry and checked against the remote before it is used (PROTOCOL rule 13). 548 of the source project's entries name it.
 - **The operator's words,** wherever they bear on the entry, quoted verbatim with their date. They are never paraphrased, and an answer is never relabelled as a rule (Operator Authority).
 - **The field form.** Each field is a line starting `**Label:**`, and its value runs to the next such line. Any other line that starts that way is read as a field, so prose inside an entry does not.
 
@@ -25,19 +25,19 @@ When an answer is partial, unclear or surprising, the question is asked again un
 
 ## Entry types
 
-Twelve, kept as Forager used them, synonyms included, by the operator's ruling ("Keep all twelve", prompts/preserved/2026-10-16-05.md). Where two types overlap, both are described as Forager wrote them, and the overlap is stated. Counts are from Forager's record at `97f26098`. "(this repository)" marks the two this repository's record already had, "(kit)" the three Claude-kit v0.2 added, and "(practice)" the seven defined here from Forager's usage. Projects add kinds of their own as they need them. A kind enters this method only when it is harvested and approved; until then it stays the project's (trials/forager-2026-11-05.md, R5).
+Twelve, kept as the source project used them, synonyms included, by the operator's ruling ("Keep all twelve", prompts/preserved/2026-10-16-05.md). Where two types overlap, both are described as the source project wrote them, and the overlap is stated. Counts are from its record at the first reading (trials/forager-2026-10-16.md). "(this repository)" marks the two this repository's record already had, "(kit)" the three Claude-kit v0.2 added, and "(practice)" the seven defined here from the source project's usage. Projects add kinds of their own as they need them. A kind enters this method only when it is harvested and approved; until then it stays the project's (trials/forager-2026-11-05.md, R5).
 
-### intent (this repository) — 243 in Forager
+### intent (this repository) — 243 in the source project
 
 Opens a piece of work, before anything is built.
 
 - **Fields:** `Title`, `Change`, `Scope boundary`, `Baseline`, `Prediction (outcome — planner)`, `Prediction (mechanism — coder)`, `Finish line`, `Abort conditions`, and `Dispatch-file` when a dispatch governs it.
-- **The prediction is required.** Forager's intents stopped carrying predictions, finish lines and abort conditions after its checker was removed; the cause is inferred, not recorded. The operator ruled that drift, not a decision (prompts/preserved/2026-10-16-01.md), so the requirement stands.
+- **The prediction is required.** The source project's intents stopped carrying predictions, finish lines and abort conditions after its checker was removed; the cause is inferred, not recorded. The operator ruled that drift, not a decision (prompts/preserved/2026-10-16-01.md), so the requirement stands.
 - **Predictions in both directions.** An intent may state its prediction as two: what will be seen if the change works, and what will be seen if it fails. Its terminal scores both. Where a record's header or a role's profile listed the prediction fields, predictions came back with no checker behind them (trials/forager-2026-11-05.md, R1).
 - **Who writes the intent.** The plan and the outcome prediction are the planner's. The intent itself may be written by the executor. One operator's ruling: "Intent is different than plan, and can be written by the coder still, it's a good practice to. But planning is the planner task" (trials/forager-2026-11-05.md, R6).
 - **Closing:** every intent is closed by exactly one closing entry. That is a terminal, or an outcome that carries `Closes`.
 
-### terminal (this repository; partial from the kit) — 166 in Forager
+### terminal (this repository; partial from the kit) — 166 in the source project
 
 Closes exactly one intent and says what happened.
 
@@ -48,54 +48,54 @@ Closes exactly one intent and says what happened.
   - superseded, which carries `Superseded-by`;
   - abandoned, which carries `Working-state`: what was left behind, and whether it is safe to build on.
 - A completed terminal does not carry `Deferred`.
-- **Forager's usage:** completed 150, abandoned 6, superseded 5, partial 3. It also wrote "parked" and "both" once each. No outcome list allows those, and this method does not adopt them.
+- **The source project's usage:** completed 150, abandoned 6, superseded 5, partial 3. It also wrote "parked" and "both" once each. No outcome list allows those, and this method does not adopt them.
 
-### continuation (kit) — 330 in Forager
+### continuation (kit) — 330 in the source project
 
 Carries on an open intent under a new dispatch or a new step.
 
-- **Fields:** `Continues`, naming an intent still open at that point in the record. The kit's form adds `Dispatch-file`, `Reason` and `Changes`; 26% of Forager's continuations carry them. The rest record the step in prose.
+- **Fields:** `Continues`, naming an intent still open at that point in the record. The kit's form adds `Dispatch-file`, `Reason` and `Changes`; 26% of the source project's continuations carry them. The rest record the step in prose.
 - **It opens and closes nothing.** It carries no `Closes`, `Outcome`, prediction or finish line; the scope and predictions stay the intent's.
-- **It never stands in for a terminal.** 49 of the 63 Forager intents that have no terminal had been continued instead, so their status still reads as open.
+- **It never stands in for a terminal.** In the source project, 63 intents had no entry closing them, counting a `Closes` field on any kind of entry, and 49 of those had been continued instead, so their status still reads as open. Counted by terminal entries alone, the figures are 79 and 41 (trials/recount-2026-11-16.md).
 
-### decision (practice) — 224 in Forager
+### decision (practice) — 224 in the source project
 
 One settled decision.
 
-- **Fields as Forager used them:**
+- **Fields as the source project used them:**
   - `Title` (74%);
   - `The owner, verbatim` (71%), written here as `The operator, verbatim` with its date;
   - `What it sets` (61%), the decision itself;
   - `Continues` (45%), when the decision belongs to open work;
   - `Context` (30%).
-- **Practices seen in Forager and adopted:**
+- **Practices seen in the source project and adopted:**
   - `What the owner was told before answering`: the question the answer responded to, so that the answer can be read against it;
   - `Supersedes`, naming the decision it replaces and quoting that decision's words (6 entries);
   - `Not authorised by this`, stating that the decision is not permission to build (3);
   - `Before build, unverified`, listing what the decision rests on that nobody has checked.
-- **Who decided** is labelled: the operator's ruling, quoted; a planner's call within a delegation; proposed; or provisional until review. These are forager-forecast's labels (`docs/planning/DECISIONS.md`).
+- **Who decided** is labelled: the operator's ruling, quoted; a planner's call within a delegation; proposed; or provisional until review. These are the labels of a research project in the same family.
 
-### outcome (practice) — 40 in Forager
+### outcome (practice) — 40 in the source project
 
 The result of a report or a check, filed against open work.
 
 - **Fields:** `Title`, `Observed` (77%), `Continues` (87%), `Report-file` when the report is filed beside the entry, `The owner, verbatim` (30%), `For the owner` (27%: what goes back to the operator), and `Corrects` where it withdraws an earlier premise.
 - **Overlap with terminal:** 4 of the 40 carry `Closes` instead of `Continues`, and close their intent as its terminal would. One carries neither.
 
-### observation (practice) — 21 in Forager
+### observation (practice) — 21 in the source project
 
 Something seen that is not itself a task.
 
 - **Fields:** `Title` (90%) and `Observed` (66%), keeping what was read apart from what was inferred, what was not checked, and what is open for the operator.
 
-### finding (practice) — 3 in Forager
+### finding (practice) — 3 in the source project
 
 A diagnosis worth an entry of its own.
 
 - **Fields:** `Continues`, then the evidence in labelled parts (read, inferred, confirmed, withdrawn), why it matters, and what is open for the operator.
-- **Overlap with observation:** two Forager sessions once wrote a finding and an observation about the same event under the same ID. A correction entry then said which to cite.
+- **Overlap with observation:** two of the source project's sessions once wrote a finding and an observation about the same event under the same ID. A correction entry then said which to cite.
 
-### device-note (practice) — 11 in Forager
+### device-note (practice) — 11 in the source project
 
 A build put on a test device.
 
@@ -106,14 +106,14 @@ A build put on a test device.
   - `Not done`: what the writer deliberately did not do on the device;
   - `Run by`.
 
-### correction (practice) — 13 in Forager
+### correction (practice) — 13 in the source project
 
 Fixes earlier entries without editing them.
 
 - **Fields:** `Corrects` (the IDs, and the claim corrected); `What was wrong` (61%), quoting it; and `What it corrects` or which entry to cite instead.
 - **Overlap:** corrections also appear as a `Corrects` field inside other entries, an outcome's for example.
 
-### merge (kit) — 91 in Forager
+### merge (kit) — 91 in the source project
 
 One merge into a protected branch.
 
@@ -124,22 +124,22 @@ One merge into a protected branch.
   - `Backup`, naming the backup taken before the merge (see "Backups before merges");
   - `Merged-by`, the operator, or an agent together with the dispatch that authorized it;
   - `Carries`, the record entries the merge brings into the base.
-- About 70% of Forager's merge entries carry `PR`, `Head`, `Base`, `Merge-commit`, `Pre-merge` and `Backup`; 28% carry `Merged-by` and `Carries`.
+- About 70% of the source project's merge entries carry `PR`, `Head`, `Base`, `Merge-commit`, `Pre-merge` and `Backup`; 28% carry `Merged-by` and `Carries`.
 
-### dispatch-note (kit) — 128 in Forager
+### dispatch-note (kit) — 128 in the source project
 
 Accounts for a dispatch that opens no intent, in one of two forms.
 
-- **The kit's form,** about a third of Forager's:
+- **The kit's form,** about a third of the source project's:
   - `Dispatch-file`;
   - `Type`: build, device or pulse;
   - `Outcome`: answered, declined, exercise, stopped or merged;
   - `Report`;
   - and no `Closes`, prediction or finish line.
-- **Forager's later form,** about two thirds: a change to a dispatch already running. Fields: `Dispatch` (the dispatch changed), `Reason`, `Changes`, and the operator's answer.
+- **The source project's later form,** about two thirds: a change to a dispatch already running. Fields: `Dispatch` (the dispatch changed), `Reason`, `Changes`, and the operator's answer.
 - **Every dispatch is claimed.** A dispatch file is claimed by an intent or a dispatch-note before its work runs. check_prompts.py lists any that are not. A record that keeps dispatch files without running it should expect unclaimed dispatches to accumulate unseen (trials/forager-2026-11-05.md, R2).
 
-### handoff (practice) — 5 in Forager
+### handoff (practice) — 5 in the source project
 
 One planner session handing to the next.
 
@@ -156,7 +156,7 @@ Before a merge into a protected branch, the base branch is saved, so the merge c
 
 Agents create backups and never delete, move or overwrite them; a backup an agent can erase does not protect against the agent. Pruning is the operator's, by hand. When the operator directs a removal, whether a backup of the removed material is kept, and where, is the operator's decision, and no agent makes one on its own.
 
-Sources: Forager's accountability design (`docs/process/accountability-design.md`, "Where backups live"), and the merge procedure of Claude-kit v0.2. 74% of Forager's merge entries name a backup.
+Sources: the source project's accountability design ("Where backups live"), and the merge procedure of Claude-kit v0.2. 74% of the source project's merge entries name a backup.
 
 ## The index
 
@@ -167,7 +167,7 @@ One append-only table for the dated records that live outside the record store i
 - **The index is a serialization point for parallel work.** Sessions that append to it are sequenced, or the index is split so each appends to its own fragment. On a merge conflict, every row from both sides is kept (PROTOCOL rule 13).
 - **Coverage decays when reports move.** An index covers only the store it was built for. Reports filed elsewhere, such as beside the dispatch they answer, get rows too, or the index states what it does not cover (trials/forager-2026-11-05.md, R3).
 
-Forager's index is `docs/audits/README.md`, with 356 dated rows at `402489ae`. A project that files every dispatch in one folder and indexes it in one table avoids a second index drifting out of step with the first, as long as every new dispatch gets its row. One project's index went unchanged while its later dispatches went unindexed (trials/forager-2026-11-05.md, R3).
+The source project's index held 356 dated rows at the first reading. A project that files every dispatch in one folder and indexes it in one table avoids a second index drifting out of step with the first, as long as every new dispatch gets its row. One project's index went unchanged while its later dispatches went unindexed (trials/forager-2026-11-05.md, R3).
 
 This repository has no separate index. At its present size, RECORD.md and `prompts/` do the job.
 
@@ -183,23 +183,23 @@ Every report that answers a dispatch carries, beside what landed and the evidenc
 
 A section with nothing in it says "None". An empty section and a missing one both read as unchecked.
 
-Source: Forager's planner operating guide of 2026-08-25, which asked of every report "the disclosure norm: confirmed vs. inferred, could-not-determine, any premise that turned out wrong, anything decided the dispatch didn't cover" (`docs/qc/planner-operating-guide-2026-08-25.md`). The first four were in use in roughly 90 to 100 of Forager's 258 audit documents, with nothing enforcing them (pattern counts). The fifth comes from Forager's finding of 2026-09-12: four findings existed only in transcripts, and only one of 80 reports had a slot for something noticed in passing (Forager's audit index, line 113 at `402489ae`). This method added it on 2026-10-16 (Durability Is Location).
+Source: the source project's planner operating guide of 2026-08-25, which asked of every report "the disclosure norm: confirmed vs. inferred, could-not-determine, any premise that turned out wrong, anything decided the dispatch didn't cover". The first four were in use in roughly 90 to 100 of its 258 audit documents, with nothing enforcing them (pattern counts). The fifth comes from its finding of 2026-09-12: four findings existed only in transcripts, and only one of 80 reports had a slot for something noticed in passing. This method added it on 2026-10-16 (Durability Is Location).
 
 ## Layout: one file per month
 
 A record that grows large is kept as one file per month, `records/YYYY-MM.md`. `RECORD.md` at the root becomes the index: its header, and a list of the monthly files with the first and last entry in each, so a link to `RECORD.md` still lands somewhere useful. Added 2026-10-16 (RECORD.md 2026-10-16-17), on the operator's ruling; one file per entry was judged excessive.
 
-- **An entry's month is the month of its Timestamp, in UTC, not its ID.** An ID scheme can freeze its date: Forager's IDs have begun `2026-09-28` since that day, so its 777 October entries carry September IDs. An entry with no Timestamp goes in the month of the entries around it.
+- **An entry's month is the month of its Timestamp, in UTC, not its ID.** An ID scheme can freeze its date: the source project's IDs have begun `2026-09-28` since that day, so its 777 October entries carry September IDs. An entry with no Timestamp goes in the month of the entries around it.
 - **Each monthly file is append-only,** with a short header ending in the entries heading. New entries go in the file for their Timestamp's month, so only the current month's file grows.
 - **IDs stay unique across all the files.** A running sequence carries on across months, so the next free ID is read from every file, not only the current one.
-- **Links may point into an earlier month.** `Continues`, `Closes`, `Corrects` and `Supersedes` are resolved across all the files. In Forager, 10 of 709 such links crossed the first month boundary.
+- **Links may point into an earlier month.** `Continues`, `Closes`, `Corrects` and `Supersedes` are resolved across all the files. In the source project, 10 of 709 such links crossed the first month boundary.
 - **Splitting an existing single file is done once, on the operator's word,** as archival without loss:
   - Any other branch that edited the file is merged in first, so the split starts from one reconciled file.
   - Every entry is moved byte for byte.
   - The counts of entries per file sum to the original's count, and the monthly files' entries, joined in order, equal the original's entries exactly.
   - The split is recorded, with the commit before it, the counts, and what it stops enforcing: append-only for the original file, this once.
 - **Splitting a record across repositories** copies rather than moves. The originals stay where other entries cite them, and the number of entries copied is predicted and then checked.
-- **What it does not fix.** Two sessions writing at once still meet in the current month's file (PROTOCOL rule 13). A busy month is still large: Forager's October reached about 8,500 lines in its first 16 days.
+- **What it does not fix.** Two sessions writing at once still meet in the current month's file (PROTOCOL rule 13). A busy month is still large: the source project's October reached about 8,500 lines in its first 16 days.
 
 This repository's own record stays one file at its present size. Its checker reads only `RECORD.md` until it is updated to read monthly files, which is code, on its own go.
 
@@ -207,7 +207,7 @@ This repository's own record stays one file at its present size. Its checker rea
 
 History is never rewritten, so a committed edit, removal or bad merge stays in the record's history, and the history check reports it on every run. Once the operator has accepted one, an entry says so, and the record can pass again. Added 2026-10-17 (RECORD.md 2026-10-17-14), on the operator's "Yes, build that" and the answer "In the record" (prompts/preserved/2026-10-17-14.md).
 
-- **The field.** `Accepts-violation`, with one line per commit: the commit's hash, 7 or more hex characters, then the reason. For example: `0bda73e8 RECORD -638 removed at the owner's instruction`.
+- **The field.** `Accepts-violation`, with one line per commit: the commit's hash, 7 or more hex characters, then the reason. For example: `1a2b3c4d RECORD 2026-01-15-07 removed at the operator's instruction`.
 - **Who decides.** Accepting a violation is the operator's decision, and the entry quotes the operator's words, as any decision does. An agent never accepts one on its own.
 - **Why in the record.** The record is append-only, so an acceptance can never be quietly changed or removed later, and it sits beside the history it excuses.
 - **Headers count.** The header above `## Entries` is part of the file, so a changed header line is a violation like any other, accepted the same way. The operator, 2026-10-17, on whether header changes count as edits: "Yes, they should".
@@ -239,7 +239,7 @@ It also checks the links between entries:
 Since 2026-10-17 (RECORD.md 2026-10-17-01), the checkers also read a record kept in monthly files:
 
 - **Monthly files.** check_record.py reads `RECORD.md` and `records/YYYY-MM.md` as one record. An entry with a Timestamp must sit in its month's file. The working-tree check and the history walk run on each monthly file, and an entry-less `RECORD.md` is reported as the index rather than checked.
-- **Longer IDs.** IDs may carry two or more digits after the date, as Forager's do.
+- **Longer IDs.** IDs may carry two or more digits after the date, as the source project's do.
 - **Dispatch claims.** check_prompts.py reads them from every record file.
 
 One limit remains: check_prompts.py accepts one prompt claimed by an intent and its terminal, but not by an intent and an outcome that closes it.
@@ -248,4 +248,4 @@ Since 2026-10-17 (RECORD.md 2026-10-17-05), the checkers run on any repository t
 
 Each rule above has a self-check in `--render-check`: checks 19 to 38 for the entry types, 39 to 46 for monthly files and IDs, 47 to 56 for any-repository use and the config, and check_prompts.py's own p1 to p4. Revert runs disabling each rule in turn made its own check fail (REGISTER.md, 2026-10-16 and 2026-10-17).
 
-Forager kept all twelve types without a checker after 2026-09-27. Run later from copies, its old checkers reported 1,646 entry errors (Forager record 2026-09-28-544). Much of that figure is types the old checkers did not know, so it measures the gap between practice and checker, not only mistakes.
+The source project kept all twelve types without a checker after 2026-09-27. Run later from copies, its old checkers reported 1,646 entry errors. Much of that figure is types the old checkers did not know, so it measures the gap between practice and checker, not only mistakes.
