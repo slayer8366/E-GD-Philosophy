@@ -27,6 +27,16 @@ E-GD is a basis. A project adopts it, builds on it, and adds back.
 
 The operator, 2026-11-05, verbatim: "each project keeps its own rule and the paper says so. EGD acts as a basis on which projects can build on and add back. But each project keeps its own rules until harvested, where you will curate it and add what is useful, and leave out project specific references." (RECORD.md 2026-11-05-03)
 
+## Practices that have held in use
+
+Each is from a project running the method (trials/forager-2026-11-05.md, AD1 to AD5).
+
+- **Small files, each owned by one task at a time.** Parallel executors never share a file; a file over a size limit is split before anything is added to it.
+- **Messages between agent sessions are committed files.** A message in a session's transcript can be lost or never read; a file in the repository is durable and citable.
+- **Record entries are written with a quoted here-document or a file write.** An unquoted shell here-document runs backquoted text and silently corrupts the entry.
+- **Each role's profile states the model it runs on, and why.** The model is read from the session, not assumed from a configured name.
+- **Usage and machine limits are scheduling constraints.** Heavy jobs run one at a time under a memory cap. Handoffs are timed before usage limits (PROTOCOL rule 28), and free space is checked before a gated step (rule 24).
+
 ## Quick start
 
 ```
