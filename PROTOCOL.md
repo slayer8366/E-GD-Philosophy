@@ -158,6 +158,16 @@ A guard enforced only in some checkouts, sessions or command routes protects onl
 
 When a gate is removed or disabled, the removal records what stops being enforced. A required field with no checker behind it should be expected to disappear at the next change of session, so whoever removes a checker says which fields it was holding.
 
+Fields are not the only thing that lapses. Without a checker, whole kinds of entry stop being written across a change of session: intents, closing entries, merge records, corrections. Work then runs with no marker of what is open until an outside reader finds it.
+
+A rule written down after a slip does not hold under pressure, even for the agent that wrote it, unless something checks it where it applies: a field in a template, a step in a checklist, a check at the point of use.
+
+A rule that names its own enforcement ("CI warns when…") says where that enforcement runs and when it was last seen to run. Enforcement that was only planned reads exactly like enforcement that exists.
+
+A one-time override records what it stopped enforcing, as a removal does.
+
+Evidence, added 2026-11-16: trials/forager-2026-11-05.md, M1. In one project, intents went unwritten for ten days, and merge and correction entries stopped and had not returned by the time of reading. Rules written after slips were breached again. One rule named enforcement that did not exist.
+
 Evidence, all from Forager (trials/forager-2026-10-16.md):
 
 - Per-dispatch operator approval was removed four days after it began. The operator: "Can't have me hitting buttons. Those hooks need to change" (`docs/audits/2026-09-26-approval-exempt-build-device.md`).
