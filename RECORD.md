@@ -3418,3 +3418,49 @@ Observed, not asked: None.
 **Notes:** Written by the curator, Clio, on branch paper-prep-2-2026-11-16, before the fast-forward. If the fast-forward does not land as stated, a correction entry follows. Next free ID 2026-11-16-07.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-11-16-07
+
+**Timestamp:** 2026-11-17T00:00:14Z
+
+**Title:** The approved wording written into the method, one commit per item, from specs/2026-11-16-harvest-wording.md
+
+**Change:**
+
+1. Each passage of the spec is written into its target, taken from the spec file itself rather than retyped. The placeholders are filled: "[date]" with 2026-11-16, and "[the writing intent's ID]" with 2026-11-16-07.
+2. The items, one commit each:
+   - P1 and P2: PHILOSOPHY.md, ENFORCEMENT.md, GLOSSARY.md, and closing notes on PROTOCOL rules 3 and 11.
+   - M1 to M4: PROTOCOL rules 12, 13 and 23; Operator Authority in PHILOSOPHY.md and ENFORCEMENT.md.
+   - N1 to N7, as PROTOCOL rules 24 to 30, and the Standing sentence.
+   - R1 to R6, and the corrected index line, in RECORDING.md.
+   - The two ADOPTING.md sections and the profiles/curator.md line.
+   - The corrections to PROTOCOL rules 14 and 22.
+   - README.md's two lines.
+
+**Scope boundary:** PHILOSOPHY.md, ENFORCEMENT.md, GLOSSARY.md, PROTOCOL.md, RECORDING.md, ADOPTING.md, profiles/curator.md and README.md, at the places the spec names; RECORD.md and REGISTER.md (append only). On branch method-wording-2026-11-16, cut from Test-1 at c21e13b.
+
+Out of scope:
+
+- Any wording not in the approved spec.
+- The project-neutral rewrite of existing text (decision 2026-11-05-03), which comes under its own intent.
+- Merging, which waits for the operator's go for this branch.
+
+**Baseline:** Test-1 at c21e13b2cf039181bfbac48fb503ebed5f1618e4, equal to origin/Test-1. check_glossary.py at 45/44/45. The operator approved the wording on 2026-11-16: "Yes, as drafted" (2026-11-16-05).
+
+**Prediction (outcome — planner):**
+
+1. check_glossary.py passes at 47/46/47.
+2. Every spec passage, with placeholders filled, is found verbatim in its target file.
+3. check_record.py and check_prompts.py pass.
+
+**Prediction (mechanism — coder):** Each edit is anchored on an exact string asserted to occur once, and a missing anchor stops the item. Each commit is pushed as it is made. A comparison script, given a positive control first, matches every passage to its file.
+
+**Finish line:** All items committed and pushed. The comparison passes for every passage. A terminal entry, then the checks through check_register.py, then the report to the operator. The merge waits for the operator's go.
+
+**Abort conditions:** An anchor not found, or found more than once: that item stops and is reported. Any check failing.
+
+**Notes:** Written by the curator, Clio, on branch method-wording-2026-11-16. The ID keeps the operator's working date, 2026-11-16, as the merge entry -06 named it, although the clock's UTC date may have turned. Next free ID 2026-11-16-08.
+
+---
