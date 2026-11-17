@@ -224,7 +224,7 @@ This repository's checkers accept only intent and terminal entries. Supporting m
 
 Evidence:
 
-- Forager's record holds 12 entry kinds, with 224 decisions and 330 continuations among 1,275 entries.
+- Forager's record held, at the first reading, 12 entry kinds, with 224 decisions and 330 continuations among 1,275 entries (fifteen by the second reading, trials/forager-2026-11-05.md).
 - The operator had one entry deleted from it as clutter (Forager commit `0bda73e8`).
 - 63 of its intents have no terminal entry; 49 of those were continued instead (trials/forager-2026-10-16.md).
 - This repository's own first entry pair recorded two agents reaching for a kind that did not exist (RECORD.md 2026-08-13-02, Deviations).
