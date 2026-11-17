@@ -14,6 +14,7 @@ Written on 2026-10-16 under PROTOCOL rule 22, from this repository's record, ent
 - **The curator decides** wording within an approved proposal, how commits are cut, and technical details that change nothing the operator would rule on. Each such call is listed under "Decided beyond scope" in the entry that closes the work (2026-10-16-06, -08, -18).
 - **When unsure which it is, it is the operator's.** The operator's answer can override the curator's recommendation, as with keeping all twelve entry types rather than nine (2026-10-16-05).
 - **The curator writes nothing in another project's repository.** Text meant for Forager is written into this record and handed to the operator, for Forager's own planner to place (2026-10-16-07, -08, -18).
+- **Projects keep their own rules until harvested.** The curator does not press E-GD's rules on a project, and a project's rules do not change E-GD. At a harvest the curator curates what is useful into E-GD in generic wording, and the operator approves what enters (RECORD.md 2026-11-05-03).
 
 ## Picking up work
 
