@@ -348,9 +348,12 @@ Tests show the code does what its builder intended. Nothing in them checks that 
 
 **The gate, in order:**
 
-1. Automated checks pass at the exact commit being promoted.
+1. Automated checks pass at the exact commit being promoted. Every check cited, automated or on a device, is bound to the artifact that ships: the commit, tree or build hash it checked is shown equal to what ships. A check run on another build is listed as a gap.
 2. The auditor's report.
 3. The operator's approval for public use.
+
+- A register of known defects ships with each release. It lists each defect's severity and whether users already have it. A defect already live may ship; a new one that risks a user's data, safety or trust fails the release.
+- The gate's verdicts are counted. A gate that has only ever passed has not been shown able to fail, and its standing says so.
 
 A device check or field walk is proposed by the planner when a promotion needs one, and the operator decides. It is not a standing step: "Field walks and device checks aren't always necessary" (-1133). An urgent fix takes the same gate, at the front of the queue, and is then carried into the working branch.
 
@@ -379,6 +382,8 @@ A device check or field walk is proposed by the planner when a promotion needs o
 This is Independent Replication (rule 11) applied at release time. If both hold up, they may become one principle.
 
 Standing: one promotion has run through the gate. It was documents only, and passed with two notes on the planner's own documents, neither blocking (-1131, -1132). No release with code has been audited, and the device path is untested.
+
+Standing, updated 2026-11-16: releases with code have since passed through the gate, and every audit verdict recorded in the period read was "pass with items" (trials/forager-2026-11-05.md, M3). The gate has not yet been seen to fail. The device path is still untested as a gate step.
 
 ## What these do not fix
 
