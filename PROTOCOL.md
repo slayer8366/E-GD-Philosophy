@@ -391,6 +391,12 @@ Disk, memory, temporary storage and usage limits are shared state that every che
 
 Evidence: trials/forager-2026-11-05.md, N1. Exhaustion recurred in one project, twice letting a check or a gate fail open, once through a tool that stopped partway and still exited 0. Standing: one project.
 
+**25. A refused or interrupted action may have partly run.**
+
+A tool call shown as refused, a command interrupted, or a step that failed may have changed state before it stopped. Before running anything again, the agent reads the actual state and reports what had already happened.
+
+Evidence: trials/forager-2026-11-05.md, N2. In one instance, a call shown as refused had in fact landed, and its re-run landed a second time. Standing: three instances, in one project.
+
 ## What these do not fix
 
 They relocate an error class rather than eliminating it. A planner holding a file can still misread it, cite the wrong hash, or reason correctly from a premise that was wrong before anyone wrote it down.
