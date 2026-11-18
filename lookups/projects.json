@@ -1,11 +1,11 @@
 {
   "repos": {
-    "forager": null,
+    "app": null,
     "forecast": null
   },
   "record": {
-    "name": "forager record",
-    "repo": "forager",
+    "name": "app record",
+    "repo": "app",
     "ref": "origin/records-after-173",
     "shape": null,
     "links": {
@@ -21,8 +21,8 @@
   },
   "tables": [
     {
-      "name": "forager audits",
-      "repo": "forager",
+      "name": "app audits",
+      "repo": "app",
       "ref": "origin/pre-main",
       "path": "docs/audits/README.md",
       "row_pattern": "^\\| ()(\\d{4}-\\d{2}-\\d{2})"
@@ -55,8 +55,8 @@
   ],
   "folders": [
     {
-      "name": "forager prompts",
-      "repo": "forager",
+      "name": "app prompts",
+      "repo": "app",
       "ref": "origin/records-after-173",
       "path": "prompts/preserved"
     },

@@ -16,9 +16,9 @@ generalized under 2026-10-17-07.
                 record file
 
 With no config the tool reads one repository's record at HEAD: the current
-directory, or the folder --repo repo=PATH names. --preset forager reads
-Forager's and forager-forecast's records (lookups/forager.json; give
---repo forager=PATH and --repo forecast=PATH). --print-config prints the
+directory, or the folder --repo repo=PATH names. --preset projects reads
+the operator's own projects' records (lookups/projects.json; give
+--repo app=PATH and --repo forecast=PATH). --print-config prints the
 config in use. A config is one JSON object:
 
   repos    each repository's name, with a path or null (--repo NAME=PATH
@@ -564,7 +564,7 @@ def main(argv=None):
     p.add_argument("command", nargs="?", choices=["show", "links", "search", "open", "next-id"])
     p.add_argument("args", nargs="*")
     p.add_argument("--config", help="a lookup config file")
-    p.add_argument("--preset", help="a config in lookups/, by name (e.g. forager)")
+    p.add_argument("--preset", help="a config in lookups/, by name (e.g. projects)")
     p.add_argument("--repo", action="append", metavar="NAME=PATH",
                    help="a repository's path, by its name in the config")
     p.add_argument("--ref", action="append", metavar="NAME=REF",
