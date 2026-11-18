@@ -3877,3 +3877,66 @@ Observed, not asked: None.
 **Notes:** Written by the curator, Clio, on branch preset-rename-2026-11-17, before the fast-forward. Next free ID 2026-11-17-11.
 
 ---
+
+**Kind:** dispatch-note
+
+**ID:** 2026-11-18-01
+
+**Timestamp:** 2026-11-18T12:16:19Z
+
+**Dispatch-file:** preserved/2026-11-18-01.md
+
+**Type:** Text handed to Forager's planner through the operator: a note on the lookup tool's renamed command, an entry missing from Forager's record, and record numbers used twice or shared with forager-forecast. The curator writes nothing in Forager's repository.
+
+**Outcome:** Written on the operator's "2 yes" and given to the operator to pass on. The operator sees it in full first.
+
+**Report:** Every fact was checked at Forager records-after-173 ecb689643 (2026-11-14) and forager-forecast main 98d4b33:
+- -1342 is absent, and -1341, -1343, -1372 and -1411 still cite it; it was written at 2026-10-19T02:13:29Z.
+- The IDs used twice are -540, -542, -1421, -1929 and -2205. -2205 is new since the reading, written by commits 670bf0c3f and e741c3725.
+- forager-forecast's record holds -2001 to -2043, and Forager's -2001 is dated 2026-11-03T17:40:19Z.
+- The old lookup command is at Forager prompts/preserved/2026-11-09-handoff-memory.md:195.
+
+The reuse of -1963 to -1967 was also re-checked at ecb689643. Each was present at 8900e8843^, absent at 8900e8843, and is present now under a different title.
+
+**Notes:** Written by the curator, Clio, on branch paper-outline-2026-11-18, by a script file write. Next free ID 2026-11-18-02.
+
+---
+
+**Kind:** intent
+
+**ID:** 2026-11-18-02
+
+**Timestamp:** 2026-11-18T12:16:19Z
+
+**Title:** The method paper's preparation, step 4: an outline of the method paper, for the operator to approve before any drafting
+
+**Change:** paper/outline.md (new). It gives:
+- the working title;
+- the sections, with what each covers and which sources it draws on;
+- the figures each would quote, each one recounted or allowed by correction 2026-11-16-03;
+- the limits section built on Self-Application;
+- the questions left for the draft stage.
+
+An outline is not a go to draft.
+
+**Scope boundary:** paper/outline.md (new), and RECORD.md and REGISTER.md (append only), on branch paper-outline-2026-11-18, cut from Test-1 at 8f9956f. Out of scope: drafting, tagging, uploading, and any method text.
+
+**Baseline:**
+- Test-1 at 8f9956f3dc25e67abb4ffa0c9f495b31b7558957.
+- The operator, 2026-11-18, verbatim: "1 yes", to "Should I draft the paper outline now?".
+- The framing decision is 2026-11-05-02.
+
+**Prediction (outcome — planner):**
+1. The outline quotes no figure that correction 2026-11-16-03 says not to cite as stated.
+2. It names Proof-or-Stop and superpowers in its related work.
+3. Its limits section quotes Self-Application as written.
+
+**Prediction (mechanism — coder):** Written from paper/related-work.md, the two trial readings, the recount and correction -03, and checked against them before commit.
+
+**Finish line:** The outline committed, pushed and its link given to the operator. A terminal entry once the operator answers on it. Merging waits for the operator's go.
+
+**Abort conditions:** A section that needs a ruling the operator has not given is listed as a question, not decided.
+
+**Notes:** Written by the curator, Clio, on branch paper-outline-2026-11-18, by a script file write. Next free ID 2026-11-18-03.
+
+---
