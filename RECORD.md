@@ -3729,3 +3729,55 @@ Observed, not asked: None.
 **Notes:** Written by the curator, Clio, on branch neutral-text-2026-11-17, before the fast-forward. The preset rename is not carried; it waits for the operator's choice of name. Next free ID 2026-11-17-07.
 
 ---
+
+**Kind:** intent
+
+**ID:** 2026-11-17-07
+
+**Timestamp:** 2026-11-18T03:29:04Z
+
+**Title:** The lookup tool's preset renamed from forager to projects, and its repositories from forager to app; built tests first
+
+**Change:**
+
+1. lookups/forager.json becomes lookups/projects.json, so the command is --preset projects.
+2. Inside the config:
+   - the repository "forager" becomes "app", so the command is --repo app=PATH;
+   - the source names "forager record", "forager audits" and "forager prompts" become "app record", "app audits" and "app prompts". They are the names --ref takes and the citations print.
+3. The pattern "Forager RECORD (-\\d+)" stays. It matches the text the research project's decisions actually contain.
+4. records_lookup.py's usage text and --preset help name the new preset. Its self-checks use the new names.
+
+**Scope boundary:** lookups/forager.json (renamed and edited), records_lookup.py (its usage text, --preset help and self-checks), RECORD.md and REGISTER.md (append only), on branch preset-rename-2026-11-17, cut from Test-1 at 19a7b56.
+
+Out of scope:
+
+- The tool's lookup logic.
+- Its historical docstring lines (who it was built for).
+- Internal identifiers such as _fixture_forager.
+- specs/2026-10-16-records-lookup.md, which is a dated spec.
+- Anything in another project's repository.
+
+**Baseline:**
+- Test-1 at 19a7b562689dd6acc0147ff60e817e9400343422.
+- records_lookup.py --render-check: "PASS: 0 of 17 checks failed".
+- The operator, 2026-11-17, verbatim:
+  - "1 it matches what the docs now say", which the curator reads as the option , since that was the reason the option gave;
+  - "2 yes", to renaming the repositories to app and forecast;
+  - "3 yes", to merging when the checks pass.
+
+**Prediction (outcome — planner):** After the rename, --render-check passes 17 of 17. --preset forager reports that no such preset exists, and --preset projects loads lookups/projects.json. No user-facing name in the tool or its config contains "forager", apart from the matching pattern kept above.
+
+**Prediction (mechanism — coder):**
+- **Tests first.** With only the self-checks changed, --render-check fails. Every check that runs through the preset fails because "no preset 'projects'" exists, and the checks that don't use the preset still pass.
+- **The rename.** Afterwards every check passes.
+- **The revert run.** In a throwaway copy, renaming the file back makes the preset checks fail for the same reason. The real repository is untouched by it.
+
+**Finish line:** The failing tests and the rename committed and pushed, the revert run recorded, a terminal, the checks through check_register.py, a merge entry, and Test-1 fast-forwarded on the operator's "3 yes", with a backup first.
+
+**Abort conditions:**
+- A check that fails for a reason other than the predicted one, before the rename. That is a defect in the check, and the work stops to fix it.
+- Any check failing after the rename.
+
+**Notes:** Written by the curator, Clio, on branch preset-rename-2026-11-17. Next free ID 2026-11-17-08.
+
+---
