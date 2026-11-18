@@ -711,11 +711,11 @@ def _fixture_forecast(decisions=(), audits_rows=(), dispatches=None, log_rows=()
 
 
 def _base_args(forager=None, forecast=None):
-    """r1-r7 run through the Forager preset (2026-10-17-07)."""
-    args = ["--no-fetch", "--preset", "forager"]
+    """r1-r7 run through the projects preset (2026-10-17-07; renamed under 2026-11-17-07)."""
+    args = ["--no-fetch", "--preset", "projects"]
     if forager:
-        args += ["--repo", f"forager={forager}", "--ref", "forager=rec",
-                 "--ref", "forager audits=pre"]
+        args += ["--repo", f"app={forager}", "--ref", "app=rec",
+                 "--ref", "app audits=pre"]
     if forecast:
         args += ["--repo", f"forecast={forecast}", "--ref", "forecast=main"]
     return args
@@ -741,7 +741,7 @@ def render_check():
         repo, rec, _ = _fixture_forager({"RECORD.md": _record(e1, e2)})
         code, out = _run(["show", "-02"] + _base_args(forager=repo))
         lines = out.splitlines()
-        cite = [l for l in lines if l.startswith("citation: forager rec@")]
+        cite = [l for l in lines if l.startswith("citation: app rec@")]
         assert cite, f"show printed no citation line: {out!r}"
         span = cite[0].rsplit(" ", 1)[1]
         assert span.startswith("RECORD.md:"), f"citation names no file and lines: {cite[0]!r}"
@@ -771,10 +771,10 @@ def render_check():
         for field, src in [("Continues", "02"), ("Closes", "03"), ("Corrects", "04"),
                            ("Supersedes", "05")]:
             hit = [l for l in out.splitlines()
-                   if f"{field} 2026-09-28-{src}" in l and "forager rec@" in l]
+                   if f"{field} 2026-09-28-{src}" in l and "app rec@" in l]
             assert hit, f"links does not list the {field} link from -{src} with a citation: {out!r}"
         code, out = _run(["links", "2026-09-28-03"] + _base_args(forager=repo))
-        assert any("names: Closes 2026-09-28-01" in l and "forager rec@" in l
+        assert any("names: Closes 2026-09-28-01" in l and "app rec@" in l
                    for l in out.splitlines()), f"links does not list what -03 names: {out!r}"
 
     check("r2_links_each_type",
@@ -794,7 +794,7 @@ def render_check():
                                   dispatches={"2026-09-06-x.md": f"a {term} task\n"},
                                   log_rows=[("2026-09-07", f"{term} work", "next")])
         code, out = _run(["search", term] + _base_args(forager=fr, forecast=fc))
-        for label in ["forager record", "forager audits", "forager prompts", "forecast decisions",
+        for label in ["app record", "app audits", "app prompts", "forecast decisions",
                       "forecast audits", "forecast dispatch", "forecast session log"]:
             assert any(l.startswith("20") and f" {label} " in l for l in out.splitlines()), (
                 f"search found no hit in {label}: {out!r}")
@@ -856,7 +856,7 @@ def render_check():
         code, out = _run(["show", "D200"] + _base_args(forager=repo, forecast=fc))
         assert any(l.startswith("citation: forecast main@") for l in out.splitlines()), (
             f"show D200 printed no forecast citation: {out!r}")
-        assert any("Forager RECORD -02 -> 2026-09-28-02" in l and "forager rec@" in l
+        assert any("Forager RECORD -02 -> 2026-09-28-02" in l and "app rec@" in l
                    for l in out.splitlines()), f"the Forager reference was not resolved: {out!r}"
 
     check("r6_cross_repository_reference_resolves",
@@ -866,9 +866,9 @@ def render_check():
     def r7():
         repo, _, _ = _fixture_forager({"RECORD.md": _record(
             _intent("2026-09-28-01", "2026-09-30T00:00:00Z"))})
-        args = _base_args(forager=repo) + ["--ref", "forager record=no-such-ref"]
+        args = _base_args(forager=repo) + ["--ref", "app record=no-such-ref"]
         code, out = _run(["open"] + args)
-        assert any("forager record" in l and "NOT READ" in l and "no-such-ref" in l
+        assert any("app record" in l and "NOT READ" in l and "no-such-ref" in l
                    for l in out.splitlines()), f"an unreadable source was not reported: {out!r}"
         assert "open intents: 0" not in out and "open intents: unknown" in out, (
             f"open answered a count from a record it could not read: {out!r}")
@@ -1012,14 +1012,14 @@ def render_check():
         default = globals().get("DEFAULT_LOOKUP")
         assert default is not None and code == 0 and json.loads(out) == json.loads(json.dumps(default)), (
             f"--print-config does not print DEFAULT_LOOKUP: {out[:300]!r}")
-        preset = Path(__file__).resolve().parent / "lookups" / "forager.json"
-        assert preset.is_file(), "lookups/forager.json does not exist"
-        code, out = _run(["open", "--print-config", "--preset", "forager"])
+        preset = Path(__file__).resolve().parent / "lookups" / "projects.json"
+        assert preset.is_file(), "lookups/projects.json does not exist"
+        code, out = _run(["open", "--print-config", "--preset", "projects"])
         assert code == 0 and json.loads(out) == json.loads(preset.read_text()), (
-            "--preset forager does not load lookups/forager.json")
+            "--preset projects does not load lookups/projects.json")
 
     check("c7_print_config_and_preset",
-          "--print-config does not print the default, or --preset forager does not load lookups/forager.json",
+          "--print-config does not print the default, or --preset projects does not load lookups/projects.json",
           c7)
 
     def c8():
@@ -1027,7 +1027,7 @@ def render_check():
         _commit_branch(fc, "other", {"docs/planning/DECISIONS.md":
                                      "# Decision log\n\n| ID | Date | Decision |\n|---|---|---|\n"
                                      "| D2 | 2026-09-05 | y |\n"})
-        code, out = _run(["show", "D2", "--no-fetch", "--preset", "forager", "--repo", f"forecast={fc}",
+        code, out = _run(["show", "D2", "--no-fetch", "--preset", "projects", "--repo", f"forecast={fc}",
                           "--ref", "forecast decisions=other", "--ref", "forecast=main"])
         assert any(l.startswith("source forecast decisions: forecast other@") for l in out.splitlines()), (
             f"a source's own --ref did not win over its repository's: {out!r}")

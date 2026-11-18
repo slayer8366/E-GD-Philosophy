@@ -9522,3 +9522,78 @@ header for why, in full.
 
     (nothing captured)
 
+---
+
+**Check:** records_lookup_render_check_tests_first_2026_11_17_07
+
+**Timestamp:** 2026-11-18T03:30:01Z
+
+**Expected failure mode:** Fails before the rename: every check run through the preset fails with no preset 'projects'; the checks that use no preset pass.
+
+**Command:** python3 -I records_lookup.py --render-check
+
+**Exit code:** 1
+
+**Vacuous:** no
+
+**Stdout:**
+
+    records_lookup.py --render-check
+    
+    [r1_show_verbatim_with_citation] expected failure mode if broken: show does not print the entry verbatim under a citation that git show confirms
+    [r1_show_verbatim_with_citation] FAIL: AssertionError('show printed no citation line: "config error: --preset: no preset \'projects\' (/mnt/work/egd-wt/preset-rename-2026-11-17/lookups/projects.json does not exist)\\nNothing was read.\\n"')
+    
+    [r2_links_each_type] expected failure mode if broken: links misses a Continues, Closes, Corrects or Supersedes link, or what an entry names
+    [r2_links_each_type] FAIL: AssertionError('links does not list the Continues link from -02 with a citation: "config error: --preset: no preset \'projects\' (/mnt/work/egd-wt/preset-rename-2026-11-17/lookups/projects.json does not exist)\\nNothing was read.\\n"')
+    
+    [r3_search_seven_sources_newest_first] expected failure mode if broken: search misses a source, reads the session log's prose, is not newest first, or shows no Supersedes link
+    [r3_search_seven_sources_newest_first] FAIL: AssertionError('search found no hit in app record: "config error: --preset: no preset \'projects\' (/mnt/work/egd-wt/preset-rename-2026-11-17/lookups/projects.json does not exist)\\nNothing was read.\\n"')
+    
+    [r4_open_intents] expected failure mode if broken: open lists a closed intent (by terminal, or by outcome with Closes) or misses an open one
+    [r4_open_intents] FAIL: AssertionError('open listed []: "config error: --preset: no preset \'projects\' (/mnt/work/egd-wt/preset-rename-2026-11-17/lookups/projects.json does not exist)\\nNothing was read.\\n"')
+    
+    [r5_next_id_across_months_with_duplicates] expected failure mode if broken: next-id reads only the current month, omits the commit read, or misses a duplicate
+    [r5_next_id_across_months_with_duplicates] FAIL: AssertionError('next-id did not read every month or name its commit: "config error: --preset: no preset \'projects\' (/mnt/work/egd-wt/preset-rename-2026-11-17/lookups/projects.json does not exist)\\nNothing was read.\\n"')
+    
+    [r6_cross_repository_reference_resolves] expected failure mode if broken: a forecast decision's 'Forager RECORD -NN' is not resolved to the Forager entry, cited
+    [r6_cross_repository_reference_resolves] FAIL: AssertionError('show D200 printed no forecast citation: "config error: --preset: no preset \'projects\' (/mnt/work/egd-wt/preset-rename-2026-11-17/lookups/projects.json does not exist)\\nNothing was read.\\n"')
+    
+    [r7_unread_source_reported] expected failure mode if broken: a source whose ref cannot be read is skipped silently instead of reported
+    [r7_unread_source_reported] FAIL: AssertionError('an unreadable source was not reported: "config error: --preset: no preset \'projects\' (/mnt/work/egd-wt/preset-rename-2026-11-17/lookups/projects.json does not exist)\\nNothing was read.\\n"')
+    
+    [c1_default_reads_one_repository_at_head] expected failure mode if broken: with no config the tool does not read the given (or current) repository's record at HEAD
+    [c1_default_reads_one_repository_at_head] PASS
+    
+    [c2_config_names_the_sources] expected failure mode if broken: a config's record, table and folder, under its own names and ID scheme, are not read
+    [c2_config_names_the_sources] PASS
+    
+    [c3_shape_from_records_json_at_the_ref] expected failure mode if broken: a record repository's records.json is not read when the lookup config gives no shape
+    [c3_shape_from_records_json_at_the_ref] PASS
+    
+    [c4_open_unsupported_without_an_intent_type] expected failure mode if broken: open on a record whose shape has no intent type prints a count instead of 'unsupported'
+    [c4_open_unsupported_without_an_intent_type] PASS
+    
+    [c5_next_id_for_any_trailing_number] expected failure mode if broken: next-id assumes YYYY-MM-DD-NN IDs and fails or misnumbers another scheme
+    [c5_next_id_for_any_trailing_number] PASS
+    
+    [c6_config_refused_by_name] expected failure mode if broken: an unknown key, or a source naming a repository the config does not define, is accepted
+    [c6_config_refused_by_name] PASS
+    
+    [c7_print_config_and_preset] expected failure mode if broken: --print-config does not print the default, or --preset projects does not load lookups/projects.json
+    [c7_print_config_and_preset] FAIL: AssertionError('lookups/projects.json does not exist')
+    
+    [c8_ref_overrides_source_over_repository] expected failure mode if broken: --ref by repository does not reach every source in it, or does not yield to a source's own --ref
+    [c8_ref_overrides_source_over_repository] FAIL: AssertionError('a source\'s own --ref did not win over its repository\'s: "config error: --preset: no preset \'projects\' (/mnt/work/egd-wt/preset-rename-2026-11-17/lookups/projects.json does not exist)\\nNothing was read.\\n"')
+    
+    [c9_unusable_records_json_leaves_the_record_unread] expected failure mode if broken: a records.json that is not a usable config is ignored and the record read with the default shape
+    [c9_unusable_records_json_leaves_the_record_unread] PASS
+    
+    [c10_repo_and_ref_names_checked] expected failure mode if broken: --repo or --ref naming nothing in the config, or not in NAME=VALUE form, is accepted
+    [c10_repo_and_ref_names_checked] PASS
+    
+    FAIL: 9 of 17 checks failed: r1_show_verbatim_with_citation, r2_links_each_type, r3_search_seven_sources_newest_first, r4_open_intents, r5_next_id_across_months_with_duplicates, r6_cross_repository_reference_resolves, r7_unread_source_reported, c7_print_config_and_preset, c8_ref_overrides_source_over_repository
+
+**Stderr:**
+
+    (nothing captured)
+
