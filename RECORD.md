@@ -3801,3 +3801,79 @@ The entry was written through an unquoted shell here-document. The shell ran the
 **Notes:** Written by the curator, Clio, on branch preset-rename-2026-11-17. This entry was written by a script file write, not a shell here-document. Next free ID 2026-11-17-09.
 
 ---
+
+**Kind:** terminal
+
+**ID:** 2026-11-17-09
+
+**Timestamp:** 2026-11-18T03:31:25Z
+
+**Closes:** 2026-11-17-07
+
+**Outcome:** completed
+
+**Observed:**
+
+- **Commits:**
+  - 1ea3faa: the self-checks moved to the new names, committed failing. --render-check then failed 9 of 17. Every check run through the preset failed because the preset projects did not exist, and c7 because lookups/projects.json did not exist. The 8 checks that use no preset passed.
+  - f087ae7: lookups/forager.json renamed to lookups/projects.json. Its repository "forager" is now "app", and its sources are "app record", "app audits" and "app prompts". The tool's usage text and --preset help were updated. --render-check passes 17 of 17.
+  - REGISTER.md holds both runs.
+- **Both names tried:**
+  - --preset forager reports "no preset 'forager'" and reads nothing;
+  - --preset projects loads the config, with repositories app and forecast.
+- **Revert run:** in a throwaway copy, with the file renamed back, --render-check failed 9 of 17, each for the missing preset and for no other reason. The real files hashed the same before and after, and lookups/projects.json is still present.
+- **What remains of the old name:**
+  - the pattern "Forager RECORD (-\\d+)", kept because it matches the research project's own decision text;
+  - two historical lines in the tool's docstring, which this intent left alone;
+  - the two dated specs, which mention the old command and stay as written.
+
+The planner's predictions, scored:
+
+1. "After the rename, --render-check passes 17 of 17. --preset forager reports that no such preset exists, and --preset projects loads lookups/projects.json." Held. "No user-facing name in the tool or its config contains forager, apart from the matching pattern" held as well, with the two docstring lines this intent had put out of scope.
+2. The mechanism prediction held at each step: the tests failed for the stated reason, the rename made them pass, and the revert run failed for the same reason.
+
+Confirmed against inferred:
+- Confirmed: all of the above, by running the tool.
+- Inferred: None.
+
+Could not determine: who outside this repository still runs --preset forager. One known use is in the field-app project's own notes. The curator writes nothing there, so it goes to the operator.
+
+Premises that were wrong: None.
+
+Decided beyond scope: the source names inside the config were renamed with the repository ("forager record" to "app record", and the others), so that "forager" leaves the command entirely. The operator had been told that was the reason to rename.
+
+Observed, not asked: None.
+
+**Deviations:**
+- Intent -07 lost one word to shell expansion when it was written. Correction -08 restores it.
+- This entry and the merge entry were written by a script file write.
+
+**Notes:** Written by the curator, Clio, on branch preset-rename-2026-11-17. Next free ID 2026-11-17-10.
+
+---
+
+**Kind:** merge
+
+**ID:** 2026-11-17-10
+
+**Timestamp:** 2026-11-18T03:31:25Z
+
+**PR:** none. Test-1 is fast-forwarded on the operator's go.
+
+**Head:** the commit that adds this entry. Its parent is f087ae7 on preset-rename-2026-11-17.
+
+**Base:** Test-1
+
+**Pre-merge:** 19a7b562689dd6acc0147ff60e817e9400343422
+
+**Merge-commit:** none, because a fast-forward makes no merge commit.
+
+**Backup:** ~/Zynergy/egd-repo-backups/test-1-before-preset-rename-2026-11-17.bundle, verified, with sha256 65634fb970098b294d6bf413635a9b8892c8e6ffa5d7f058bca1ad639d5fcd19 in the manifest beside it and a line in INDEX.md. Its restore was tested and gives 19a7b56.
+
+**Merged-by:** the curator, on the operator's word, 2026-11-17: "3 yes", answering "Can I merge it when its checks pass?"
+
+**Carries:** 2026-11-17-07 to -10; lookups/projects.json; records_lookup.py's renamed self-checks, usage text and help; REGISTER.md's new observations.
+
+**Notes:** Written by the curator, Clio, on branch preset-rename-2026-11-17, before the fast-forward. Next free ID 2026-11-17-11.
+
+---
