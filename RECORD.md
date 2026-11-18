@@ -3781,3 +3781,23 @@ Out of scope:
 **Notes:** Written by the curator, Clio, on branch preset-rename-2026-11-17. Next free ID 2026-11-17-08.
 
 ---
+
+**Kind:** correction
+
+**ID:** 2026-11-17-08
+
+**Timestamp:** 2026-11-18T03:29:34Z
+
+**Corrects:** 2026-11-17-07
+
+**What was wrong:** The intent's Baseline, as committed in e602853, reads:
+
+    "1 it matches what the docs now say", which the curator reads as the option , since that was the reason the option gave;
+
+The entry was written through an unquoted shell here-document. The shell ran the backquoted option name as a command, found no such command, and left nothing in its place. This is the hazard ADOPTING.md's "Practices that have held in use" names.
+
+**What it corrects:** The line should read: "1 it matches what the docs now say", which the curator reads as the option projects, since that was the reason the option gave. The operator's choice is the preset name projects. Cite this entry for that line. Nothing else in -07 used backquotes. Its "Forager RECORD (-\\d+)" shows the pattern with its JSON escaping, as intended.
+
+**Notes:** Written by the curator, Clio, on branch preset-rename-2026-11-17. This entry was written by a script file write, not a shell here-document. Next free ID 2026-11-17-09.
+
+---
